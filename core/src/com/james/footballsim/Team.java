@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Team {
 	
-	int id;
+	public int id;
 	public String name;
 	double attack;
 	double defence;
@@ -19,13 +19,13 @@ public class Team {
 	double totalPositions = 0;
 	double leaguesPlayed = 0;
 
-	Players players;
-	Players injured;
+	public Players players;
+	public Players injured;
 
-	List<Player> goalkeepers;
-	List<Player> defenders;
-	List<Player> midfielders;
-	List<Player> forwards;
+	public List<Player> goalkeepers;
+	public List<Player> defenders;
+	public List<Player> midfielders;
+	public List<Player> forwards;
 
 	int rating;
 	float attackRating;

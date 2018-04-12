@@ -27,7 +27,7 @@ public class TitleScreen extends CustomGameScreen {
     //Buttons
     private TextButton playButton;
 
-    public TitleScreen(Game aGame) {
+    public TitleScreen(FootballSim aGame) {
         super(aGame);
         title = new Label("Football Sim", FootballSim.skin,"title");
         title.setAlignment(Align.center);

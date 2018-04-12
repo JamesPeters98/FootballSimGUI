@@ -88,6 +88,22 @@ public class Player {
         return (firstName.substring(0,1)+". "+lastName);
     }
 
+    public String getFullName(){
+        return (firstName+" "+lastName);
+    }
+
+    public int getRating(){
+        return rating;
+    }
+
+    public int getGrowth(){
+        return growth;
+    }
+
+    public String getRatingAndGrowth(){
+        return rating+" (+"+growth+")";
+    }
+
     public boolean equals(Object o) {
         if (!(o instanceof Player)) {
             return false;

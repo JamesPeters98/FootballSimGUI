@@ -30,8 +30,8 @@ public class Game {
 		for(Team team : teams){
             System.out.format("%-3s%-25s%-10s%-10s%-8s\n", new String[]{""+team.id,""+team.name, ""+team.getRating(), ""+team.getAttackRating(), ""+team.getDefenceRating()});
 		}
+
 		teamId = Utils.readNumber(reader,"Enter the number of the desired team.");
-		
 		team = league.getTeam(teamId);
 		team.chosenTeam = true;
 		System.out.println("Players:");

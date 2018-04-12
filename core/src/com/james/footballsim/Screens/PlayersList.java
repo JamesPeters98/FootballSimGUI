@@ -2,26 +2,24 @@ package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.james.footballsim.Team;
 import com.james.footballsim.FootballSim;
+import com.james.footballsim.Player;
 
 import static com.james.footballsim.FootballSim.skin;
+import static com.james.footballsim.FootballSim.team;
 
 /**
  * Created by James on 04/04/2018.
  */
-public class TeamSelection extends CustomGameScreen {
+public class PlayersList extends CustomGameScreen {
 
 
     //Labels
@@ -32,10 +30,10 @@ public class TeamSelection extends CustomGameScreen {
 
     private ScrollPane scrollPane;
 
-    public TeamSelection(FootballSim aGame) {
+    public PlayersList(FootballSim aGame) {
         super(aGame);
 
-        title = new Label("Team Selection", skin,"title");
+        title = new Label("Players", skin,"title");
         title.setAlignment(Align.center);
 
         stage.addActor(title);
@@ -43,18 +41,16 @@ public class TeamSelection extends CustomGameScreen {
         table = new Table();
 //        table.setDebug(true);
 
-        for(Team team : FootballSim.teams){
-            TextButton name = new TextButton(team.name, skin, "small");
+        for(Player player : team.players.getList()){
+            TextButton name = new TextButton(player.getFullName(), skin, "small");
             name.pad(0,15,0,15);
             name.addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Clicked! "+team.name);
-                    aGame.setTeam(team.id);
-                    aGame.setScreen(aGame.playersList);
                 };
             });
-            TextButton rating = new TextButton(String.valueOf(team.getRating()), skin, "noClick_small");
+            TextButton rating = new TextButton(String.valueOf(player.getRating()), skin, "noClick_small");
             rating.pad(0,15,0,15);
             table.add(name).fillX();
             table.add(rating);

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.james.footballsim.FootballSim;
 
 public class CustomGameScreen implements Screen {
 
@@ -11,13 +12,13 @@ public class CustomGameScreen implements Screen {
     float zoom = 1f;
 
     Stage stage;
-    Game game;
+    FootballSim game;
     ScreenViewport viewport;
     float vWidth;
     float vHeight;
 
-    public CustomGameScreen(Game aGame) {
-        game = aGame;
+    public CustomGameScreen(FootballSim game) {
+        this.game = game;
         viewport = new ScreenViewport();
         viewport.setUnitsPerPixel(zoom);
         stage = new Stage(viewport);

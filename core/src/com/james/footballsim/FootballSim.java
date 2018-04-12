@@ -4,11 +4,16 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ixeption.libgdx.transitions.FadingGame;
+import com.ixeption.libgdx.transitions.impl.SlidingTransition;
+import com.james.footballsim.Screens.PlayersList;
 import com.james.footballsim.Screens.TitleScreen;
 import uk.co.codeecho.fixture.generator.Fixture;
 import uk.co.codeecho.fixture.generator.FixtureGenerator;
@@ -17,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FootballSim extends Game {
+public class FootballSim extends FadingGame {
 	public static Skin skin;
 
 	static FixtureGenerator fixtureGenerator;
@@ -25,9 +30,16 @@ public class FootballSim extends Game {
 	static List<List<Fixture<Integer>>> rounds;
 
 	public static List<Team> teams;
-	
+
+	public static int teamId;
+	public static Team team;
+
+	public PlayersList playersList;
+
 	@Override
 	public void create () {
+		super.create();
+
 		skin = new Skin(Gdx.files.internal("skin/footballsim.json")) {
 			//Override json loader to process FreeType fonts from skin JSON
 			@Override
@@ -82,6 +94,10 @@ public class FootballSim extends Game {
 		teams = new ArrayList<>(league.getTeams().values());
 		Collections.sort(teams,League.sortTeams);
 
+		setTransition(
+				new SlidingTransition(SlidingTransition.Direction.LEFT,Interpolation.exp10Out,false),1.0f
+		);
+
 
 		this.setScreen(new TitleScreen(this));
 	}
@@ -95,4 +111,12 @@ public class FootballSim extends Game {
 	public void dispose () {
 		skin.dispose();
 	}
+
+	public void setTeam(int id){
+		teamId = id;
+		team = league.getTeam(teamId);
+		team.chosenTeam = true;
+		playersList = new PlayersList(this);
+	}
 }
+
