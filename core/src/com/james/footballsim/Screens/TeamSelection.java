@@ -6,21 +6,21 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.james.footballsim.Team;
 import com.james.footballsim.FootballSim;
 
+import static com.james.footballsim.FootballSim.skin;
+
 /**
  * Created by James on 04/04/2018.
  */
-public class TeamSelection implements Screen {
+public class TeamSelection extends CustomGameScreen {
 
-
-
-    private Stage stage;
-    private Game game;
 
     //Labels
     private Label title;
@@ -28,27 +28,35 @@ public class TeamSelection implements Screen {
     //Table
     private Table table;
 
-    public TeamSelection(Game aGame) {
-        game = aGame;
-        stage = new Stage(new ScreenViewport());
+    private ScrollPane scrollPane;
 
-        title = new Label("Team Selection", FootballSim.skin,"title");
+    public TeamSelection(Game aGame) {
+        super(aGame);
+
+        title = new Label("Team Selection", skin,"title");
         title.setAlignment(Align.center);
 
         stage.addActor(title);
 
         table = new Table();
-        table.setFillParent(true);
-        table.setDebug(true);
+//        table.setDebug(true);
 
         for(Team team : FootballSim.teams){
-            Label name = new Label(team.name,FootballSim.skin);
-            name.setFontScale(2);
-            table.add(name);
-            table.row();
+            TextButton name = new TextButton(team.name, skin);
+            name.pad(0,15,0,15);
+            TextButton rating = new TextButton(String.valueOf(team.getRating()), skin, "noClick");
+            rating.pad(0,15,0,15);
+            table.add(name).fillX();
+            table.add(rating);
+            table.row().spaceTop(20);
         }
+        table.padBottom(10f);
 
-        stage.addActor(table);
+
+        scrollPane = new ScrollPane(table,skin);
+        scrollPane.setDebug(true);
+
+        stage.addActor(scrollPane);
     }
 
     @Override
@@ -66,13 +74,14 @@ public class TeamSelection implements Screen {
 
 
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width,height,true);
+    public void updateUI(float width, float height) {
+        title.setY(height-90);
+        title.setWidth(width);
 
-        title.setY(Gdx.graphics.getHeight()-40);
-        title.setWidth(Gdx.graphics.getWidth());
-
-
+        table.setY(height-100);
+//        table.setWidth(Gdx.graphics.getWidth()/2);
+        scrollPane.setHeight(height-100);
+        scrollPane.setWidth(width);
     }
 
     @Override

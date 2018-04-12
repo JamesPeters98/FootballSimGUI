@@ -11,6 +11,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+        config.displayScaleSmallScreenIfRetina = 1f;
         return new IOSApplication(new FootballSim(), config);
     }
 

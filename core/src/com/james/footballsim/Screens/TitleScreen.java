@@ -4,23 +4,22 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.james.footballsim.FootballSim;
 
 /**
  * Created by James on 04/04/2018.
  */
-public class TitleScreen implements Screen {
-
-
-    private Stage stage;
-    private Game game;
+public class TitleScreen extends CustomGameScreen {
 
     //Labels
     private Label title;
@@ -29,9 +28,7 @@ public class TitleScreen implements Screen {
     private TextButton playButton;
 
     public TitleScreen(Game aGame) {
-        game = aGame;
-        stage = new Stage(new ScreenViewport());
-
+        super(aGame);
         title = new Label("Football Sim", FootballSim.skin,"title");
         title.setAlignment(Align.center);
 
@@ -67,15 +64,14 @@ public class TitleScreen implements Screen {
 
 
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width,height,true);
+    public void updateUI(float width, float height) {
+        title.setY(height*2/3);
+        title.setWidth(width);
 
-        title.setY(Gdx.graphics.getHeight()*2/3);
-        title.setWidth(Gdx.graphics.getWidth());
-
-        playButton.setWidth(Gdx.graphics.getWidth()/2);
-        playButton.setPosition(Gdx.graphics.getWidth()/2-playButton.getWidth()/2, Gdx.graphics.getHeight()/2-playButton.getHeight()/2);
+        playButton.pad(0,30,0,30);
+        playButton.setPosition(width/2-playButton.getWidth()/2, height/2-playButton.getHeight()/2);
     }
+
 
     @Override
     public void pause() {
