@@ -1,6 +1,7 @@
 package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -19,6 +20,13 @@ public class CustomGameScreen implements Screen {
 
     public CustomGameScreen(FootballSim game) {
         this.game = game;
+
+        if(Gdx.graphics.getDensity() >= 1.25){
+            zoom = 1f;
+        } else {
+            zoom = 2f;
+        }
+
         viewport = new ScreenViewport();
         viewport.setUnitsPerPixel(zoom);
         stage = new Stage(viewport);
