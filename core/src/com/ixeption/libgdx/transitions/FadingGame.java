@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.Array;
+import com.james.footballsim.Screens.CustomGameScreen;
 
 /** An {@link Game} that delegates to a {@link Screen}. Allows to apply different transitions to screens. 
  *
@@ -170,6 +171,8 @@ public class FadingGame extends Game {
                 this.screen.hide();
                 this.screen = screen;
             } else {
+                CustomGameScreen customGameScreen = (CustomGameScreen) screen;
+                if(customGameScreen.getPrevScreen() != null) System.out.println("Not null!!!");
                 this.nextScreen = screen;
                 this.screen.pause();
                 this.nextScreen.pause();
@@ -181,8 +184,21 @@ public class FadingGame extends Game {
         }
 
         this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
     }
+
+    public void setScreen(CustomGameScreen currentScreen, CustomGameScreen nextScreen, ScreenTransition transition, float transitionDuration){
+        setScreen(currentScreen,nextScreen,transition,transitionDuration,false);
+    }
+
+    public void setScreen(CustomGameScreen currentScreen, CustomGameScreen nextScreen, ScreenTransition transition, float transitionDuration, boolean back) {
+        if(nextScreen == null) {System.out.println("Screen was null - not transitioning"); return; }
+        if(currentScreen == null) {System.out.println("Current screen is null");}
+        if(transitionRunning) return;
+        setTransition(transition,transitionDuration);
+        if(!back) nextScreen.setPrevScreen(currentScreen);
+        setScreen(nextScreen);
+    }
+
 
     /** @return the next {@link Screen}. */
     public Screen getNextScreen() {

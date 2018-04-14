@@ -2,12 +2,10 @@ package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
@@ -29,6 +27,7 @@ public class PlayersList extends CustomGameScreen {
     private Table table;
 
     private ScrollPane scrollPane;
+    private Dialog dialog;
 
     public PlayersList(FootballSim aGame) {
         super(aGame);
@@ -63,6 +62,36 @@ public class PlayersList extends CustomGameScreen {
         scrollPane.setDebug(true);
 
         stage.addActor(scrollPane);
+
+        Label label = new Label("You chose "+team.name+". Take a look at your team!", FootballSim.skin, "content");
+        label.setWrap(true);
+        label.setFontScale(.8f);
+        label.setAlignment(Align.center);
+
+        showBackButton(true);
+
+        dialog =
+                new Dialog("", FootballSim.skin) {
+                    protected void result (Object object) {
+                        System.out.println("Chosen: " + object);
+                    }
+                };
+
+        dialog.padTop(50).padBottom(50);
+        System.out.println(vWidth);
+        dialog.getContentTable().add(label).width(vWidth*0.7f).row();
+        dialog.getButtonTable().padTop(50);
+
+        TextButton dbutton = new TextButton("Okay", FootballSim.skin);
+        dialog.button(dbutton, true);
+
+        dialog.key(Input.Keys.ENTER, true);
+        dialog.invalidateHierarchy();
+        dialog.invalidate();
+        dialog.layout();
+        dialog.show(stage);
+
+
     }
 
     @Override
@@ -88,6 +117,9 @@ public class PlayersList extends CustomGameScreen {
 //        table.setWidth(Gdx.graphics.getWidth()/2);
         scrollPane.setHeight(height-100);
         scrollPane.setWidth(width);
+
+        dialog.getContentTable().setWidth(width*0.7f);
+        dialog.setWidth(width*0.7f);
     }
 
     @Override

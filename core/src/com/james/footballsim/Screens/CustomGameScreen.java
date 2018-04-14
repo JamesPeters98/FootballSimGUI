@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.james.footballsim.FootballSim;
 
@@ -18,6 +19,11 @@ public class CustomGameScreen implements Screen {
     float vWidth;
     float vHeight;
 
+    Button backButton;
+    boolean hasBackButton;
+
+    private CustomGameScreen prevScreen;
+
     public CustomGameScreen(FootballSim game) {
         this.game = game;
 
@@ -27,9 +33,14 @@ public class CustomGameScreen implements Screen {
             zoom = 2f;
         }
 
+        vHeight = Gdx.graphics.getHeight()*zoom;
+        vWidth = Gdx.graphics.getWidth()*zoom;
+
         viewport = new ScreenViewport();
         viewport.setUnitsPerPixel(zoom);
         stage = new Stage(viewport);
+
+        backButton = ScreenUtils.backButton(game,this, null);
     }
 
 
@@ -80,6 +91,30 @@ public class CustomGameScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public void showBackButton(boolean bool){
+        hasBackButton = bool;
+        if(hasBackButton)
+            stage
+                    .addActor(backButton);
+        if(!hasBackButton){
+            backButton.remove();
+        }
+    }
+
+    public void setPrevScreen(CustomGameScreen screen){
+        System.out.println("Set prev screen");
+        prevScreen = screen;
+        if(hasBackButton) {
+            backButton.remove();
+            backButton = ScreenUtils.backButton(game, this, prevScreen);
+            stage.addActor(backButton);
+        }
+    }
+
+    public CustomGameScreen getPrevScreen(){
+        return prevScreen;
     }
 
 }

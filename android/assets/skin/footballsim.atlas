@@ -1,12 +1,33 @@
 
 footballsim.png
-size: 128,128
+size: 256,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+back_button
+  rotate: false
+  xy: 78, 133
+  size: 75, 75
+  orig: 75, 75
+  offset: 0, 0
+  index: -1
+back_button_hover
+  rotate: false
+  xy: 1, 133
+  size: 75, 75
+  orig: 75, 75
+  offset: 0, 0
+  index: -1
+back_button_pressed
+  rotate: false
+  xy: 1, 56
+  size: 75, 75
+  orig: 75, 75
+  offset: 0, 0
+  index: -1
 button
   rotate: false
-  xy: 1, 70
+  xy: 1, 4
   size: 50, 50
   split: 20, 20, 20, 20
   pad: 10, 10, 10, 10
@@ -15,7 +36,7 @@ button
   index: -1
 button_hover
   rotate: false
-  xy: 53, 70
+  xy: 155, 158
   size: 50, 50
   split: 20, 20, 20, 20
   pad: 10, 10, 10, 10
@@ -24,7 +45,7 @@ button_hover
   index: -1
 button_pressed
   rotate: false
-  xy: 1, 18
+  xy: 78, 81
   size: 50, 50
   split: 20, 20, 20, 20
   pad: 10, 10, 10, 10
@@ -33,28 +54,28 @@ button_pressed
   index: -1
 scrollbar-horizontal
   rotate: false
-  xy: 105, 108
+  xy: 78, 67
   size: 5, 12
   orig: 5, 12
   offset: 0, 0
   index: -1
 scrollbar-horizontal-knob
   rotate: false
-  xy: 1, 1
+  xy: 130, 119
   size: 1, 12
   orig: 1, 12
   offset: 0, 0
   index: -1
 scrollbar-vertical
   rotate: false
-  xy: 53, 63
+  xy: 53, 49
   size: 12, 5
   orig: 12, 5
   offset: 0, 0
   index: -1
 scrollbar-vertical-knob
   rotate: false
-  xy: 1, 15
+  xy: 1, 1
   size: 12, 1
   orig: 12, 1
   offset: 0, 0

@@ -2,12 +2,14 @@ package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
@@ -38,7 +40,9 @@ public class TitleScreen extends CustomGameScreen {
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new TeamSelection(game));
+                CustomGameScreen customGameScreen = TitleScreen.this;
+                CustomGameScreen next = new TeamSelection(aGame);
+                aGame.setScreen(customGameScreen, next,FootballSim.IN,1f);
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -46,6 +50,8 @@ public class TitleScreen extends CustomGameScreen {
             }
         });
         stage.addActor(playButton);
+
+
 
     }
 

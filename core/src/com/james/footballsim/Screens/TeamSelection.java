@@ -6,10 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -34,7 +31,6 @@ public class TeamSelection extends CustomGameScreen {
 
     public TeamSelection(FootballSim aGame) {
         super(aGame);
-
         title = new Label("Team Selection", skin,"title");
         title.setAlignment(Align.center);
 
@@ -51,7 +47,7 @@ public class TeamSelection extends CustomGameScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Clicked! "+team.name);
                     aGame.setTeam(team.id);
-                    aGame.setScreen(aGame.playersList);
+                    aGame.setScreen(TeamSelection.this, aGame.playersList, FootballSim.IN,0.5f);
                 };
             });
             TextButton rating = new TextButton(String.valueOf(team.getRating()), skin, "noClick_small");
@@ -67,6 +63,7 @@ public class TeamSelection extends CustomGameScreen {
         scrollPane.setDebug(true);
 
         stage.addActor(scrollPane);
+        showBackButton(true);
     }
 
     @Override
