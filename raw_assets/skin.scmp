@@ -172,6 +172,40 @@ atlasData: {
 			minHeight: 0
 			customized: false
 		}
+		{
+			file: "/Users/james/Documents/GitHub/FootballSimGUI/raw_assets/bottom_bar.9.png"
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			visible: true
+			tint: null
+			tintName: null
+			name: bottom_bar
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+		{
+			file: "/Users/james/Documents/GitHub/FootballSimGUI/raw_assets/top_bar.9.png"
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			visible: true
+			tint: null
+			tintName: null
+			name: top_bar
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
 	]
 }
 jsonData: {

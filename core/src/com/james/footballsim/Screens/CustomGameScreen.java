@@ -96,8 +96,7 @@ public class CustomGameScreen implements Screen {
     public void showBackButton(boolean bool){
         hasBackButton = bool;
         if(hasBackButton)
-            stage
-                    .addActor(backButton);
+            stage.addActor(backButton);
         if(!hasBackButton){
             backButton.remove();
         }

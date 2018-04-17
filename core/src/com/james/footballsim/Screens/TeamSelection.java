@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.james.footballsim.Screens.Components.BottomBar;
+import com.james.footballsim.Screens.Components.TopBar;
 import com.james.footballsim.Team;
 import com.james.footballsim.FootballSim;
 
@@ -20,9 +22,9 @@ import static com.james.footballsim.FootballSim.skin;
  */
 public class TeamSelection extends CustomGameScreen {
 
-
-    //Labels
-    private Label title;
+    //TopBar
+    TopBar topBar;
+    BottomBar bottomBar;
 
     //Table
     private Table table;
@@ -31,14 +33,9 @@ public class TeamSelection extends CustomGameScreen {
 
     public TeamSelection(FootballSim aGame) {
         super(aGame);
-        title = new Label("Team Selection", skin,"title");
-        title.setAlignment(Align.center);
-
-        stage.addActor(title);
-
         table = new Table();
-//        table.setDebug(true);
 
+        table.padTop(25f);
         for(Team team : FootballSim.teams){
             TextButton name = new TextButton(team.name, skin, "small");
             name.pad(0,15,0,15);
@@ -61,8 +58,11 @@ public class TeamSelection extends CustomGameScreen {
 
         scrollPane = new ScrollPane(table,skin);
         scrollPane.setDebug(true);
-
         stage.addActor(scrollPane);
+
+        topBar = new TopBar(stage, "Team Selection").addToStage();
+        bottomBar = new BottomBar(stage).addToStage();
+
         showBackButton(true);
     }
 
@@ -82,13 +82,14 @@ public class TeamSelection extends CustomGameScreen {
 
     @Override
     public void updateUI(float width, float height) {
-        title.setY(height-90);
-        title.setWidth(width);
-
-        table.setY(height-100);
-//        table.setWidth(Gdx.graphics.getWidth()/2);
-        scrollPane.setHeight(height-100);
+        int pad_top = 95;
+        int pad_bottom = 85;
+        scrollPane.setHeight(height-(pad_bottom+pad_top));
+        scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
+
+        topBar.update(width,height);
+        bottomBar.update(width,height);
     }
 
     @Override

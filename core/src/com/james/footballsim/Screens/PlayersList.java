@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Player;
+import com.james.footballsim.Screens.Components.BottomBar;
+import com.james.footballsim.Screens.Components.TopBar;
 
 import static com.james.footballsim.FootballSim.skin;
 import static com.james.footballsim.FootballSim.team;
@@ -19,27 +21,33 @@ import static com.james.footballsim.FootballSim.team;
  */
 public class PlayersList extends CustomGameScreen {
 
+    //TopBar
+    TopBar topBar;
+    BottomBar bottomBar;
+
+    //Buttons
+    TextButton menu;
 
     //Labels
-    private Label title;
+    private Label label;
 
     //Table
     private Table table;
+    private Cell<Label> labelCell;
 
     private ScrollPane scrollPane;
     private Dialog dialog;
 
+    FootballSim aGame;
+
     public PlayersList(FootballSim aGame) {
         super(aGame);
 
-        title = new Label("Players", skin,"title");
-        title.setAlignment(Align.center);
-
-        stage.addActor(title);
-
+        this.aGame = aGame;
         table = new Table();
 //        table.setDebug(true);
 
+        table.padTop(25f);
         for(Player player : team.players.getList()){
             TextButton name = new TextButton(player.getFullName(), skin, "small");
             name.pad(0,15,0,15);
@@ -63,10 +71,13 @@ public class PlayersList extends CustomGameScreen {
 
         stage.addActor(scrollPane);
 
-        Label label = new Label("You chose "+team.name+". Take a look at your team!", FootballSim.skin, "content");
+        label = new Label("You chose "+team.name+". Take a look at your team!", FootballSim.skin, "content");
         label.setWrap(true);
         label.setFontScale(.8f);
         label.setAlignment(Align.center);
+
+        topBar = new TopBar(stage, "Players").addToStage();
+        bottomBar = new BottomBar(stage).addToStage();
 
         showBackButton(true);
 
@@ -78,8 +89,8 @@ public class PlayersList extends CustomGameScreen {
                 };
 
         dialog.padTop(50).padBottom(50);
-        System.out.println(vWidth);
-        dialog.getContentTable().add(label).width(vWidth*0.7f).row();
+        labelCell = dialog.getContentTable().add(label);
+        labelCell.width(vWidth*0.7f).row();
         dialog.getButtonTable().padTop(50);
 
         TextButton dbutton = new TextButton("Okay", FootballSim.skin);
@@ -91,12 +102,16 @@ public class PlayersList extends CustomGameScreen {
         dialog.layout();
         dialog.show(stage);
 
-
+        menu = new TextButton("Menu", FootballSim.skin);
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        menu = ScreenUtils.addScreenSwitchTextButton("Menu", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
+        stage.addActor(menu);
+        updateUI(vWidth,vHeight);
+        System.out.println("Shown");
     }
 
     @Override
@@ -110,16 +125,26 @@ public class PlayersList extends CustomGameScreen {
 
     @Override
     public void updateUI(float width, float height) {
-        title.setY(height-90);
-        title.setWidth(width);
+        topBar.update(width,height);
+        bottomBar.update(width,height);
 
-        table.setY(height-100);
-//        table.setWidth(Gdx.graphics.getWidth()/2);
-        scrollPane.setHeight(height-100);
+        menu.setPosition(width-menu.getWidth()-10, 10);
+
+
+        int pad_top = 95;
+        int pad_bottom = 85;
+        scrollPane.setHeight(height-(pad_bottom+pad_top));
+        scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
 
         dialog.getContentTable().setWidth(width*0.7f);
+        labelCell.width(vWidth*0.7f);
         dialog.setWidth(width*0.7f);
+        dialog.setPosition(width/2-dialog.getWidth()/2,height/2-dialog.getHeight()/2);
+
+        dialog.invalidateHierarchy();
+        dialog.invalidate();
+        dialog.layout();
     }
 
     @Override

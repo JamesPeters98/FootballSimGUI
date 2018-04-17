@@ -15,6 +15,7 @@ import com.ixeption.libgdx.transitions.FadingGame;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.ixeption.libgdx.transitions.impl.SlidingTransition;
 import com.james.footballsim.Screens.PlayersList;
+import com.james.footballsim.Screens.Screens;
 import com.james.footballsim.Screens.TitleScreen;
 import sun.java2d.loops.ProcessPath;
 import uk.co.codeecho.fixture.generator.Fixture;
@@ -37,6 +38,8 @@ public class FootballSim extends FadingGame {
 	public static Team team;
 
 	public PlayersList playersList;
+
+	public static Screens SCREENS;
 
 	public static ScreenTransition IN =  new SlidingTransition(SlidingTransition.Direction.LEFT,Interpolation.exp10Out,false);
 	public static ScreenTransition OUT =  new SlidingTransition(SlidingTransition.Direction.RIGHT,Interpolation.exp10Out,true);
@@ -99,7 +102,12 @@ public class FootballSim extends FadingGame {
 		teams = new ArrayList<>(league.getTeams().values());
 		Collections.sort(teams,League.sortTeams);
 
-		this.setScreen(null, new TitleScreen(this),IN,0);
+		//Default team
+		team = new Team();
+
+		SCREENS = new Screens(this);
+
+		this.setScreen(null, SCREENS.TITLE_SCREEN,IN,0);
 	}
 
 	@Override

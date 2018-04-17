@@ -60,6 +60,12 @@ public class Team {
 		//System.out.println("Generated "+name+". Attack: "+this.attack+" Defence: "+this.defence);
 	}
 
+	public Team(){
+		this.id = -1;
+		this.name = "Non Initialised Screen";
+		players = new Players();
+	}
+
 	public void update(){
 		//Store old rating
 		int previousRating = getRating();
