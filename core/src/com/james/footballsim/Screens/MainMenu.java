@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
@@ -20,6 +19,8 @@ public class MainMenu extends CustomGameScreen {
     //Buttons
     private TextButton nextGame;
     private TextButton playersList;
+
+    Table buttons;
 
     //TopBar
     TopBar topBar;
@@ -40,11 +41,34 @@ public class MainMenu extends CustomGameScreen {
 
     @Override
     public void show() {
-        Table buttons = new Table();
+        buttons = new Table();
+        //buttons.setDebug(true);
+
         playersList = ScreenUtils.addScreenSwitchTextButton("Players",aGame,this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN);
-        nextGame = ScreenUtils.addScreenSwitchTextButton("Next Game",aGame,this, this,FootballSim.IN);
+        String nextString = "";
+        if(!FootballSim.seasonRunning) nextString = "Start Season";
+        else nextString = "Next Game";
+        nextGame = new TextButton(nextString,FootballSim.skin);
+        nextGame.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                aGame.startSeason();
+                aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES,FootballSim.IN,1f);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        TextButton teamName = new TextButton(FootballSim.team.name, FootballSim.skin);
+
+        buttons.add(teamName).expandX().colspan(2).padTop(130f).minWidth(nextGame.getWidth()+playersList.getWidth()+50f);
+        buttons.row().align(Align.top).expandY();
+
         buttons.add(nextGame).spaceRight(25f).expandX().align(Align.right);
         buttons.add(playersList).spaceLeft(25f).expandX().align(Align.left);
+
         buttons.setFillParent(true);
         stage.addActor(buttons);
         Gdx.input.setInputProcessor(stage);

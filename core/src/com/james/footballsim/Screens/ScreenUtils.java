@@ -1,16 +1,18 @@
 package com.james.footballsim.Screens;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.ixeption.libgdx.transitions.FadingGame;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.james.footballsim.FootballSim;
 
 import static com.james.footballsim.FootballSim.skin;
+import static com.james.footballsim.FootballSim.team;
 
 public class ScreenUtils {
 
@@ -40,5 +42,57 @@ public class ScreenUtils {
             }
         });
         return button;
+    }
+
+
+
+
+    public static class DialogCreator {
+
+        Dialog dialog;
+        Cell labelCell;
+
+        public DialogCreator(String message, String acceptMessage, float width){
+            Label label = new Label(message, FootballSim.skin, "content");
+            label.setWrap(true);
+            label.setAlignment(Align.center);
+
+            dialog =
+                    new Dialog("", FootballSim.skin) {
+                        protected void result (Object object) {
+                            System.out.println("Chosen: " + object);
+                        }
+                    };
+
+            dialog.padTop(50).padBottom(50);
+            labelCell = dialog.getContentTable().add(label);
+            labelCell.width(width*0.7f).row();
+            dialog.getButtonTable().padTop(50);
+
+            TextButton dbutton = new TextButton("Okay", FootballSim.skin);
+            dialog.button(dbutton, true);
+
+            dialog.key(Input.Keys.ENTER, true);
+            dialog.invalidateHierarchy();
+            dialog.invalidate();
+            dialog.layout();
+        }
+
+        public Dialog getDialog(){
+            return dialog;
+        }
+
+        //Call in resize/updateUI to ensure dialog auto fits to new size
+        public void updateDialogUI(float width, float height){
+            dialog.getContentTable().setWidth(width*0.7f);
+            labelCell.width(width*0.7f);
+            dialog.setWidth(width*0.7f);
+            dialog.setPosition(width/2-dialog.getWidth()/2,height/2-dialog.getHeight()/2);
+
+            dialog.invalidateHierarchy();
+            dialog.invalidate();
+            dialog.layout();
+        }
+
     }
 }

@@ -235,6 +235,35 @@ jsonData: {
 	freeTypeFonts: [
 		{
 			class: com.ray3k.skincomposer.data.FreeTypeFontData
+			name: font30
+			file: "/Users/james/Documents/skin-composer-mac/preview fonts/Roboto-Light.ttf"
+			previewTTF: Roboto-Light
+			useCustomSerializer: true
+			size: 30
+			mono: false
+			hinting: AutoMedium
+			color: Grey
+			gamma: 1.8
+			renderCount: 2
+			borderWidth: 0
+			borderColor: null
+			borderStraight: false
+			borderGamma: 1.8
+			shadowOffsetX: 0
+			shadowOffsetY: 0
+			shadowColor: null
+			spaceX: 0
+			spaceY: 0
+			characters: ""
+			kerning: true
+			flip: false
+			genMipMaps: false
+			minFilter: Linear
+			magFilter: Linear
+			incremental: false
+		}
+		{
+			class: com.ray3k.skincomposer.data.FreeTypeFontData
 			name: font50
 			file: "/Users/james/Documents/skin-composer-mac/preview fonts/Roboto-Light.ttf"
 			previewTTF: Roboto-Light
@@ -1857,7 +1886,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font50
+						value: font30
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1998,7 +2027,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font50
+						value: font30
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty

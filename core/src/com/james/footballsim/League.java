@@ -11,7 +11,7 @@ public class League {
 	
 	public League(){
 		teams = new HashMap<>();
-		leagueStats = new HashMap<Team,LeagueStats>();
+		leagueStats = new HashMap<>();
 		addTeam(Teams.CHELSEA);
 		addTeam(Teams.LIVERPOOL);
 		addTeam(Teams.MAN_CITY);

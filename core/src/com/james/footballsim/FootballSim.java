@@ -29,15 +29,16 @@ public class FootballSim extends FadingGame {
 	public static Skin skin;
 
 	static FixtureGenerator fixtureGenerator;
-	static League league;
-	static List<List<Fixture<Integer>>> rounds;
+	public static League league;
+	public static List<List<Fixture<Integer>>> rounds;
 
 	public static List<Team> teams;
 
 	public static int teamId;
 	public static Team team;
+	public static int round;
 
-	public PlayersList playersList;
+	public static boolean seasonRunning = false;
 
 	public static Screens SCREENS;
 
@@ -124,7 +125,12 @@ public class FootballSim extends FadingGame {
 		teamId = id;
 		team = league.getTeam(teamId);
 		team.chosenTeam = true;
-		playersList = new PlayersList(this);
+		SCREENS.PLAYER_SELECTION = new PlayersList(this);
+	}
+
+	public void startSeason(){
+		rounds = fixtureGenerator.getFixtures(league.getTeams(), true, teamId);
+		seasonRunning = true;
 	}
 }
 

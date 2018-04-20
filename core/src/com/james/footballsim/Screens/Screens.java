@@ -8,11 +8,15 @@ public class Screens {
     public CustomGameScreen TEAM_SELECTION;
     public CustomGameScreen PLAYER_SELECTION;
     public CustomGameScreen MAIN_MENU;
+    public CustomGameScreen TOTAL_FIXTURES;
+    public CustomGameScreen WEEKLY_FIXTURES;
 
     public Screens(FootballSim footballSim){
         TITLE_SCREEN = new TitleScreen(footballSim);
         TEAM_SELECTION = new TeamSelection(footballSim);
         PLAYER_SELECTION = new PlayersList(footballSim);
         MAIN_MENU = new MainMenu(footballSim);
+        TOTAL_FIXTURES = new TotalFixtures(footballSim);
+        WEEKLY_FIXTURES = new WeeklyFixtures(footballSim);
     }
 }
