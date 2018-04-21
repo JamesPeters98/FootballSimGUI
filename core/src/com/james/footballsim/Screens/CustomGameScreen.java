@@ -7,6 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.james.footballsim.FootballSim;
+import sun.awt.CGraphicsDevice;
+
+import java.awt.*;
 
 public class CustomGameScreen implements Screen {
 
@@ -26,11 +29,29 @@ public class CustomGameScreen implements Screen {
 
     public CustomGameScreen(FootballSim game) {
         this.game = game;
-
+        System.out.println(Gdx.graphics.getDensity());
         if(Gdx.graphics.getDensity() >= 1.25){
             zoom = 1f;
         } else {
             zoom = 2f;
+        }
+        zoom = 1f;
+
+        // find the display device of interest
+        final GraphicsDevice defaultScreenDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
+        // on OS X, it would be CGraphicsDevice
+        if (defaultScreenDevice instanceof CGraphicsDevice) {
+            final CGraphicsDevice device = (CGraphicsDevice) defaultScreenDevice;
+
+            // this is the missing correction factor, it's equal to 2 on HiDPI a.k.a. Retina displays
+            final int scaleFactor = device.getScaleFactor();
+
+            // now we can compute the real DPI of the screen
+            final double realDPI = scaleFactor * (device.getXResolution() + device.getYResolution()) / 2;
+
+            System.out.println(scaleFactor);
+            System.out.println(realDPI);
         }
 
         vHeight = Gdx.graphics.getHeight()*zoom;
