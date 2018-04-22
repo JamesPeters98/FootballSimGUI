@@ -71,15 +71,15 @@ public class Game {
 		    }
 		    System.out.println("");
 		    Utils.promptEnterKey(reader);
-		    for(Fixture<Integer> fixture: round){
-				try {
-					MatchResult result = new MatchSim().runMatch(reader,league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()),teamId);
-					league.addStat(result);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-		    }
+//		    for(Fixture<Integer> fixture: round){
+//				try {
+//					//MatchResult result = new MatchSim().runMatch(reader,league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()),teamId);
+//					//league.addStat(result);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//
+//		    }
             Utils.promptEnterKey(reader);
             System.out.println("--------------");
             System.out.println("Updates");

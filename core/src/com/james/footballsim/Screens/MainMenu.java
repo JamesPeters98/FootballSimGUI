@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
@@ -35,12 +36,15 @@ public class MainMenu extends CustomGameScreen {
         nextGame = new TextButton("Next Game",FootballSim.skin);
         playersList = new TextButton("Players", FootballSim.skin);
 
-        topBar = new TopBar(stage, "Football Sim").addToStage();
-        bottomBar = new BottomBar(stage).addToStage();
     }
 
     @Override
     public void show() {
+        stage = new Stage(viewport);
+
+        topBar = new TopBar(stage, "Football Sim").addToStage();
+        bottomBar = new BottomBar(stage).addToStage();
+
         buttons = new Table();
         //buttons.setDebug(true);
 

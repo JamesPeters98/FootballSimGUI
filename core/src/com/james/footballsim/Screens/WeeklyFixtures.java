@@ -74,7 +74,7 @@ public class WeeklyFixtures extends CustomGameScreen {
         scrollPane.setDebug(true);
         stage.addActor(scrollPane);
 
-        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,this,FootballSim.IN);
+        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
     }
 
