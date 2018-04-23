@@ -56,8 +56,12 @@ public class MainMenu extends CustomGameScreen {
         nextGame.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                aGame.startSeason();
-                aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES,FootballSim.IN,1f);
+                if(!FootballSim.seasonRunning) {
+                    aGame.startSeason();
+                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES, FootballSim.IN, 1f);
+                } else {
+                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.MATCH_SCREEN, FootballSim.IN, 1f);
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

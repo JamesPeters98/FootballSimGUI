@@ -39,8 +39,8 @@ public class MatchSim {
 						   }
 					   }
 				, 0
-				, 1
-				, 90
+				, 0.2f
+				, 89
 		);
 
 			for(int i = 1; i<= 90; i++){
@@ -91,27 +91,26 @@ public class MatchSim {
 				homeScorer = home.getGoalscorer();
 			}
 
-		Player awayScorer = null;
-		if(resultHome.goalScored()){
-			awayScorer = away.getGoalscorer();
-		}
+			Player awayScorer = null;
+			if(resultAway.goalScored()){
+				awayScorer = away.getGoalscorer();
+			}
 
 			if(resultHome.openPlayGoal()) System.out.println(i+"' GOAL! "+homeScorer.getMatchName()+" | "+home.name+" "+goals[0]+"-"+goals[1]);
-			else if(resultHome.penaltyScored()) System.out.println(i+"' GOAL! Penalty! "+home.name+" "+goals[0]+"-"+goals[1]);
-			else if(resultHome.freekickScored()) System.out.println(i+"' GOAL! Freekick! "+home.name+" "+goals[0]+"-"+goals[1]);
-			else if(resultHome.resultType == ResultType.MISS_PENALTY) System.out.println(i+"' MISSED PENALTY! "+home.name);
-			else {
-				System.out.println(i+"'");
-			}
+			if(resultHome.penaltyScored()) System.out.println(i+"' GOAL! Penalty! "+home.name+" "+goals[0]+"-"+goals[1]);
+			if(resultHome.freekickScored()) System.out.println(i+"' GOAL! Freekick! "+home.name+" "+goals[0]+"-"+goals[1]);
+			if(resultHome.resultType == ResultType.MISS_PENALTY) System.out.println(i+"' MISSED PENALTY! "+home.name);
 
 			if(resultAway.openPlayGoal()) System.out.println(i+"' GOAL! "+awayScorer.getMatchName()+" | "+away.name+" "+goals[0]+"-"+goals[1]);
-			else if(resultAway.penaltyScored()) System.out.println(i+"' GOAL! Penalty! "+away.name+" "+goals[0]+"-"+goals[1]);
-			else if(resultAway.freekickScored()) System.out.println(i+"' GOAL! Freekick! "+away.name+" "+goals[0]+"-"+goals[1]);
-			else if(resultAway.resultType == ResultType.MISS_PENALTY) System.out.println(i+"' MISSED PENALTY! "+away.name);
-			else {
-				System.out.println(i+"'");
-			}
+			if(resultAway.penaltyScored()) System.out.println(i+"' GOAL! Penalty! "+away.name+" "+goals[0]+"-"+goals[1]);
+			if(resultAway.freekickScored()) System.out.println(i+"' GOAL! Freekick! "+away.name+" "+goals[0]+"-"+goals[1]);
+			if(resultAway.resultType == ResultType.MISS_PENALTY) System.out.println(i+"' MISSED PENALTY! "+away.name);
 
+//			if((resultHome.resultType == ResultType.NOTHING)||(resultAway.resultType == ResultType.NOTHING)) {
+//				System.out.println(i+"'");
+//			}
+
+			if(i == 90) System.out.println(home.name+" "+goals[0]+"-"+goals[1]+" "+away.name);
 
 	}
 	

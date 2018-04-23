@@ -10,6 +10,7 @@ public class Screens {
     public CustomGameScreen MAIN_MENU;
     public CustomGameScreen TOTAL_FIXTURES;
     public CustomGameScreen WEEKLY_FIXTURES;
+    public CustomGameScreen MATCH_SCREEN;
 
     public Screens(FootballSim footballSim){
         TITLE_SCREEN = new TitleScreen(footballSim);
@@ -18,5 +19,6 @@ public class Screens {
         MAIN_MENU = new MainMenu(footballSim);
         TOTAL_FIXTURES = new TotalFixtures(footballSim);
         WEEKLY_FIXTURES = new WeeklyFixtures(footballSim);
+        MATCH_SCREEN = new MatchScreen(footballSim);
     }
 }

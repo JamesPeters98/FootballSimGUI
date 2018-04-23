@@ -6,6 +6,7 @@ public class Result {
 	
 	public Result(int resultType){
 		this.resultType = resultType;
+		//System.out.println("New Result: "+resultType);
 	}
 	
 	public int getResult(){
