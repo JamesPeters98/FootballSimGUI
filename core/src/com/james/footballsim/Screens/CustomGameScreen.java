@@ -19,6 +19,7 @@ public class CustomGameScreen implements Screen {
     Stage stage;
     FootballSim game;
     ScreenViewport viewport;
+
     float vWidth;
     float vHeight;
 
@@ -137,6 +138,14 @@ public class CustomGameScreen implements Screen {
 
     public CustomGameScreen getPrevScreen(){
         return prevScreen;
+    }
+
+    public float getvWidth() {
+        return vWidth;
+    }
+
+    public float getvHeight() {
+        return vHeight;
     }
 
 }

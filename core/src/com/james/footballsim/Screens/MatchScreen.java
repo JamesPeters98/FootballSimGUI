@@ -11,10 +11,7 @@ import com.james.footballsim.MatchResult;
 import com.james.footballsim.MatchSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
-import com.james.footballsim.Team;
 import uk.co.codeecho.fixture.generator.Fixture;
-
-import java.util.List;
 
 import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
@@ -51,41 +48,22 @@ public class MatchScreen extends CustomGameScreen {
         topBar = new TopBar(stage, "Game").addToStage();
         bottomBar = new BottomBar(stage).addToStage();
 
-//        table = new Table();
-//        table.padTop(25f);
-//
-//        List<Fixture<Integer>> round = FootballSim.rounds.get(FootballSim.round);
-//        for(Fixture<Integer> fixture: round){
-//            System.out.println(league.getTeam(fixture.getHomeTeam()).name + " vs " + league.getTeam(fixture.getAwayTeam()).name);
-//            Team homeTeam = league.getTeam(fixture.getHomeTeam());
-//            Team awayTeam = league.getTeam(fixture.getAwayTeam());
-//
-//            TextButton home = new TextButton(homeTeam.name, skin, "noClick_small");
-//            home.pad(0,15,0,15);
-//            TextButton away = new TextButton(awayTeam.name, skin, "noClick_small");
-//            away.pad(0,15,0,15);
-//            TextButton vs = new TextButton("VS", skin, "noClick_small");
-//            table.add(home).fillX();
-//            table.add(vs).center();
-//            table.add(away).fillX();
-//            table.row().spaceTop(10);
-//        }
-//
-//        table.padBottom(10f);
-//
-//        scrollPane = new ScrollPane(table,skin);
-//        scrollPane.setDebug(true);
-//        stage.addActor(scrollPane);
+        table = new Table();
+        table.padTop(25f);
+        table.padBottom(10f);
 
-        for(Fixture<Integer> fixture: FootballSim.rounds.get(FootballSim.round)){
-            boolean showUI = false;
-            if((fixture.getHomeTeam()==FootballSim.teamId)||(fixture.getAwayTeam()==teamId)) showUI = true;
-					MatchResult result = new MatchSim().runMatch(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()),showUI);
-					league.addStat(result);
-		    }
+        scrollPane = new ScrollPane(table,skin);
+        scrollPane.setDebug(true);
+        stage.addActor(scrollPane);
 
         menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
+
+        for(Fixture<Integer> fixture: FootballSim.rounds.get(FootballSim.round)){
+            if((fixture.getHomeTeam()==FootballSim.teamId)||(fixture.getAwayTeam()==teamId)) return;
+            MatchResult result = new MatchSim().runMatch(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()),false,table,this);
+            league.addStat(result);
+        }
     }
 
     @Override
@@ -99,11 +77,11 @@ public class MatchScreen extends CustomGameScreen {
 
     @Override
     public void updateUI(float width, float height) {
-//        int pad_top = 95;
-//        int pad_bottom = 85;
-//        scrollPane.setHeight(height-(pad_bottom+pad_top));
-//        scrollPane.setY(pad_bottom);
-//        scrollPane.setWidth(width);
+        int pad_top = 95;
+        int pad_bottom = 85;
+        scrollPane.setHeight(height-(pad_bottom+pad_top));
+        scrollPane.setY(pad_bottom);
+        scrollPane.setWidth(width);
 
         topBar.update(width,height);
         bottomBar.update(width,height);
