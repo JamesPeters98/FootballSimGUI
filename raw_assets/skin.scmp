@@ -230,6 +230,16 @@ jsonData: {
 			}
 			name: Grey
 		}
+		{
+			class: com.ray3k.skincomposer.data.ColorData
+			color: {
+				r: 1
+				g: 1
+				b: 1
+				a: 1
+			}
+			name: White
+		}
 	]
 	fonts: []
 	freeTypeFonts: [
@@ -242,7 +252,7 @@ jsonData: {
 			size: 30
 			mono: false
 			hinting: AutoMedium
-			color: Grey
+			color: White
 			gamma: 1.8
 			renderCount: 2
 			borderWidth: 0
@@ -271,7 +281,7 @@ jsonData: {
 			size: 50
 			mono: false
 			hinting: AutoMedium
-			color: Grey
+			color: White
 			gamma: 1.8
 			renderCount: 2
 			borderWidth: 0
@@ -300,7 +310,7 @@ jsonData: {
 			size: 80
 			mono: false
 			hinting: AutoMedium
-			color: Grey
+			color: White
 			gamma: 1.8
 			renderCount: 2
 			borderWidth: 0
@@ -1083,7 +1093,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: Grey
+						value: White
 					}
 					background: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1611,7 +1621,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: Grey
+						value: White
 					}
 					downFontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1752,7 +1762,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: Grey
+						value: White
 					}
 					downFontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -1893,7 +1903,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: Grey
+						value: White
 					}
 					downFontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -2034,7 +2044,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: Grey
+						value: White
 					}
 					downFontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty

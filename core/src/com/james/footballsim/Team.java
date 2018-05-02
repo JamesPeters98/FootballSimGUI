@@ -27,6 +27,8 @@ public class Team {
 	public List<Player> midfielders;
 	public List<Player> forwards;
 
+	public List<TeamUpdate> updates;
+
 	int rating;
 	float attackRating;
 	float defenceRating;
@@ -64,9 +66,13 @@ public class Team {
 		this.id = -1;
 		this.name = "Non Initialised Screen";
 		players = new Players();
+		injured = new Players();
 	}
 
 	public void update(){
+		//Remove old updates
+		updates = new ArrayList<>();
+
 		//Store old rating
 		int previousRating = getRating();
 
@@ -145,7 +151,7 @@ public class Team {
 			player = new Player(type, 0.8f*(attackRating));
 		}
 		players.add(player);
-		System.out.println("Generated new player at "+name+" :"+player.getMatchName()+" R:"+player.rating+" P:"+(player.rating+player.growth));
+		updates.add(new TeamUpdate().youthPromotion(player));
 		Utils.promptEnterKey2(Game.reader);
 	}
 
@@ -155,12 +161,7 @@ public class Team {
 				if(player.growth>0) {
 					player.rating++;
 					player.growth--;
-					if(chosenTeam) {
-						System.out.println(player.getMatchName() + " just grew!");
-						System.out.println("New rating: " + player.rating);
-						System.out.println("New potential: " + (player.rating + player.growth));
-
-					}
+					updates.add(new TeamUpdate().playerGrowth(player));
 				}
 			} else {
 
@@ -169,12 +170,7 @@ public class Team {
 	}
 
 	private void checkRating(int previous){
-		if(previous < getRating()){
-			System.out.println(name+" Current squad rating: "+getRating()+" (+"+(getRating()-previous)+")");
-		}
-		if(previous > getRating()){
-			System.out.println(name+ "Current squad rating: "+getRating()+" ("+(getRating()-previous)+")");
-		}
+		if(previous != getRating()) updates.add(new TeamUpdate().teamRating(this,previous));
 	}
 
 	private void playerUpdate(){
@@ -184,7 +180,7 @@ public class Team {
 				injured.remove(player);
 				player.injured = false;
 				players.add(player);
-				if(chosenTeam) System.out.println(player.getMatchName()+" is no longer injured.");
+				updates.add(new TeamUpdate().backFromInjury(player));
 			}
 		}
 		for(Player player : new ArrayList<>(players.getList())) {
@@ -195,12 +191,9 @@ public class Team {
 				if(length<1) length = 1;
 				player.injuryLength = (int) Math.round(length);
 				injured.add(player);
-				if(chosenTeam) System.out.println(player.getMatchName()+" is injured for "+player.injuryLength+" week[s].");
+				updates.add(new TeamUpdate().injury(player));
 			}
 		}
-
-
-
 	}
 
 	public int getAttackRating(){
@@ -370,6 +363,16 @@ public class Team {
 		for(int i = 0; i<nForwards;i++) bestTeam.add(forwards.get(i));
 		return bestTeam;
 	}
+
+	public List<Player> getReserves(){
+		List<Player> reserveTeam = new ArrayList<>();
+		for(int i = 1; i<goalkeepers.size();i++) reserveTeam.add(goalkeepers.get(i));
+		for(int i = nDefenders; i<defenders.size();i++) reserveTeam.add(defenders.get(i));
+		for(int i = nMidfielders; i<midfielders.size();i++) reserveTeam.add(midfielders.get(i));
+		for(int i = nForwards; i<forwards.size();i++) reserveTeam.add(forwards.get(i));
+		return reserveTeam;
+	}
+
 
 	public void listBestSquad(){
 		for(Player player : getBestSquad()){

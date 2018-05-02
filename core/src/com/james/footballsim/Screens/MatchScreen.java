@@ -2,16 +2,19 @@ package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.MatchResult;
 import com.james.footballsim.MatchSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import uk.co.codeecho.fixture.generator.Fixture;
+
+import java.util.ArrayList;
 
 import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
@@ -26,31 +29,38 @@ public class MatchScreen extends CustomGameScreen {
     private TopBar topBar;
     private BottomBar bottomBar;
 
+    public Label minutes;
+
     //Table
-    private Table table;
+    private VerticalGroup table;
+    private Table mainTable;
 
     private TextButton menu;
+    private TextButton skip;
 
     private ScrollPane scrollPane;
     private FootballSim aGame;
+    private MatchSim matchSim;
+
 
     public MatchScreen(FootballSim aGame) {
         super(aGame);
         this.aGame = aGame;
-        showBackButton(true);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
         stage = new Stage(viewport);
 
         topBar = new TopBar(stage, "Game").addToStage();
         bottomBar = new BottomBar(stage).addToStage();
 
-        table = new Table();
+        table = new VerticalGroup();
+        //table.debug();
         table.padTop(25f);
-        table.padBottom(10f);
+        table.padBottom(40f);
+
+        mainTable = new Table();
 
         scrollPane = new ScrollPane(table,skin);
         scrollPane.setDebug(true);
@@ -59,17 +69,45 @@ public class MatchScreen extends CustomGameScreen {
         menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
 
+        skip = new TextButton("Skip",FootballSim.skin);
+        skip.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                matchSim.skip();
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
         for(Fixture<Integer> fixture: FootballSim.rounds.get(FootballSim.round)){
-            if((fixture.getHomeTeam()==FootballSim.teamId)||(fixture.getAwayTeam()==teamId)) return;
-            MatchResult result = new MatchSim().runMatch(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()),false,table,this);
+            if((fixture.getHomeTeam()==FootballSim.teamId)||(fixture.getAwayTeam()==teamId)){
+                matchSim = new MatchSim(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()));
+            }
+            MatchResult result = new MatchSim(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam())).runMatchBackground();
             league.addStat(result);
         }
+        stage.addActor(skip);
+
+        matchSim.setupUI(this,table);
+
+        minutes = new Label("0",skin);
+        minutes.setAlignment(Align.right);
+
+        mainTable.add(minutes).width(getvWidth()).padRight(50f).spaceTop(140f);
+        mainTable.row();
+        stage.addActor(mainTable);
+
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
+        matchSim.render(delta);
+        scrollPane.layout();
+        //scrollPane.scrollTo(0,0,0,0);
         stage.act();
         stage.draw();
     }
@@ -79,14 +117,21 @@ public class MatchScreen extends CustomGameScreen {
     public void updateUI(float width, float height) {
         int pad_top = 95;
         int pad_bottom = 85;
-        scrollPane.setHeight(height-(pad_bottom+pad_top));
+        scrollPane.setHeight(height-(pad_bottom+pad_top)-200);
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
 
         topBar.update(width,height);
         bottomBar.update(width,height);
+        mainTable.setY(height-pad_top-200);
+        mainTable.setHeight(pad_top+200);
+        mainTable.setWidth(width);
+//        minutes.invalidate();
+//        minutes.layout();
+//        System.out.println(minutes.getWidth());
 
         menu.setPosition(width-menu.getWidth()-10, 0);
+        skip.setPosition(menu.getX()-skip.getWidth()-10,0);
     }
 
     @Override

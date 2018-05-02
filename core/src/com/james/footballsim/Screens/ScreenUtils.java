@@ -12,7 +12,6 @@ import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.james.footballsim.FootballSim;
 
 import static com.james.footballsim.FootballSim.skin;
-import static com.james.footballsim.FootballSim.team;
 
 public class ScreenUtils {
 

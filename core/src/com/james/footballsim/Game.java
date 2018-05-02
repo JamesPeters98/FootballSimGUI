@@ -84,10 +84,10 @@ public class Game {
             System.out.println("--------------");
             System.out.println("Updates");
 		    System.out.println("--------------");
-			for(Fixture<Integer> fixture: round){
-				league.getTeam(fixture.getHomeTeam()).update();
-				league.getTeam(fixture.getAwayTeam()).update();
-			}
+//			for(Fixture<Integer> fixture: round){
+//				league.getTeam(fixture.getHomeTeam()).update();
+//				league.getTeam(fixture.getAwayTeam()).update();
+//			}
 		    System.out.println("");
 		    Utils.promptEnterKey(reader);
 		    league.printTable();

@@ -84,6 +84,22 @@ public class Player {
         }
     }
 
+    public String getShortPosition(){
+        switch (type) {
+            case GOALKEEPER:
+                return "GK";
+            case DEFENDER:
+                return "D";
+
+            case MIDFIELDER:
+                return "M";
+            case FORWARD:
+                return "F";
+            default:
+                return "None";
+        }
+    }
+
     public String getMatchName(){
         return (firstName.substring(0,1)+". "+lastName);
     }
@@ -102,6 +118,14 @@ public class Player {
 
     public String getRatingAndGrowth(){
         return rating+" (+"+growth+")";
+    }
+
+    public boolean isInjured() {
+        return injured;
+    }
+
+    public int getInjuryLength() {
+        return injuryLength;
     }
 
     public boolean equals(Object o) {

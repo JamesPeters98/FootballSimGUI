@@ -37,8 +37,6 @@ public class WeeklyFixtures extends CustomGameScreen {
         super(aGame);
         this.aGame = aGame;
 
-        bottomBar = new BottomBar(stage).addToStage();
-
         showBackButton(true);
     }
 
@@ -46,7 +44,9 @@ public class WeeklyFixtures extends CustomGameScreen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
+        stage.clear();
         topBar = new TopBar(stage, "Week "+(FootballSim.round+1)).addToStage();
+        bottomBar = new BottomBar(stage).addToStage();
 
         table = new Table();
         table.padTop(25f);
@@ -74,14 +74,13 @@ public class WeeklyFixtures extends CustomGameScreen {
         scrollPane.setDebug(true);
         stage.addActor(scrollPane);
 
-        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
+        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MATCH_SCREEN,FootballSim.IN);
         stage.addActor(menu);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
         stage.act();
         stage.draw();
     }

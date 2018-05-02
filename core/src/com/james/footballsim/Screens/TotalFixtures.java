@@ -76,14 +76,13 @@ public class TotalFixtures extends CustomGameScreen {
         scrollPane.setDebug(true);
         stage.addActor(scrollPane);
 
-        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.WEEKLY_FIXTURES,FootballSim.IN);
+        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
         stage.act();
         stage.draw();
     }

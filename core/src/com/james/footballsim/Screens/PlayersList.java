@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -13,8 +14,10 @@ import com.james.footballsim.Player;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.james.footballsim.FootballSim.skin;
-import static com.james.footballsim.FootballSim.team;
 
 /**
  * Created by James on 04/04/2018.
@@ -44,53 +47,44 @@ public class PlayersList extends CustomGameScreen {
         super(aGame);
         this.aGame = aGame;
 
-        table = new Table();
+    }
 
-        table.padTop(25f);
-        for(Player player : team.players.getList()){
-            TextButton name = new TextButton(player.getFullName(), skin);
-            name.pad(0,15,0,15);
-            name.addListener(new ClickListener(){
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    System.out.println("Clicked! "+team.name);
-                };
-            });
-            TextButton rating = new TextButton(String.valueOf(player.getRating()), skin, "noClick");
-            rating.pad(0,15,0,15);
-            table.add(name).fillX();
-            table.add(rating);
-            table.row().spaceTop(20);
-        }
-        table.padBottom(10f);
-
-        scrollPane = new ScrollPane(table,skin);
-        stage.addActor(scrollPane);
+    @Override
+    public void show() {
+        stage = new Stage(viewport);
 
         topBar = new TopBar(stage, "Players").addToStage();
         bottomBar = new BottomBar(stage).addToStage();
 
         showBackButton(true);
 
-        dialogCreator = new ScreenUtils.DialogCreator("You chose "+team.name+". Take a look at your team!", "Okay",vWidth);
-        dialogCreator.getDialog().show(stage);
+        table = new Table();
 
-        menu = new TextButton("Menu", FootballSim.skin);
-    }
+        table.padTop(25f);
+        table.padBottom(10f);
 
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
+
+        addToTable("First Team", FootballSim.getTeam().getBestSquad());
+        addToTable("Reserves", FootballSim.getTeam().getReserves());
+        if(FootballSim.getTeam().injured.getList().size() > 0) addToTable("Injured", FootballSim.getTeam().injured.getList());
+
+        scrollPane = new ScrollPane(table,skin);
+        stage.addActor(scrollPane);
+
         menu = ScreenUtils.addScreenSwitchTextButton("Menu", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
-        updateUI(vWidth,vHeight);
-        System.out.println("Shown");
+
+        dialogCreator = new ScreenUtils.DialogCreator("You chose "+FootballSim.getTeam().name+". Take a look at your team!", "Okay",vWidth);
+        dialogCreator.getDialog().show(stage);
+
+        //updateUI(vWidth,vHeight);
+        Gdx.input.setInputProcessor(stage);
+        //System.out.println("Shown");
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
         stage.act();
         stage.draw();
     }
@@ -112,6 +106,37 @@ public class PlayersList extends CustomGameScreen {
 
         dialogCreator.updateDialogUI(width, height);
 
+    }
+
+    public void addToTable(String title, List<Player> players){
+
+        TextButton titleButton = new TextButton(title, skin);
+        titleButton.pad(0,15,0,15);
+        table.add(titleButton).colspan(3).fillX();
+        table.row().spaceTop(20);
+
+        for(Player player : players){
+            String playerName = "";
+            if(player.isInjured()) playerName = player.getMatchName()+" ["+player.getInjuryLength()+"]";
+            else playerName = player.getMatchName();
+
+            TextButton position = new TextButton(String.valueOf(player.getShortPosition()), skin, "noClick");
+            position.pad(0,15,0,15);
+            TextButton name = new TextButton(playerName, skin);
+            name.pad(0,15,0,15);
+            name.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    System.out.println("Clicked! "+FootballSim.getTeam().name);
+                };
+            });
+            TextButton rating = new TextButton(String.valueOf(player.getRating()), skin, "noClick");
+            rating.pad(0,15,0,15);
+            table.add(position).fillX();
+            table.add(name).fillX();
+            table.add(rating);
+            table.row().spaceTop(20);
+        }
     }
 
     @Override

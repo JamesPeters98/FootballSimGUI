@@ -34,8 +34,7 @@ public class FootballSim extends FadingGame {
 
 	public static List<Team> teams;
 
-	public static int teamId;
-	public static Team team;
+	public static int teamId = -1;
 	public static int round;
 
 	public static boolean seasonRunning = false;
@@ -103,9 +102,6 @@ public class FootballSim extends FadingGame {
 		teams = new ArrayList<>(league.getTeams().values());
 		Collections.sort(teams,League.sortTeams);
 
-		//Default team
-		team = new Team();
-
 		SCREENS = new Screens(this);
 
 		this.setScreen(null, SCREENS.TITLE_SCREEN,IN,0);
@@ -123,9 +119,13 @@ public class FootballSim extends FadingGame {
 
 	public void setTeam(int id){
 		teamId = id;
-		team = league.getTeam(teamId);
-		team.chosenTeam = true;
+		league.getTeam(teamId).chosenTeam = true;
 		SCREENS.PLAYER_SELECTION = new PlayersList(this);
+	}
+
+	public static Team getTeam(){
+		if(teamId == -1) return new Team();
+		return league.getTeam(teamId);
 	}
 
 	public void startSeason(){

@@ -60,7 +60,7 @@ public class MainMenu extends CustomGameScreen {
                     aGame.startSeason();
                     aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES, FootballSim.IN, 1f);
                 } else {
-                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.MATCH_SCREEN, FootballSim.IN, 1f);
+                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.WEEKLY_FIXTURES, FootballSim.IN, 1f);
                 }
             }
             @Override
@@ -69,7 +69,7 @@ public class MainMenu extends CustomGameScreen {
             }
         });
 
-        TextButton teamName = new TextButton(FootballSim.team.name, FootballSim.skin);
+        TextButton teamName = new TextButton(FootballSim.getTeam().name, FootballSim.skin);
 
         buttons.add(teamName).expandX().colspan(2).padTop(130f).minWidth(nextGame.getWidth()+playersList.getWidth()+50f);
         buttons.row().align(Align.top).expandY();
@@ -84,8 +84,7 @@ public class MainMenu extends CustomGameScreen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
         stage.act();
         stage.draw();
     }
