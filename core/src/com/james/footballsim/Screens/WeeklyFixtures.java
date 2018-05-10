@@ -1,14 +1,13 @@
 package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
-import com.james.footballsim.Team;
+import com.james.footballsim.Simulator.Team;
 import uk.co.codeecho.fixture.generator.Fixture;
 
 import java.util.List;

@@ -1,8 +1,11 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
 
+import com.badlogic.gdx.Gdx;
+
+import java.io.Serializable;
 import java.util.*;
 
-public class Team {
+public class Team implements Serializable {
 	
 	public int id;
 	public String name;
@@ -22,12 +25,12 @@ public class Team {
 	public Players players;
 	public Players injured;
 
-	public List<Player> goalkeepers;
-	public List<Player> defenders;
-	public List<Player> midfielders;
-	public List<Player> forwards;
+	private List<Player> goalkeepers;
+	private List<Player> defenders;
+	private List<Player> midfielders;
+	private List<Player> forwards;
 
-	public List<TeamUpdate> updates;
+	List<TeamUpdate> updates;
 
 	int rating;
 	float attackRating;
@@ -49,6 +52,7 @@ public class Team {
 	boolean chosenTeam = false;
 	
 	public Team(int id, String name, double pens, double freekicks){
+		Gdx.app.log(name," Initliasing team");
 		rand = new Random();
 		this.id = id;
 		this.name = name;
@@ -63,10 +67,16 @@ public class Team {
 	}
 
 	public Team(){
+
+	}
+
+	public Team notInitliased(){
+		Gdx.app.log(name,"not initalised team");
 		this.id = -1;
 		this.name = "Non Initialised Screen";
 		players = new Players();
 		injured = new Players();
+		return this;
 	}
 
 	public void update(){
@@ -152,7 +162,6 @@ public class Team {
 		}
 		players.add(player);
 		updates.add(new TeamUpdate().youthPromotion(player));
-		Utils.promptEnterKey2(Game.reader);
 	}
 
 	private void playerGrowth() {
@@ -181,6 +190,7 @@ public class Team {
 				player.injured = false;
 				players.add(player);
 				updates.add(new TeamUpdate().backFromInjury(player));
+				if(chosenTeam) System.out.println("Back from injury "+player.getMatchName());
 			}
 		}
 		for(Player player : new ArrayList<>(players.getList())) {
@@ -192,6 +202,7 @@ public class Team {
 				player.injuryLength = (int) Math.round(length);
 				injured.add(player);
 				updates.add(new TeamUpdate().injury(player));
+				if(chosenTeam) System.out.println("injury "+player.getMatchName());
 			}
 		}
 	}
@@ -206,6 +217,10 @@ public class Team {
 
 	public int getRating(){
 		return Math.round(bestRating);
+	}
+
+	public List<TeamUpdate> getUpdates() {
+		return updates;
 	}
 
 	private void bestFormation(){

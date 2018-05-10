@@ -122,6 +122,7 @@ project(":core") {
         // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
         compile group: 'org.apache.commons', name: 'commons-csv', version: '1.1'
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile group: 'com.esotericsoftware', name: 'kryo', version: '4.0.2'
     }
 }
 

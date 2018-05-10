@@ -1,4 +1,4 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

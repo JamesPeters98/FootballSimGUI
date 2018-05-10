@@ -1,4 +1,6 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
+
+import com.james.footballsim.Utils;
 
 import java.util.ArrayList;
 

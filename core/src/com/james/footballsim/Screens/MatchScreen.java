@@ -1,20 +1,17 @@
 package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
-import com.james.footballsim.MatchResult;
-import com.james.footballsim.MatchSim;
+import com.james.footballsim.Simulator.MatchResult;
+import com.james.footballsim.Simulator.MatchSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import uk.co.codeecho.fixture.generator.Fixture;
-
-import java.util.ArrayList;
 
 import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
@@ -35,7 +32,7 @@ public class MatchScreen extends CustomGameScreen {
     private VerticalGroup table;
     private Table mainTable;
 
-    private TextButton menu;
+    public TextButton menu;
     private TextButton skip;
 
     private ScrollPane scrollPane;
@@ -66,7 +63,8 @@ public class MatchScreen extends CustomGameScreen {
         scrollPane.setDebug(true);
         stage.addActor(scrollPane);
 
-        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
+        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.UPDATES_SCREEN,FootballSim.IN);
+        menu.setDisabled(true);
         stage.addActor(menu);
 
         skip = new TextButton("Skip",FootballSim.skin);
@@ -126,6 +124,7 @@ public class MatchScreen extends CustomGameScreen {
         mainTable.setY(height-pad_top-200);
         mainTable.setHeight(pad_top+200);
         mainTable.setWidth(width);
+        table.setWidth((float) (0.8*vWidth));
 //        minutes.invalidate();
 //        minutes.layout();
 //        System.out.println(minutes.getWidth());

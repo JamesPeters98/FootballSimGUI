@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.james.footballsim.Simulator.LeagueStats;
+import com.james.footballsim.Simulator.RecordDetails;
 import uk.co.codeecho.fixture.generator.Fixture;
 
 public class Utils {

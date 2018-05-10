@@ -1,17 +1,11 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.Timer;
-import com.james.footballsim.Screens.CustomGameScreen;
+import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.MatchScreen;
-import uk.co.codeecho.fixture.generator.Fixture;
-
-import java.util.List;
 
 import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
@@ -67,12 +61,13 @@ public class MatchSim {
             		postMatchUpdates();
             		FootballSim.round++;
             		finished = true;
-            		System.out.println("Updates:");
-            		for(TeamUpdate update : FootballSim.getTeam().updates){
-            			System.out.println(update.getUpdate());
-					}
+//            		System.out.println("Updates:");
+//            		for(TeamUpdate update : FootballSim.getTeam().updates){
+//            			System.out.println(update.getUpdate());
+//					}
+					screen.menu.setDisabled(false);
+					return true;
 				}
-            	return true;
 			}
 		}
 		return false;
@@ -121,18 +116,19 @@ public class MatchSim {
 			}
 
 			//TextButton button = new TextButton(i+"'",skin,"noClick_small");
-			TextButton button = null;
+			TextButton homeButton = null;
+			TextButton awayButton = null;
 
 
-		if(resultHome.openPlayGoal()) button = new TextButton(i+"' GOAL! "+homeScorer.getMatchName()+" | "+home.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
-		if(resultHome.penaltyScored()) button = new TextButton(i+"' GOAL! Penalty! "+home.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
-		if(resultHome.freekickScored()) button = new TextButton(i+"' GOAL! Freekick! "+home.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
-		if(resultHome.resultType == ResultType.MISS_PENALTY) button = new TextButton(i+"' MISSED PENALTY! "+home.name, skin,  "noClick_small");
+		if(resultHome.openPlayGoal()) homeButton = new TextButton(i+"' GOAL! "+homeScorer.getMatchName()+" | "+home.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
+		if(resultHome.penaltyScored()) homeButton = new TextButton(i+"' GOAL! Penalty! "+home.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
+		if(resultHome.freekickScored()) homeButton = new TextButton(i+"' GOAL! Freekick! "+home.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
+		if(resultHome.resultType == ResultType.MISS_PENALTY) homeButton = new TextButton(i+"' MISSED PENALTY! "+home.name, skin,  "noClick_small");
 
-		if(resultAway.openPlayGoal()) button = new TextButton(i+"' GOAL! "+awayScorer.getMatchName()+" | "+away.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
-		if(resultAway.penaltyScored()) button = new TextButton(i+"' GOAL! Penalty! "+away.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
-		if(resultAway.freekickScored()) button = new TextButton(i+"' GOAL! Freekick! "+away.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
-		if(resultAway.resultType == ResultType.MISS_PENALTY) button = new TextButton(i+"' MISSED PENALTY! "+away.name, skin,  "noClick_small");
+		if(resultAway.openPlayGoal()) awayButton = new TextButton(i+"' GOAL! "+awayScorer.getMatchName()+" | "+away.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
+		if(resultAway.penaltyScored()) awayButton = new TextButton(i+"' GOAL! Penalty! "+away.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
+		if(resultAway.freekickScored()) awayButton = new TextButton(i+"' GOAL! Freekick! "+away.name+" "+goals[0]+"-"+goals[1], skin,  "noClick_small");
+		if(resultAway.resultType == ResultType.MISS_PENALTY) awayButton = new TextButton(i+"' MISSED PENALTY! "+away.name, skin,  "noClick_small");
 
 			if(resultHome.openPlayGoal()) System.out.println(i+"' GOAL! "+homeScorer.getMatchName()+" | "+home.name+" "+goals[0]+"-"+goals[1]);
 			if(resultHome.penaltyScored()) System.out.println(i+"' GOAL! Penalty! "+home.name+" "+goals[0]+"-"+goals[1]);
@@ -147,15 +143,38 @@ public class MatchSim {
 
 		screen.minutes.setText(""+minute);
 
-		if(minute==1)	table.addActorAt(0, new TextButton("KICK OFF!",skin,"noClick_small"));
+		if(minute==1){
+			TextButton kickOff = new TextButton("KICK OFF!",skin,"noClick_small");
+			Container container = new Container(kickOff).fillX().width(screen.getvWidth()*0.8f);
+			table.addActorAt(0, container);
+		}
 
-		if (button != null) {
-			table.addActorAt(0,button);
+		if (homeButton != null) {
+			homeButton.getLabel().setAlignment(Align.left);
+			homeButton.getLabelCell().padLeft(10f);
+			Container container = new Container(homeButton).fillX().width(screen.getvWidth()*0.8f);
+			table.addActorAt(0, container);
+		}
+
+		if (awayButton != null) {
+			awayButton.getLabel().setAlignment(Align.left);
+			awayButton.getLabelCell().padLeft(10f);
+			Container container = new Container(awayButton).fillX().width(screen.getvWidth()*0.8f);
+			table.addActorAt(0, container);
 		}
 
 		if(resultHome.goalScored()||resultAway.goalScored()) totalDelta = -delay;
-		if(minute==45) {table.addActorAt(0, new TextButton("HALF TIME! "+home.name+" "+goals[0]+"-"+goals[1]+" "+away.name,skin,"noClick_small")); totalDelta = -delay;}
-		if(minute==90) table.addActorAt(0, new TextButton("GAME OVER! "+home.name+" "+goals[0]+"-"+goals[1]+" "+away.name,skin,"noClick_small"));
+		if(minute==45) {
+			TextButton button = new TextButton("HALF TIME!",skin,"noClick_small");
+			Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+			table.addActorAt(0, container);
+			totalDelta = -delay;
+		}
+		if(minute==90){
+			TextButton button = new TextButton("GAME OVER!",skin,"noClick_small");
+			Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+			table.addActorAt(0, container);
+		}
 
 		if(i == 90) System.out.println(home.name+" "+goals[0]+"-"+goals[1]+" "+away.name);
 

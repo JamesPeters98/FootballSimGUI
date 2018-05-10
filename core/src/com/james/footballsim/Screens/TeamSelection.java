@@ -1,18 +1,12 @@
 package com.james.footballsim.Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
-import com.james.footballsim.Team;
+import com.james.footballsim.Simulator.Team;
 import com.james.footballsim.FootballSim;
 
 import static com.james.footballsim.FootballSim.skin;

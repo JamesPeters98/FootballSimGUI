@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.james.footballsim.Utils;
-import com.james.footballsim.Team;
+import com.james.footballsim.Simulator.Team;
 
 public class FixtureGenerator {
 
@@ -83,4 +83,5 @@ public class FixtureGenerator {
 
         return rounds;
     }
+
 }

@@ -6,28 +6,28 @@ filter: Linear,Linear
 repeat: none
 back_button
   rotate: false
-  xy: 78, 177
+  xy: 78, 180
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 back_button_hover
   rotate: false
-  xy: 1, 177
+  xy: 1, 180
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 back_button_pressed
   rotate: false
-  xy: 1, 100
+  xy: 1, 103
   size: 75, 75
   orig: 75, 75
   offset: 0, 0
   index: -1
 bottom_bar
   rotate: false
-  xy: 78, 1
+  xy: 78, 4
   size: 50, 122
   split: 0, 0, 25, 0
   pad: 4, 4, 27, 0
@@ -36,7 +36,7 @@ bottom_bar
   index: -1
 button
   rotate: false
-  xy: 1, 48
+  xy: 1, 51
   size: 50, 50
   split: 20, 20, 20, 20
   pad: 10, 10, 10, 10
@@ -45,7 +45,7 @@ button
   index: -1
 button_hover
   rotate: false
-  xy: 155, 202
+  xy: 155, 205
   size: 50, 50
   split: 20, 20, 20, 20
   pad: 10, 10, 10, 10
@@ -54,44 +54,51 @@ button_hover
   index: -1
 button_pressed
   rotate: false
-  xy: 78, 125
+  xy: 78, 128
   size: 50, 50
   split: 20, 20, 20, 20
   pad: 10, 10, 10, 10
   orig: 50, 50
   offset: 0, 0
   index: -1
+football
+  rotate: false
+  xy: 207, 227
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
 scrollbar-horizontal
   rotate: false
-  xy: 53, 86
+  xy: 130, 42
   size: 5, 12
   orig: 5, 12
   offset: 0, 0
   index: -1
 scrollbar-horizontal-knob
   rotate: false
-  xy: 130, 39
+  xy: 155, 191
   size: 1, 12
   orig: 1, 12
   offset: 0, 0
   index: -1
 scrollbar-vertical
   rotate: false
-  xy: 1, 41
+  xy: 53, 96
   size: 12, 5
   orig: 12, 5
   offset: 0, 0
   index: -1
 scrollbar-vertical-knob
   rotate: false
-  xy: 207, 251
+  xy: 1, 1
   size: 12, 1
   orig: 12, 1
   offset: 0, 0
   index: -1
 top_bar
   rotate: false
-  xy: 130, 53
+  xy: 130, 56
   size: 50, 122
   split: 0, 0, 0, 25
   pad: 4, 4, 4, 30

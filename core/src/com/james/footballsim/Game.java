@@ -2,6 +2,9 @@ package com.james.footballsim;
 
 import java.util.*;
 
+import com.james.footballsim.Simulator.League;
+import com.james.footballsim.Simulator.Records;
+import com.james.footballsim.Simulator.Team;
 import uk.co.codeecho.fixture.generator.Fixture;
 import uk.co.codeecho.fixture.generator.FixtureGenerator;
 

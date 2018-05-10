@@ -1,11 +1,12 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * Created by James on 07/02/2018.
  */
-public class Player {
+public class Player implements Serializable {
 
     static int totalPlayers = 0;
 
@@ -31,6 +32,10 @@ public class Player {
     int injuryLength;
 
     int id;
+
+    public Player(){
+
+    }
 
     public Player(int type, float averageTeamRating) {
         this.type = type;
@@ -140,4 +145,17 @@ public class Player {
         return id;
     }
 
+//    @Override
+//    public void write(Kryo kryo, Output output) {
+//        output.writeInt(totalPlayers);
+//        output.writeString(firstName);
+//        output.writeString(lastName);
+//    }
+//
+//    @Override
+//    public void read(Kryo kryo, Input input) {
+//        totalPlayers = input.readInt();
+//        firstName = input.readString();
+//        lastName = input.readString();
+//    }
 }

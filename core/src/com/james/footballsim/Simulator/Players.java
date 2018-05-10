@@ -1,11 +1,12 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by James on 08/02/2018.
  */
-public class Players {
+public class Players implements Serializable {
 
     HashMap<Integer,Player> players;
 

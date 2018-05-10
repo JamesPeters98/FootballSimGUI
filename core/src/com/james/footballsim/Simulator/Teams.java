@@ -1,4 +1,4 @@
-package com.james.footballsim;
+package com.james.footballsim.Simulator;
 
 public class Teams {
 	
