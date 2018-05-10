@@ -43,17 +43,18 @@ public class TotalFixtures extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         Gdx.input.setInputProcessor(stage);
 
         table = new Table();
         table.padTop(25f);
-        for(int i=0; i<FootballSim.rounds.size(); i++){
-            List<Fixture<Integer>> round = FootballSim.rounds.get(i);
+        for(int i=0; i<FootballSim.info.rounds.size(); i++){
+            List<Fixture<Integer>> round = FootballSim.info.rounds.get(i);
             for(Fixture<Integer> fixture: round){
-                if((fixture.getHomeTeam() == FootballSim.teamId)||(fixture.getAwayTeam()==FootballSim.teamId)){
-                    System.out.println("Week "+(i+1)+" "+FootballSim.league.getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.league.getTeam(fixture.getAwayTeam()).name);
-                    Team homeTeam = FootballSim.league.getTeam(fixture.getHomeTeam());
-                    Team awayTeam = FootballSim.league.getTeam(fixture.getAwayTeam());
+                if((fixture.getHomeTeam() == FootballSim.info.teamId)||(fixture.getAwayTeam()==FootballSim.info.teamId)){
+                    System.out.println("Week "+(i+1)+" "+FootballSim.info.league.getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.league.getTeam(fixture.getAwayTeam()).name);
+                    Team homeTeam = FootballSim.info.league.getTeam(fixture.getHomeTeam());
+                    Team awayTeam = FootballSim.info.league.getTeam(fixture.getAwayTeam());
 
                     TextButton home = new TextButton(homeTeam.name, skin, "noClick_small");
                     home.pad(0,15,0,15);

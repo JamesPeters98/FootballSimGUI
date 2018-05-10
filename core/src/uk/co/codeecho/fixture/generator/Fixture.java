@@ -1,9 +1,15 @@
 package uk.co.codeecho.fixture.generator;
 
-public class Fixture<T extends Object> {
+import java.io.Serializable;
+
+public class Fixture<T extends Object> implements Serializable {
 
     T homeTeam;
     T awayTeam;
+
+    public Fixture(){
+
+    }
 
     public Fixture(T homeTeam, T awayTeam) {
         this.homeTeam = homeTeam;

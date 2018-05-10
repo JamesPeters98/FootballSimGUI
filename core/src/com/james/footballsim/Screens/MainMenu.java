@@ -40,6 +40,7 @@ public class MainMenu extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         stage = new Stage(viewport);
 
         topBar = new TopBar(stage, "Football Sim").addToStage();
@@ -50,13 +51,13 @@ public class MainMenu extends CustomGameScreen {
 
         playersList = ScreenUtils.addScreenSwitchTextButton("Players",aGame,this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN);
         String nextString = "";
-        if(!FootballSim.seasonRunning) nextString = "Start Season";
+        if(!FootballSim.info.seasonRunning) nextString = "Start Season";
         else nextString = "Next Game";
         nextGame = new TextButton(nextString,FootballSim.skin);
         nextGame.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                if(!FootballSim.seasonRunning) {
+                if(!FootballSim.info.seasonRunning) {
                     aGame.startSeason();
                     aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES, FootballSim.IN, 1f);
                 } else {

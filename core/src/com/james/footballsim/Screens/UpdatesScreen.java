@@ -43,6 +43,7 @@ public class UpdatesScreen extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         stage = new Stage(viewport);
 
         topBar = new TopBar(stage, "Updates").addToStage();
@@ -58,7 +59,7 @@ public class UpdatesScreen extends CustomGameScreen {
         scrollPane = new ScrollPane(table,skin);
         stage.addActor(scrollPane);
 
-        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
+        menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.LEAGUE_TABLE,FootballSim.IN);
         stage.addActor(menu);
 
         //updateUI(vWidth,vHeight);

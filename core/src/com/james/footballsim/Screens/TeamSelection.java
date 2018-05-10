@@ -30,7 +30,7 @@ public class TeamSelection extends CustomGameScreen {
         table = new Table();
 
         table.padTop(25f);
-        for(Team team : FootballSim.teams){
+        for(Team team : FootballSim.info.teams){
             TextButton name = new TextButton(team.name, skin);
             name.pad(0,15,0,15);
             name.addListener(new ClickListener(){
@@ -62,6 +62,7 @@ public class TeamSelection extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         Gdx.input.setInputProcessor(stage);
     }
 

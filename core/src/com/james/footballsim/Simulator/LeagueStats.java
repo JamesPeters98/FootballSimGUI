@@ -1,14 +1,16 @@
 package com.james.footballsim.Simulator;
 
-public class LeagueStats {
-	
-	int points;
-	int goals;
-	int goalsConceeded;
-	int wins;
-	int draws;
-	int losses;
-	Team team;
+import java.io.Serializable;
+
+public class LeagueStats implements Serializable {
+
+	public int points;
+	public int goals;
+	public int goalsConceeded;
+	public int wins;
+	public int draws;
+	public int losses;
+	public Team team;
 	
 	public void reset(){
 		points = 0;

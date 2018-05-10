@@ -12,6 +12,7 @@ public class Screens {
     public CustomGameScreen WEEKLY_FIXTURES;
     public CustomGameScreen MATCH_SCREEN;
     public CustomGameScreen UPDATES_SCREEN;
+    public CustomGameScreen LEAGUE_TABLE;
 
     public Screens(FootballSim footballSim){
         TITLE_SCREEN = new TitleScreen(footballSim);
@@ -22,5 +23,6 @@ public class Screens {
         WEEKLY_FIXTURES = new WeeklyFixtures(footballSim);
         MATCH_SCREEN = new MatchScreen(footballSim);
         UPDATES_SCREEN = new UpdatesScreen(footballSim);
+        LEAGUE_TABLE = new LeagueTable(footballSim);
     }
 }

@@ -12,7 +12,6 @@ import uk.co.codeecho.fixture.generator.Fixture;
 
 import java.util.List;
 
-import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
 
 /**
@@ -41,20 +40,21 @@ public class WeeklyFixtures extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         Gdx.input.setInputProcessor(stage);
 
         stage.clear();
-        topBar = new TopBar(stage, "Week "+(FootballSim.round+1)).addToStage();
+        topBar = new TopBar(stage, "Week "+(FootballSim.info.round+1)).addToStage();
         bottomBar = new BottomBar(stage).addToStage();
 
         table = new Table();
         table.padTop(25f);
 
-        List<Fixture<Integer>> round = FootballSim.rounds.get(FootballSim.round);
+        List<Fixture<Integer>> round = FootballSim.info.rounds.get(FootballSim.info.round);
         for(Fixture<Integer> fixture: round){
-            System.out.println(league.getTeam(fixture.getHomeTeam()).name + " vs " + league.getTeam(fixture.getAwayTeam()).name);
-            Team homeTeam = league.getTeam(fixture.getHomeTeam());
-            Team awayTeam = league.getTeam(fixture.getAwayTeam());
+            System.out.println(FootballSim.info.league.getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.league.getTeam(fixture.getAwayTeam()).name);
+            Team homeTeam = FootballSim.info.league.getTeam(fixture.getHomeTeam());
+            Team awayTeam = FootballSim.info.league.getTeam(fixture.getAwayTeam());
 
             TextButton home = new TextButton(homeTeam.name, skin, "noClick_small");
             home.pad(0,15,0,15);

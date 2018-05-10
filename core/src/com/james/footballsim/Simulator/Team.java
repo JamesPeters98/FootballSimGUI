@@ -9,18 +9,18 @@ public class Team implements Serializable {
 	
 	public int id;
 	public String name;
-	double attack;
-	double defence;
-	
-	double penalites;
-	double freekicks;
-	
-	int winStreak = 0;
-	int loseStreak = 0;
-	int trophiesWon = 0;
-	double averagePosition = 0;
-	double totalPositions = 0;
-	double leaguesPlayed = 0;
+	public double attack;
+	public double defence;
+
+	public double penalites;
+	public double freekicks;
+
+	public int winStreak = 0;
+	public int loseStreak = 0;
+	public int trophiesWon = 0;
+	public double averagePosition = 0;
+	public double totalPositions = 0;
+	public double leaguesPlayed = 0;
 
 	public Players players;
 	public Players injured;
@@ -32,9 +32,9 @@ public class Team implements Serializable {
 
 	List<TeamUpdate> updates;
 
-	int rating;
-	float attackRating;
-	float defenceRating;
+	public int rating;
+	public float attackRating;
+	public float defenceRating;
 
 	final int FOURTHREETHREE = 433;
 	final int FOURFOURTWO = 442;
@@ -49,7 +49,7 @@ public class Team implements Serializable {
 
 	Random rand;
 
-	boolean chosenTeam = false;
+	public boolean chosenTeam = false;
 	
 	public Team(int id, String name, double pens, double freekicks){
 		Gdx.app.log(name," Initliasing team");
@@ -109,6 +109,12 @@ public class Team implements Serializable {
 
 		float defAverageRating = (float) (84f+rand.nextGaussian()*4);
 		float attackAverageRating = (float) (84f+rand.nextGaussian()*4);
+
+		if(id == 1){
+			defAverageRating = 90;
+			attackAverageRating = 92;
+		}
+
 		players = new Players();
 		injured = new Players();
 		//Keepers

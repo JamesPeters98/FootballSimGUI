@@ -16,7 +16,7 @@ import static com.james.footballsim.FootballSim.skin;
 public class ScreenUtils {
 
     public static Button backButton(FootballSim aGame, CustomGameScreen currentGameScreen, CustomGameScreen previousGameScreen){
-        if(previousGameScreen == null) System.out.println("Prev screen null");
+        //if(previousGameScreen == null) System.out.println("Prev screen null");
         Button backButton = new Button(skin,"back_button");
         backButton.setPosition(5,5);
         backButton.addListener(new ClickListener() {

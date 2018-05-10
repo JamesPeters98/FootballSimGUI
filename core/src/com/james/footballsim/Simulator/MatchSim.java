@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.MatchScreen;
 
-import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
 
 public class MatchSim {
@@ -25,6 +24,7 @@ public class MatchSim {
 
 	private Result resultHome;
 	private Result resultAway;
+	private MatchResult matchResult;
 
 	private int minute = 0;
 	private float totalDelta = 0;
@@ -59,12 +59,9 @@ public class MatchSim {
             } else {
             	if(!finished){
             		postMatchUpdates();
-            		FootballSim.round++;
+            		FootballSim.info.league.addStat(matchResult);
+            		FootballSim.info.round++;
             		finished = true;
-//            		System.out.println("Updates:");
-//            		for(TeamUpdate update : FootballSim.getTeam().updates){
-//            			System.out.println(update.getUpdate());
-//					}
 					screen.menu.setDisabled(false);
 					return true;
 				}
@@ -78,8 +75,7 @@ public class MatchSim {
 				loop();
 			}
 			postMatchUpdates();
-		return new MatchResult(home, away, goals[0], goals[1]);
-
+		return matchResult;
 	}
 
 	private void loop(){
@@ -89,8 +85,9 @@ public class MatchSim {
 	}
 
 	private void postMatchUpdates(){
-		league.getTeam(home.id).update();
-		league.getTeam(away.id).update();
+		FootballSim.info.league.getTeam(home.id).update();
+		FootballSim.info.league.getTeam(away.id).update();
+		matchResult = new MatchResult(home, away, goals[0], goals[1]);
 	}
 
 	private void update(){

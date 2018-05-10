@@ -6,10 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.james.footballsim.FootballSim;
-import com.james.footballsim.Simulator.Player;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
+import com.james.footballsim.Simulator.LeagueStats;
+import com.james.footballsim.Simulator.Player;
+import com.james.footballsim.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.james.footballsim.FootballSim.skin;
@@ -17,7 +20,7 @@ import static com.james.footballsim.FootballSim.skin;
 /**
  * Created by James on 04/04/2018.
  */
-public class PlayersList extends CustomGameScreen {
+public class LeagueTable extends CustomGameScreen {
 
     //TopBar
     TopBar topBar;
@@ -26,19 +29,13 @@ public class PlayersList extends CustomGameScreen {
     //Buttons
     TextButton menu;
 
-    //Labels
-    private Label label;
-
     //Table
     private Table table;
-    private Cell<Label> labelCell;
-
     private ScrollPane scrollPane;
-    private ScreenUtils.DialogCreator dialogCreator;
 
     FootballSim aGame;
 
-    public PlayersList(FootballSim aGame) {
+    public LeagueTable(FootballSim aGame) {
         super(aGame);
         this.aGame = aGame;
 
@@ -49,33 +46,21 @@ public class PlayersList extends CustomGameScreen {
         super.show();
         stage = new Stage(viewport);
 
-        topBar = new TopBar(stage, "Players").addToStage();
+        topBar = new TopBar(stage, "Table").addToStage();
         bottomBar = new BottomBar(stage).addToStage();
-
         showBackButton(true);
 
         table = new Table();
-
         table.padTop(25f);
         table.padBottom(10f);
-
-
-        addToTable("First Team", FootballSim.getTeam().getBestSquad());
-        addToTable("Reserves", FootballSim.getTeam().getReserves());
-        if(FootballSim.getTeam().injured.getList().size() > 0) addToTable("Injured", FootballSim.getTeam().injured.getList());
+        addToTable(FootballSim.getTeam().getBestSquad());
 
         scrollPane = new ScrollPane(table,skin);
         stage.addActor(scrollPane);
-
         menu = ScreenUtils.addScreenSwitchTextButton("Menu", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
 
-        dialogCreator = new ScreenUtils.DialogCreator("You chose "+FootballSim.getTeam().name+". Take a look at your team!", "Okay",vWidth);
-        dialogCreator.getDialog().show(stage);
-
-        //updateUI(vWidth,vHeight);
         Gdx.input.setInputProcessor(stage);
-        //System.out.println("Shown");
     }
 
     @Override
@@ -90,35 +75,30 @@ public class PlayersList extends CustomGameScreen {
     public void updateUI(float width, float height) {
         topBar.update(width,height);
         bottomBar.update(width,height);
-
         menu.setPosition(width-menu.getWidth()-10, 0);
-
 
         int pad_top = 95;
         int pad_bottom = 85;
         scrollPane.setHeight(height-(pad_bottom+pad_top));
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
+        }
 
-        dialogCreator.updateDialogUI(width, height);
-
-    }
-
-    public void addToTable(String title, List<Player> players){
-
-        TextButton titleButton = new TextButton(title, skin);
+    public void addToTable(List<Player> players){
+        TextButton titleButton = new TextButton("Team", skin);
         titleButton.pad(0,15,0,15);
         table.add(titleButton).colspan(3).fillX();
         table.row().spaceTop(20);
 
-        for(Player player : players){
-            String playerName = "";
-            if(player.isInjured()) playerName = player.getMatchName()+" ["+player.getInjuryLength()+"]";
-            else playerName = player.getMatchName();
+        ArrayList<LeagueStats> leagueStatsArray = new ArrayList<>(FootballSim.info.league.getLeagueStats().values());
+		Utils.sortArray(leagueStatsArray);
+		for(int i = 0; i <leagueStatsArray.size();i++) {
+			LeagueStats stats = leagueStatsArray.get(i);
+			System.out.format("%-3s%-25s%-10s%-15s%-18s%-8s%-8s%-8s%-8s\n", new String[]{""+(i+1),stats.team.name,""+stats.points,""+stats.goals,""+stats.goalsConceeded,""+stats.wins,""+stats.draws,""+stats.losses,""+stats.team.getRating()});
 
-            TextButton position = new TextButton(String.valueOf(player.getShortPosition()), skin, "noClick");
+			TextButton position = new TextButton(String.valueOf(i+1), skin, "noClick");
             position.pad(0,15,0,15);
-            TextButton name = new TextButton(playerName, skin);
+            TextButton name = new TextButton(stats.team.name, skin);
             name.pad(0,15,0,15);
             name.addListener(new ClickListener(){
                 @Override
@@ -126,13 +106,14 @@ public class PlayersList extends CustomGameScreen {
                     System.out.println("Clicked! "+FootballSim.getTeam().name);
                 };
             });
-            TextButton rating = new TextButton(String.valueOf(player.getRating()), skin, "noClick");
-            rating.pad(0,15,0,15);
+            TextButton points = new TextButton(String.valueOf(stats.points), skin, "noClick");
+            points.pad(0,15,0,15);
             table.add(position).fillX();
             table.add(name).fillX();
-            table.add(rating);
+            table.add(points).fillX();
             table.row().spaceTop(20);
-        }
+		}
+
     }
 
     @Override

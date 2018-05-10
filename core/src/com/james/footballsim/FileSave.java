@@ -7,6 +7,8 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileSave {
 
@@ -22,11 +24,13 @@ public class FileSave {
     }
 
     public boolean isEmptyDirectory(String fileName){
+        new File(filePath).mkdirs();
         File file = new File(filePath+fileName+".sav");
 
         try {
             boolean bool = file.createNewFile();
             if(bool) Gdx.app.log("FileSaver", "Created new file "+fileName);
+            else Gdx.app.log("FileSaver", "No new file "+fileName);
             return bool;
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,6 +78,11 @@ public class FileSave {
 
         input.close();
         return file;
+    }
+
+    public void saveInfo(){
+        saveClass(FootballSim.info,"data");
+        Gdx.app.log("FileSaver", "Saved info");
     }
 
     public void setCorruptFile(){

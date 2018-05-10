@@ -51,7 +51,7 @@ public class CustomGameScreen implements Screen {
 //            //System.out.println(realDPI);
 //        }
 
-        System.out.println(Gdx.graphics.getDensity());
+        //System.out.println(Gdx.graphics.getDensity());
         if(Gdx.graphics.getDensity() >= 1.25){
             zoom = 1f;
         } else {
@@ -71,7 +71,7 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void show() {
-
+        FootballSim.fileSave.saveInfo();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void pause() {
-
+        FootballSim.fileSave.saveInfo();
     }
 
     @Override
@@ -111,12 +111,12 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void hide() {
-
+        FootballSim.fileSave.saveInfo();
     }
 
     @Override
     public void dispose() {
-
+        FootballSim.fileSave.saveInfo();
     }
 
     public void showBackButton(boolean bool){
@@ -129,7 +129,7 @@ public class CustomGameScreen implements Screen {
     }
 
     public void setPrevScreen(CustomGameScreen screen){
-        System.out.println("Set prev screen");
+        //System.out.println("Set prev screen");
         prevScreen = screen;
         if(hasBackButton) {
             backButton.remove();

@@ -55,6 +55,7 @@ public class TitleScreen extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         Gdx.input.setInputProcessor(stage);
     }
 

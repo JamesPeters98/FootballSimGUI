@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.ixeption.libgdx.transitions.FadingGame;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.ixeption.libgdx.transitions.impl.SlidingTransition;
@@ -26,21 +29,11 @@ import java.util.List;
 public class FootballSim extends FadingGame {
 	public static Skin skin;
 
-	static FixtureGenerator fixtureGenerator;
-	public static League league;
-	public static List<List<Fixture<Integer>>> rounds;
-
-	public static List<Team> teams;
-
-	public static int teamId = -1;
-	public static int round;
-
-	public static boolean seasonRunning = false;
+	public static Info info;
+    private static FixtureGenerator fixtureGenerator;
 
 	public static Screens SCREENS;
-
 	public static FileSave fileSave;
-
 	public static ScreenTransition IN =  new SlidingTransition(SlidingTransition.Direction.LEFT,Interpolation.exp10Out,false);
 	public static ScreenTransition OUT =  new SlidingTransition(SlidingTransition.Direction.RIGHT,Interpolation.exp10Out,true);
 
@@ -49,6 +42,8 @@ public class FootballSim extends FadingGame {
 		super.create();
 
 		fileSave = new FileSave();
+        fileSave.kryo().register(Info.class, new CompatibleFieldSerializer(fileSave.kryo(),Info.class));
+        fileSave.kryo().setReferences(false);
 
 		skin = new Skin(Gdx.files.internal("skin/footballsim.json")) {
 			//Override json loader to process FreeType fonts from skin JSON
@@ -95,12 +90,8 @@ public class FootballSim extends FadingGame {
 				return json;
 			}
 		};
-
-
-
 		fixtureGenerator = new FixtureGenerator();
 
-		Gdx.app.log(getClass().getCanonicalName(),"File was read!");
 		readVars();
 
 		if(fileSave.isCorruptFile()){
@@ -108,27 +99,13 @@ public class FootballSim extends FadingGame {
 			initVars();
 		}
 
-//		league = new League().init();
-//
-//		try {
-//			FileOutputStream fileOut =
-//					new FileOutputStream(Gdx.files.getLocalStoragePath()+"/saves/tests.txt");
-//			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//			out.writeObject(league);
-//			out.close();
-//			fileOut.close();
-//			System.out.printf("Serialized data is saved");
-//		} catch (IOException i) {
-//			i.printStackTrace();
-//		}
+		//Info jsonInfo = JsonConverter.toJson(info, Info.class);
 
-
-		teams = new ArrayList<>(league.getTeams().values());
-		Collections.sort(teams,League.sortTeams);
+		Gdx.app.log("Sim", "Round: "+info.round);
 
 		SCREENS = new Screens(this);
-
-		this.setScreen(null, SCREENS.TITLE_SCREEN,IN,0);
+		if(info.teamId!=-1) this.setScreen(null,SCREENS.MAIN_MENU,IN,0);
+		else this.setScreen(null, SCREENS.TITLE_SCREEN,IN,0);
 	}
 
 	@Override
@@ -142,31 +119,34 @@ public class FootballSim extends FadingGame {
 	}
 
 	public void setTeam(int id){
-		teamId = fileSave.saveClass(id,"teamId");
-		league.getTeam(teamId).chosenTeam = true;
+		info.teamId = id;
+		info.league.getTeam(info.teamId).chosenTeam = true;
+		fileSave.saveInfo();
 		SCREENS.PLAYER_SELECTION = new PlayersList(this);
 	}
 
 	public static Team getTeam(){
-		if(teamId == -1) return new Team();
-		return league.getTeam(teamId);
+		if(info.teamId == -1) return new Team();
+		return info.league.getTeam(info.teamId);
 	}
 
 	public void startSeason(){
-		rounds = fixtureGenerator.getFixtures(league.getTeams(), true, teamId);
-		seasonRunning = true;
+		info.rounds = fixtureGenerator.getFixtures(info.league.getTeams(), true, info.teamId);
+		info.seasonRunning = true;
+		FootballSim.fileSave.saveInfo();
 	}
 
-	public void initVars(){
-		league = fileSave.saveClass(new League().init(),"League");
-		teamId = fileSave.saveClass(-1,"teamId");
-		//teams = fileSave.saveClass(new ArrayList<>(league.getTeams().values()));
+	private void initVars(){
+		info = new Info();
+		info.league = new League().init();
+		info.teams = new ArrayList<>(info.league.getTeams().values());
+		Collections.sort(info.teams,League.sortTeams);
+
+		fileSave.saveClass(info,"data");
 	}
 
-	public void readVars(){
-		//teams = fileSave.readClass(ArrayList.class);
-		league = fileSave.readClass(League.class, "League");
-		teamId = fileSave.readClass(Integer.class,"teamId");
+	private void readVars(){
+		info = fileSave.readClass(Info.class, "data");
 	}
 }
 

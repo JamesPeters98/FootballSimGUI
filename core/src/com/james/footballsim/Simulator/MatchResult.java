@@ -1,5 +1,7 @@
 package com.james.footballsim.Simulator;
 
+import com.badlogic.gdx.Gdx;
+
 public class MatchResult {
 	
 	private int homeGoals;
@@ -11,6 +13,7 @@ public class MatchResult {
 	private Team awayTeam;
 	
 	public MatchResult(Team home, Team away, int homeGoals, int awayGoals){
+		Gdx.app.log("MatchResult", home.name+" "+homeGoals+"-"+awayGoals+" "+away.name);
 		this.homeGoals = homeGoals;
 		this.awayGoals = awayGoals;
 		this.homeTeam = home;

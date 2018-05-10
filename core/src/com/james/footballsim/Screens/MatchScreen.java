@@ -13,9 +13,7 @@ import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import uk.co.codeecho.fixture.generator.Fixture;
 
-import static com.james.footballsim.FootballSim.league;
 import static com.james.footballsim.FootballSim.skin;
-import static com.james.footballsim.FootballSim.teamId;
 
 /**
  * Created by James on 04/04/2018.
@@ -47,6 +45,7 @@ public class MatchScreen extends CustomGameScreen {
 
     @Override
     public void show() {
+        super.show();
         stage = new Stage(viewport);
 
         topBar = new TopBar(stage, "Game").addToStage();
@@ -79,12 +78,14 @@ public class MatchScreen extends CustomGameScreen {
             }
         });
 
-        for(Fixture<Integer> fixture: FootballSim.rounds.get(FootballSim.round)){
-            if((fixture.getHomeTeam()==FootballSim.teamId)||(fixture.getAwayTeam()==teamId)){
-                matchSim = new MatchSim(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()));
+        for(Fixture<Integer> fixture: FootballSim.info.rounds.get(FootballSim.info.round)){
+            if((fixture.getHomeTeam()==FootballSim.info.teamId)||(fixture.getAwayTeam()==FootballSim.info.teamId)){
+                matchSim = new MatchSim(FootballSim.info.league.getTeam(fixture.getHomeTeam()),FootballSim.info.league.getTeam(fixture.getAwayTeam()));
+            }else {
+                MatchResult result = new MatchSim(FootballSim.info.league.getTeam(fixture.getHomeTeam()),FootballSim.info.league.getTeam(fixture.getAwayTeam())).runMatchBackground();
+                FootballSim.info.league.addStat(result);
             }
-            MatchResult result = new MatchSim(league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam())).runMatchBackground();
-            league.addStat(result);
+
         }
         stage.addActor(skip);
 
