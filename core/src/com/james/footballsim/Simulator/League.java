@@ -1,24 +1,34 @@
 package com.james.footballsim.Simulator;
 
+import com.james.footballsim.FootballSim;
 import com.james.footballsim.Utils;
+import uk.co.codeecho.fixture.generator.Fixture;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 public class League implements Serializable {
 	
 	private HashMap<Integer,Team> teams;
-	private HashMap<Team,LeagueStats> leagueStats;
+	private HashMap<Integer,LeagueStats> leagueStats;
+	public List<List<Fixture<Integer>>> rounds;
+	String leagueName;
+
+	//Round -> Team -> Result
+	private HashMap<Integer,List<MatchResult>> matchResults;
 	
 	public League(){
 
 	}
 
-	public League init(){
+	public League init(String leagueName){
+		this.leagueName = leagueName;
 		teams = new HashMap<>();
 		leagueStats = new HashMap<>();
+		matchResults = new HashMap<>();
 		addTeam(Teams.CHELSEA);
 		addTeam(Teams.LIVERPOOL);
 		addTeam(Teams.MAN_CITY);
@@ -44,15 +54,19 @@ public class League implements Serializable {
 	
 	private void addTeam(Team team){
 		teams.put(team.id,team);
-		leagueStats.put(team, new LeagueStats());
+		leagueStats.put(team.id, new LeagueStats());
 	}
 	
 	public HashMap<Integer,Team> getTeams(){
 		return teams;
 	}
 
-	public HashMap<Team, LeagueStats> getLeagueStats() {
+	public HashMap<Integer, LeagueStats> getLeagueStats() {
 		return leagueStats;
+	}
+
+	public HashMap<Integer, List<MatchResult>> getMatchResults() {
+		return matchResults;
 	}
 
 	public Team getTeam(int id){
@@ -60,7 +74,14 @@ public class League implements Serializable {
 	}
 	
 	public void addStat(MatchResult result){
-		LeagueStats statsHome = leagueStats.get(result.getHomeTeam());
+
+		List<MatchResult> weekResults = matchResults.get(FootballSim.info.round);
+		if(weekResults == null){
+			matchResults.put(FootballSim.info.round, weekResults = new ArrayList<>());
+		}
+		weekResults.add(result);
+
+		LeagueStats statsHome = leagueStats.get(result.getHomeTeam().id);
 		if(statsHome.team == null) statsHome.team = result.getHomeTeam();
 		statsHome.goals += result.getHomeGoals();
 		statsHome.goalsConceeded += result.getAwayGoals();
@@ -69,7 +90,7 @@ public class League implements Serializable {
 		if(result.getHomePoints() == 1) statsHome.draws++;
 		if(result.getHomePoints() == 0) statsHome.losses++;
 
-		LeagueStats statsAway = leagueStats.get(result.getAwayTeam());
+		LeagueStats statsAway = leagueStats.get(result.getAwayTeam().id);
 		if(statsAway.team == null) statsAway.team = result.getAwayTeam();
 		statsAway.goals += result.getAwayGoals();
 		statsAway.goalsConceeded += result.getHomeGoals();
@@ -77,6 +98,10 @@ public class League implements Serializable {
 		if(result.getAwayPoints() == 3) statsAway.wins++;
 		if(result.getAwayPoints() == 1) statsAway.draws++;
 		if(result.getAwayPoints() == 0) statsAway.losses++;
+	}
+
+	private void addTeamStats(int teamId){
+
 	}
 	
 //	public void printWinner(){
@@ -122,39 +147,39 @@ public class League implements Serializable {
 ////		System.out.println("");
 //	}
 //
-//	public void newSeason(){
-////		ArrayList<LeagueStats> leagueStatsArray = new ArrayList<LeagueStats>(leagueStats.values());
-////		Utils.sortArray(leagueStatsArray);
-////		Team winners = leagueStatsArray.get(0).team;
-////		winners.trophiesWon++;
-////		Utils.sortArrayByTrophies(leagueStatsArray);
-////		System.out.format("%-2s%-25s%-10s\n", new String[]{"","Team","Trophies"});
-////		System.out.println("----------------------------------------------------------------------------------");
-////		for(int i = 0; i <leagueStatsArray.size();i++) {
-////			LeagueStats stats = leagueStatsArray.get(i);
-////		    System.out.format("%-2s%-25s%-10s\n", new String[]{""+(i+1),stats.team.name,""+stats.team.trophiesWon});
-////		}
-////		System.out.println("");
-////
-////		printWinner();
-////
-////
-////		Utils.sortArray(leagueStatsArray);
-////		for(int i = 0; i < leagueStats.size();i++) {
-////			LeagueStats stats = leagueStatsArray.get(i);
-////			Team team = stats.team;
-////			team.totalPositions+=(i+1);
-////			team.leaguesPlayed++;
-////			team.averagePosition = (team.totalPositions/team.leaguesPlayed);
-////			Records.MOST_POINTS.checkRecord(stats.points, team);
-////			Records.MOST_GOALS_IN_SEASON.checkRecord(stats.goals, team);
-////			//System.out.println(Team.attackRatio(stats.goals/100.0));
-////			//team.attack = (Team.attackRatio(stats.goals/60.0));
-////			//team.defence = (team.defence+(Team.defenceRatio(1-(stats.goalsConceeded/100.0))))/2;
-////			//System.out.println(team.name+"| Attack Difference: "+(team.attack-oldAttack)+"| Defence Difference: "+(team.defence-oldDefence));
-////			stats.reset();
-////
-////		}
+	public void newSeason() {
+		ArrayList<LeagueStats> leagueStatsArray = new ArrayList<LeagueStats>(leagueStats.values());
+		Utils.sortArray(leagueStatsArray);
+		Team winners = leagueStatsArray.get(0).team;
+		winners.trophiesWon++;
+		Utils.sortArrayByTrophies(leagueStatsArray);
+		System.out.format("%-2s%-25s%-10s\n", new String[]{"", "Team", "Trophies"});
+		System.out.println("----------------------------------------------------------------------------------");
+		for (int i = 0; i < leagueStatsArray.size(); i++) {
+			LeagueStats stats = leagueStatsArray.get(i);
+			System.out.format("%-2s%-25s%-10s\n", new String[]{"" + (i + 1), stats.team.name, "" + stats.team.trophiesWon});
+		}
+		System.out.println("");
+
+
+		Utils.sortArray(leagueStatsArray);
+		for (int i = 0; i < leagueStats.size(); i++) {
+			LeagueStats stats = leagueStatsArray.get(i);
+			Team team = stats.team;
+			team.totalPositions += (i + 1);
+			team.leaguesPlayed++;
+			team.averagePosition = (team.totalPositions / team.leaguesPlayed);
+			Records.MOST_POINTS.checkRecord(stats.points, team);
+			Records.MOST_GOALS_IN_SEASON.checkRecord(stats.goals, team);
+			//System.out.println(Team.attackRatio(stats.goals/100.0));
+			//team.attack = (Team.attackRatio(stats.goals/60.0));
+			//team.defence = (team.defence+(Team.defenceRatio(1-(stats.goalsConceeded/100.0))))/2;
+			//System.out.println(team.name+"| Attack Difference: "+(team.attack-oldAttack)+"| Defence Difference: "+(team.defence-oldDefence));
+			stats.reset();
+
+		}
+
+	}
 ////
 ////		Utils.sortArrayByAvgPos(leagueStatsArray);
 ////		System.out.format("%-2s%-25s%-10s\n", new String[]{"","Team","Avg Pos"});

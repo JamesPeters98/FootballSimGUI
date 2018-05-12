@@ -5,12 +5,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
+import com.james.footballsim.Utils;
+
+import static com.james.footballsim.FootballSim.skin;
 
 /**
  * Created by James on 04/04/2018.
@@ -20,6 +25,9 @@ public class MainMenu extends CustomGameScreen {
     //Buttons
     private TextButton nextGame;
     private TextButton playersList;
+    private TextButton leagueTable;
+
+    private ScrollPane scrollPane;
 
     Table buttons;
 
@@ -50,6 +58,8 @@ public class MainMenu extends CustomGameScreen {
         //buttons.setDebug(true);
 
         playersList = ScreenUtils.addScreenSwitchTextButton("Players",aGame,this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN);
+        leagueTable = ScreenUtils.addScreenSwitchTextButton("Table",aGame,this, FootballSim.SCREENS.LEAGUE_TABLE, FootballSim.IN);
+
         String nextString = "";
         if(!FootballSim.info.seasonRunning) nextString = "Start Season";
         else nextString = "Next Game";
@@ -72,14 +82,58 @@ public class MainMenu extends CustomGameScreen {
 
         TextButton teamName = new TextButton(FootballSim.getTeam().name, FootballSim.skin);
 
-        buttons.add(teamName).expandX().colspan(2).padTop(130f).minWidth(nextGame.getWidth()+playersList.getWidth()+50f);
+        //Team Name
+        buttons.add(teamName).fillX().colspan(2).padTop(130f);
         buttons.row().align(Align.top).expandY();
 
-        buttons.add(nextGame).spaceRight(25f).expandX().align(Align.right);
-        buttons.add(playersList).spaceLeft(25f).expandX().align(Align.left);
+        //Stats
+        Table statsTable = new Table();
+        //statsTable.debug();
+        statsTable.add(button("DEFENCE")).fillX();
+        statsTable.add(button("ATTACK")).fillX();
+        statsTable.add(button("OVERALL")).fillX();
+        statsTable.row().padBottom(10f);
 
-        buttons.setFillParent(true);
+        statsTable.add(buttonBig(String.valueOf(FootballSim.getTeam().getDefenceRating())));
+        statsTable.add(buttonBig(String.valueOf(FootballSim.getTeam().getAttackRating())));
+        statsTable.add(buttonBig(String.valueOf(FootballSim.getTeam().getRating())));
+
+        statsTable.row();
+
+        Table infoTable = new Table();
+        TextButton week = button("WEEK");
+        TextButton position = button("POSITION");
+
+        infoTable.add(week).fillX().minWidth(Utils.getMax(week.getWidth(),position.getWidth()));
+        infoTable.add(position).fillX();
+        infoTable.row();
+        infoTable.add(buttonBig(String.valueOf(FootballSim.info.round)));
+        infoTable.add(buttonBig(String.valueOf(FootballSim.info.getTeamPosition())));
+
+        statsTable.add(infoTable).colspan(3);
+        statsTable.row();
+
+
+
+        buttons.add(statsTable).expandX().colspan(2).spaceTop(20);
+        buttons.row().align(Align.top);
+
+        //Buttons
+        Gdx.app.log("MainMenu", ""+buttons.getWidth());
+        buttons.add(leagueTable).fillX();
+        buttons.add(playersList).fillX();
+        buttons.row().spaceTop(15f);
+        buttons.add(nextGame).colspan(2).fillX();
+        buttons.row();
+        buttons.padBottom(130f);
+
+        //buttons.setFillParent(true);
+
+//        scrollPane = new ScrollPane(buttons,skin);
+//        scrollPane.setDebug(true);
         stage.addActor(buttons);
+
+
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -93,6 +147,13 @@ public class MainMenu extends CustomGameScreen {
 
     @Override
     public void updateUI(float width, float height) {
+//        int pad_top = 40;
+//        int pad_bottom = 85;
+//        scrollPane.setHeight(height-(pad_bottom+pad_top));
+//        scrollPane.setY(pad_bottom);
+//        scrollPane.setWidth(width);
+        buttons.setHeight(height);
+        buttons.setX(width/2-buttons.getWidth()/2);
         topBar.update(width,height);
         bottomBar.update(width,height);
 

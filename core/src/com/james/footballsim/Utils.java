@@ -151,4 +151,12 @@ public class Utils {
 		Collections.sort(fixtures, comparator);
 	}
 
+	public static int getMax(int a, int b) {
+		return (a>b?a:b);
+	}
+
+	public static float getMax(float a, float b) {
+		return (a>b?a:b);
+	}
+
 }

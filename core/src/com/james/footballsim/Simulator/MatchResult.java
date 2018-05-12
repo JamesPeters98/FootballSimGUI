@@ -11,9 +11,13 @@ public class MatchResult {
 	
 	private Team homeTeam;
 	private Team awayTeam;
+
+	public MatchResult(){
+
+	}
 	
 	public MatchResult(Team home, Team away, int homeGoals, int awayGoals){
-		Gdx.app.log("MatchResult", home.name+" "+homeGoals+"-"+awayGoals+" "+away.name);
+		//Gdx.app.log("MatchResult", home.name+" "+homeGoals+"-"+awayGoals+" "+away.name);
 		this.homeGoals = homeGoals;
 		this.awayGoals = awayGoals;
 		this.homeTeam = home;

@@ -11,7 +11,7 @@
 //public class Game {
 //
 //	static FixtureGenerator fixtureGenerator;
-//	static League league;
+//	static League leagues;
 //	static List<List<Fixture<Integer>>> rounds;
 //	static Scanner reader;
 //
@@ -21,9 +21,9 @@
 //	public static void main(String[] args){
 //        reader = new Scanner(System.in);
 //        fixtureGenerator = new FixtureGenerator();
-//        league = new League();
+//        leagues = new League();
 //
-//        List<Team> teams = new ArrayList<Team>(league.getTeams().values());
+//        List<Team> teams = new ArrayList<Team>(leagues.getTeams().values());
 //        Collections.sort(teams,League.sortTeams);
 //
 //		System.out.println("Choose your team");
@@ -35,7 +35,7 @@
 //		}
 //
 //		teamId = Utils.readNumber(reader,"Enter the number of the desired team.");
-//		team = league.getTeam(teamId);
+//		team = leagues.getTeam(teamId);
 //		team.chosenTeam = true;
 //		System.out.println("Players:");
 //		team.listPlayers();
@@ -50,7 +50,7 @@
 //	}
 //
 //	public static void runSeason(){
-//		rounds = fixtureGenerator.getFixtures(league.getTeams(), true, teamId);
+//		rounds = fixtureGenerator.getFixtures(leagues.getTeams(), true, teamId);
 //
 //		System.out.println("Fixture List for "+team.name);
 //		System.out.println("----------------------------");
@@ -58,7 +58,7 @@
 //			List<Fixture<Integer>> round = rounds.get(i);
 //			for(Fixture<Integer> fixture: round){
 //				if((fixture.getHomeTeam() == teamId)||(fixture.getAwayTeam()==teamId)){
-//					System.out.println("Week "+(i+1)+" "+league.getTeam(fixture.getHomeTeam()).name + " vs " + league.getTeam(fixture.getAwayTeam()).name);
+//					System.out.println("Week "+(i+1)+" "+leagues.getTeam(fixture.getHomeTeam()).name + " vs " + leagues.getTeam(fixture.getAwayTeam()).name);
 //				}
 //		    }
 //		}
@@ -70,14 +70,14 @@
 //		    System.out.println("---------");
 //		    List<Fixture<Integer>> round = rounds.get(i);
 //		    for(Fixture<Integer> fixture: round){
-//		    	System.out.println(league.getTeam(fixture.getHomeTeam()).name + " vs " + league.getTeam(fixture.getAwayTeam()).name);
+//		    	System.out.println(leagues.getTeam(fixture.getHomeTeam()).name + " vs " + leagues.getTeam(fixture.getAwayTeam()).name);
 //		    }
 //		    System.out.println("");
 //		    Utils.promptEnterKey(reader);
 ////		    for(Fixture<Integer> fixture: round){
 ////				try {
-////					//MatchResult result = new MatchSim().runMatch(reader,league.getTeam(fixture.getHomeTeam()),league.getTeam(fixture.getAwayTeam()),teamId);
-////					//league.addStat(result);
+////					//MatchResult result = new MatchSim().runMatch(reader,leagues.getTeam(fixture.getHomeTeam()),leagues.getTeam(fixture.getAwayTeam()),teamId);
+////					//leagues.addStat(result);
 ////				} catch (InterruptedException e) {
 ////					e.printStackTrace();
 ////				}
@@ -88,20 +88,20 @@
 //            System.out.println("Updates");
 //		    System.out.println("--------------");
 ////			for(Fixture<Integer> fixture: round){
-////				league.getTeam(fixture.getHomeTeam()).update();
-////				league.getTeam(fixture.getAwayTeam()).update();
+////				leagues.getTeam(fixture.getHomeTeam()).update();
+////				leagues.getTeam(fixture.getAwayTeam()).update();
 ////			}
 //		    System.out.println("");
 //		    Utils.promptEnterKey(reader);
-//		    league.printTable();
+//		    leagues.printTable();
 //		    Utils.promptEnterKey(reader);
-////		    league.printAttackTable();
+////		    leagues.printAttackTable();
 ////		    Utils.promptEnterKey(reader);
-////		    league.printDefenceTable();
+////		    leagues.printDefenceTable();
 ////		    Utils.promptEnterKey(reader);
 //		}
-//		league.printTable();
-//		league.newSeason();
+//		leagues.printTable();
+//		leagues.newSeason();
 //		Records.MOST_POINTS.printRecordTable();
 //		Records.MOST_GOALS_IN_SEASON.printRecordTable();
 //		Utils.promptEnterKey2(reader);

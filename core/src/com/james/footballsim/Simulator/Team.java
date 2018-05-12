@@ -9,11 +9,12 @@ public class Team implements Serializable {
 	
 	public int id;
 	public String name;
+	public String shortName;
 	public double attack;
 	public double defence;
 
-	public double penalites;
-	public double freekicks;
+	public double penalites = 0.7;
+	public double freekicks = 0.7;
 
 	public int winStreak = 0;
 	public int loseStreak = 0;
@@ -50,14 +51,18 @@ public class Team implements Serializable {
 	Random rand;
 
 	public boolean chosenTeam = false;
-	
-	public Team(int id, String name, double pens, double freekicks){
+
+	public Team(int id, String name, String shortName){
+		this(id,name);
+		this.shortName = shortName;
+	}
+
+	public Team(int id, String name){
 		Gdx.app.log(name," Initliasing team");
 		rand = new Random();
 		this.id = id;
 		this.name = name;
-		this.penalites = pens;
-		this.freekicks = freekicks;
+		this.shortName = name;
 		generateSquad();
 		genOverallRating();
 		bestFormation();
@@ -98,22 +103,25 @@ public class Team implements Serializable {
 
 
 	public static double defenceRatio(double ratio){
-		return Math.exp(0.4*ratio)-0.45;
+		return Math.exp(0.35*ratio)-0.45;
 	}
 	
 	public static double attackRatio(double ratio){
-		return (Math.exp(ratio)-1.5)/2.5;
+		return (Math.exp(0.9*ratio)-1.5)/3.5;
 	}
 
 	public void generateSquad(){
 
-		float defAverageRating = (float) (84f+rand.nextGaussian()*4);
-		float attackAverageRating = (float) (84f+rand.nextGaussian()*4);
+		float defAverageRating = (float) (95f+rand.nextGaussian()*4);
+		float attackAverageRating = (float) (95f+rand.nextGaussian()*4);
 
-		if(id == 1){
-			defAverageRating = 90;
-			attackAverageRating = 92;
-		}
+		if(defAverageRating>99) defAverageRating = 99;
+		if(attackAverageRating>99) attackAverageRating = 99;
+
+//		if(id == 1){
+//			defAverageRating = 90;
+//			attackAverageRating = 92;
+//		}
 
 		players = new Players();
 		injured = new Players();
@@ -214,15 +222,15 @@ public class Team implements Serializable {
 	}
 
 	public int getAttackRating(){
-		return Math.round(attackRating);
+		return (int) Math.rint(attackRating);
 	}
 
 	public int getDefenceRating(){
-		return Math.round(defenceRating);
+		return (int) Math.rint(defenceRating);
 	}
 
 	public int getRating(){
-		return Math.round(bestRating);
+		return (int) Math.rint(bestRating);
 	}
 
 	public List<TeamUpdate> getUpdates() {

@@ -9,9 +9,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.ixeption.libgdx.transitions.FadingGame;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.ixeption.libgdx.transitions.impl.SlidingTransition;
@@ -19,12 +17,11 @@ import com.james.footballsim.Screens.PlayersList;
 import com.james.footballsim.Screens.Screens;
 import com.james.footballsim.Simulator.League;
 import com.james.footballsim.Simulator.Team;
-import uk.co.codeecho.fixture.generator.Fixture;
 import uk.co.codeecho.fixture.generator.FixtureGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 
 public class FootballSim extends FadingGame {
 	public static Skin skin;
@@ -120,26 +117,28 @@ public class FootballSim extends FadingGame {
 
 	public void setTeam(int id){
 		info.teamId = id;
-		info.league.getTeam(info.teamId).chosenTeam = true;
+		info.leagues.get(info.division).getTeam(info.teamId).chosenTeam = true;
 		fileSave.saveInfo();
 		SCREENS.PLAYER_SELECTION = new PlayersList(this);
 	}
 
 	public static Team getTeam(){
 		if(info.teamId == -1) return new Team();
-		return info.league.getTeam(info.teamId);
+		return info.leagues.get(info.division).getTeam(info.teamId);
 	}
 
 	public void startSeason(){
-		info.rounds = fixtureGenerator.getFixtures(info.league.getTeams(), true, info.teamId);
+		info.leagues.get(info.division).rounds = fixtureGenerator.getFixtures(info.leagues.get(info.division).getTeams(), true, info.teamId);
 		info.seasonRunning = true;
 		FootballSim.fileSave.saveInfo();
 	}
 
 	private void initVars(){
 		info = new Info();
-		info.league = new League().init();
-		info.teams = new ArrayList<>(info.league.getTeams().values());
+		info.leagues = new HashMap<>();
+		info.leagues.put(1, new League().init("Premier Division"));
+		info.division = 1;
+		info.teams = new ArrayList<>(info.leagues.get(info.division).getTeams().values());
 		Collections.sort(info.teams,League.sortTeams);
 
 		fileSave.saveClass(info,"data");

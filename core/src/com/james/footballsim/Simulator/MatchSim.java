@@ -1,5 +1,6 @@
 package com.james.footballsim.Simulator;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.MatchScreen;
 
+import static com.james.footballsim.FootballSim.info;
 import static com.james.footballsim.FootballSim.skin;
 
 public class MatchSim {
@@ -59,8 +61,7 @@ public class MatchSim {
             } else {
             	if(!finished){
             		postMatchUpdates();
-            		FootballSim.info.league.addStat(matchResult);
-            		FootballSim.info.round++;
+            		seasonChecks();
             		finished = true;
 					screen.menu.setDisabled(false);
 					return true;
@@ -85,9 +86,21 @@ public class MatchSim {
 	}
 
 	private void postMatchUpdates(){
-		FootballSim.info.league.getTeam(home.id).update();
-		FootballSim.info.league.getTeam(away.id).update();
+		FootballSim.info.leagues.get(info.division).getTeam(home.id).update();
+		FootballSim.info.leagues.get(info.division).getTeam(away.id).update();
 		matchResult = new MatchResult(home, away, goals[0], goals[1]);
+	}
+
+	private void seasonChecks(){
+		FootballSim.info.leagues.get(info.division).addStat(matchResult);
+		if(FootballSim.info.round > FootballSim.info.leagues.get(info.division).rounds.size()){
+			Gdx.app.log("MatchSim", "Resetting season");
+			FootballSim.info.seasonRunning = false;
+			FootballSim.info.round = 0;
+		} else {
+			Gdx.app.log("MatchSim", "New round");
+			FootballSim.info.round++;
+		}
 	}
 
 	private void update(){

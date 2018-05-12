@@ -8,10 +8,12 @@ import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import com.james.footballsim.Simulator.Team;
+import com.james.footballsim.Utils;
 import uk.co.codeecho.fixture.generator.Fixture;
 
 import java.util.List;
 
+import static com.james.footballsim.FootballSim.info;
 import static com.james.footballsim.FootballSim.skin;
 
 /**
@@ -48,23 +50,22 @@ public class TotalFixtures extends CustomGameScreen {
 
         table = new Table();
         table.padTop(25f);
-        for(int i=0; i<FootballSim.info.rounds.size(); i++){
-            List<Fixture<Integer>> round = FootballSim.info.rounds.get(i);
+        for(int i = 0; i<FootballSim.info.leagues.get(info.division).rounds.size(); i++){
+            List<Fixture<Integer>> round = FootballSim.info.leagues.get(info.division).rounds.get(i);
             for(Fixture<Integer> fixture: round){
                 if((fixture.getHomeTeam() == FootballSim.info.teamId)||(fixture.getAwayTeam()==FootballSim.info.teamId)){
-                    System.out.println("Week "+(i+1)+" "+FootballSim.info.league.getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.league.getTeam(fixture.getAwayTeam()).name);
-                    Team homeTeam = FootballSim.info.league.getTeam(fixture.getHomeTeam());
-                    Team awayTeam = FootballSim.info.league.getTeam(fixture.getAwayTeam());
+                    System.out.println("Week "+(i+1)+" "+FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam()).name);
+                    Team homeTeam = FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam());
+                    Team awayTeam = FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam());
 
-                    TextButton home = new TextButton(homeTeam.name, skin, "noClick_small");
-                    home.pad(0,15,0,15);
-                    TextButton away = new TextButton(awayTeam.name, skin, "noClick_small");
-                    away.pad(0,15,0,15);
                     TextButton vs = new TextButton("VS", skin, "noClick_small");
-                    table.add(home).fillX();
+                    TextButton home = button(homeTeam.shortName);
+                    TextButton away = button(awayTeam.shortName);
+
+                    table.add(home).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
                     table.add(vs).center();
-                    table.add(away).fillX();
-                    table.row().spaceTop(10);
+                    table.add(away).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
+                    table.row().spaceTop(5);
                 }
             }
         }

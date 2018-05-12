@@ -6,11 +6,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.james.footballsim.FootballSim;
 import sun.awt.CGraphicsDevice;
 
 import java.awt.*;
+
+import static com.james.footballsim.FootballSim.skin;
 
 public class CustomGameScreen implements Screen {
 
@@ -136,6 +139,18 @@ public class CustomGameScreen implements Screen {
             backButton = ScreenUtils.backButton(game, this, prevScreen);
             stage.addActor(backButton);
         }
+    }
+
+    protected TextButton button(String text){
+        TextButton button = new TextButton(text, skin, "noClick_small");
+        button.pad(0,15,0,15);
+        return button;
+    }
+
+    protected TextButton buttonBig(String text){
+        TextButton button = new TextButton(text, skin, "noClick");
+        button.pad(0,15,0,15);
+        return button;
     }
 
     public CustomGameScreen getPrevScreen(){

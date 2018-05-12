@@ -13,6 +13,7 @@ import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import uk.co.codeecho.fixture.generator.Fixture;
 
+import static com.james.footballsim.FootballSim.info;
 import static com.james.footballsim.FootballSim.skin;
 
 /**
@@ -78,12 +79,12 @@ public class MatchScreen extends CustomGameScreen {
             }
         });
 
-        for(Fixture<Integer> fixture: FootballSim.info.rounds.get(FootballSim.info.round)){
+        for(Fixture<Integer> fixture: FootballSim.info.leagues.get(info.division).rounds.get(FootballSim.info.round)){
             if((fixture.getHomeTeam()==FootballSim.info.teamId)||(fixture.getAwayTeam()==FootballSim.info.teamId)){
-                matchSim = new MatchSim(FootballSim.info.league.getTeam(fixture.getHomeTeam()),FootballSim.info.league.getTeam(fixture.getAwayTeam()));
+                matchSim = new MatchSim(FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()),FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam()));
             }else {
-                MatchResult result = new MatchSim(FootballSim.info.league.getTeam(fixture.getHomeTeam()),FootballSim.info.league.getTeam(fixture.getAwayTeam())).runMatchBackground();
-                FootballSim.info.league.addStat(result);
+                MatchResult result = new MatchSim(FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()),FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam())).runMatchBackground();
+                FootballSim.info.leagues.get(info.division).addStat(result);
             }
 
         }

@@ -6,10 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
+import com.james.footballsim.Simulator.MatchResult;
+import com.james.footballsim.Simulator.Team;
 import com.james.footballsim.Simulator.TeamUpdate;
+import com.james.footballsim.Utils;
 
 import java.util.List;
 
+import static com.james.footballsim.FootballSim.info;
 import static com.james.footballsim.FootballSim.skin;
 
 /**
@@ -93,12 +97,42 @@ public class UpdatesScreen extends CustomGameScreen {
 
     public void addToTable(List<TeamUpdate> teamUpdates){
 
-        for(TeamUpdate update : teamUpdates){
-            TextButton updateText = new TextButton(update.getUpdate(), skin);
+        if(teamUpdates.size()!=0){
+            TextButton updateText = new TextButton("Team Updates", skin, "noClick_small");
             updateText.pad(0,15,0,15);
-            table.add(updateText).fillX();
-            table.row().spaceTop(20);
+            table.add(updateText).fillX().colspan(4).spaceBottom(10);
+            table.row();
         }
+        for(TeamUpdate update : teamUpdates){
+            TextButton updateText = new TextButton(update.getUpdate(), skin, "noClick_small");
+            updateText.pad(0,15,0,15);
+            table.add(updateText).fillX().colspan(4);
+            table.row().spaceTop(3);
+        }
+        if(FootballSim.info.leagues.get(info.division).getMatchResults().size()!=0){
+            TextButton updateText = new TextButton("Other Results", skin, "noClick_small");
+            updateText.pad(0,15,0,15);
+            table.add(updateText).fillX().colspan(4).spaceTop(20).spaceBottom(10);
+            table.row();
+        }
+        for(MatchResult result : FootballSim.info.leagues.get(info.division).getMatchResults().get(FootballSim.info.round-1)){
+            Team homeTeam = FootballSim.info.leagues.get(info.division).getTeam(result.getHomeTeam().id);
+            Team awayTeam = FootballSim.info.leagues.get(info.division).getTeam(result.getAwayTeam().id);
+
+
+            TextButton home = button(homeTeam.shortName);
+            TextButton away = button(awayTeam.shortName);
+            TextButton homeScore = button(String.valueOf(result.getHomeGoals()));
+            TextButton awayScore = button(String.valueOf(result.getAwayGoals()));
+
+            table.add(home).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
+            table.add(homeScore).center();
+            table.add(awayScore).center();
+            table.add(away).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
+            table.row().spaceTop(3);
+        }
+
+
     }
 
     @Override
