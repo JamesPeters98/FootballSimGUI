@@ -70,8 +70,11 @@ public class PlayersList extends CustomGameScreen {
         menu = ScreenUtils.addScreenSwitchTextButton("Menu", aGame,this,FootballSim.SCREENS.MAIN_MENU,FootballSim.IN);
         stage.addActor(menu);
 
-        dialogCreator = new ScreenUtils.DialogCreator("You chose "+FootballSim.getTeam().name+". Take a look at your team!", "Okay",vWidth);
-        dialogCreator.getDialog().show(stage);
+        if(FootballSim.info.firstRun) {
+            dialogCreator = new ScreenUtils.DialogCreator("You chose " + FootballSim.getTeam().name + ". Take a look at your team!", "Okay");
+            dialogCreator.getDialog().show();
+            FootballSim.info.firstRun = false;
+        }
 
         //updateUI(vWidth,vHeight);
         Gdx.input.setInputProcessor(stage);
@@ -99,8 +102,6 @@ public class PlayersList extends CustomGameScreen {
         scrollPane.setHeight(height-(pad_bottom+pad_top));
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
-
-        dialogCreator.updateDialogUI(width, height);
 
     }
 

@@ -17,6 +17,8 @@ import com.james.footballsim.Screens.PlayersList;
 import com.james.footballsim.Screens.Screens;
 import com.james.footballsim.Simulator.League;
 import com.james.footballsim.Simulator.Team;
+import de.tomgrill.gdxdialogs.core.GDXDialogs;
+import de.tomgrill.gdxdialogs.core.GDXDialogsSystem;
 import uk.co.codeecho.fixture.generator.FixtureGenerator;
 
 import java.util.ArrayList;
@@ -27,7 +29,9 @@ public class FootballSim extends FadingGame {
 	public static Skin skin;
 
 	public static Info info;
+    public static GDXDialogs dialogs;
     private static FixtureGenerator fixtureGenerator;
+
 
 	public static Screens SCREENS;
 	public static FileSave fileSave;
@@ -38,6 +42,7 @@ public class FootballSim extends FadingGame {
 	public void create () {
 		super.create();
 
+		dialogs = GDXDialogsSystem.install();
 		fileSave = new FileSave();
         fileSave.kryo().register(Info.class, new CompatibleFieldSerializer(fileSave.kryo(),Info.class));
         fileSave.kryo().setReferences(false);
@@ -135,6 +140,7 @@ public class FootballSim extends FadingGame {
 
 	private void initVars(){
 		info = new Info();
+		info.firstRun = true;
 		info.leagues = new HashMap<>();
 		info.leagues.put(1, new League().init("Premier Division"));
 		info.division = 1;

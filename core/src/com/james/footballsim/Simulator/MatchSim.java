@@ -30,8 +30,8 @@ public class MatchSim {
 
 	private int minute = 0;
 	private float totalDelta = 0;
-	private float interval = 0.3f; //Interval between ingame minutes.
-	private float delay = 2.5f; //Delay after an event happens. e.g a Goal.
+	private float interval = 0.15f; //Interval between ingame minutes.
+	private float delay = 1.5f; //Delay after an event happens. e.g a Goal.
 
 	private boolean setup = false;
 	private boolean finished = false;
@@ -93,14 +93,7 @@ public class MatchSim {
 
 	private void seasonChecks(){
 		FootballSim.info.leagues.get(info.division).addStat(matchResult);
-		if(FootballSim.info.round > FootballSim.info.leagues.get(info.division).rounds.size()){
-			Gdx.app.log("MatchSim", "Resetting season");
-			FootballSim.info.seasonRunning = false;
-			FootballSim.info.round = 0;
-		} else {
-			Gdx.app.log("MatchSim", "New round");
-			FootballSim.info.round++;
-		}
+		FootballSim.info.round++;
 	}
 
 	private void update(){

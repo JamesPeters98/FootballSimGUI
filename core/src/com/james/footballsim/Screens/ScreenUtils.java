@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.Align;
 import com.ixeption.libgdx.transitions.FadingGame;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.james.footballsim.FootballSim;
+import de.tomgrill.gdxdialogs.core.dialogs.GDXButtonDialog;
+import de.tomgrill.gdxdialogs.core.listener.ButtonClickListener;
 
 import static com.james.footballsim.FootballSim.skin;
 
@@ -48,49 +50,26 @@ public class ScreenUtils {
 
     public static class DialogCreator {
 
-        Dialog dialog;
-        Cell labelCell;
+        GDXButtonDialog bDialog;
 
-        public DialogCreator(String message, String acceptMessage, float width){
-            Label label = new Label(message, FootballSim.skin, "content");
-            label.setWrap(true);
-            label.setAlignment(Align.center);
+        public DialogCreator(String message, String acceptMessage){
+            bDialog = FootballSim.dialogs.newDialog(GDXButtonDialog.class);
+            bDialog.setMessage(message);
 
-            dialog =
-                    new Dialog("", FootballSim.skin) {
-                        protected void result (Object object) {
-                            System.out.println("Chosen: " + object);
-                        }
-                    };
+            bDialog.setClickListener(new ButtonClickListener() {
 
-            dialog.padTop(50).padBottom(50);
-            labelCell = dialog.getContentTable().add(label);
-            labelCell.width(width*0.7f).row();
-            dialog.getButtonTable().padTop(50);
+                @Override
+                public void click(int button) {
+                    // handle button click here
+                }
+            });
 
-            TextButton dbutton = new TextButton("Okay", FootballSim.skin);
-            dialog.button(dbutton, true);
-
-            dialog.key(Input.Keys.ENTER, true);
-            dialog.invalidateHierarchy();
-            dialog.invalidate();
-            dialog.layout();
+            bDialog.addButton(acceptMessage);
+            bDialog.build();
         }
 
-        public Dialog getDialog(){
-            return dialog;
-        }
-
-        //Call in resize/updateUI to ensure dialog auto fits to new size
-        public void updateDialogUI(float width, float height){
-            dialog.getContentTable().setWidth(width*0.7f);
-            labelCell.width(width*0.7f);
-            dialog.setWidth(width*0.7f);
-            dialog.setPosition(width/2-dialog.getWidth()/2,height/2-dialog.getHeight()/2);
-
-            dialog.invalidateHierarchy();
-            dialog.invalidate();
-            dialog.layout();
+        public GDXButtonDialog getDialog(){
+            return bDialog;
         }
 
     }

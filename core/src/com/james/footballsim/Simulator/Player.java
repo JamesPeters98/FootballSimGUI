@@ -79,7 +79,6 @@ public class Player implements Serializable {
                 return "Goalkeeper";
             case DEFENDER:
                 return "Defender";
-
             case MIDFIELDER:
                 return "Midfielder";
             case FORWARD:

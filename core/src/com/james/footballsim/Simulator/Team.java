@@ -37,6 +37,8 @@ public class Team implements Serializable {
 	public float attackRating;
 	public float defenceRating;
 
+	public float averagePlayerRating;
+
 	final int FOURTHREETHREE = 433;
 	final int FOURFOURTWO = 442;
 	final int THREEFOURTHREE = 343;
@@ -52,17 +54,18 @@ public class Team implements Serializable {
 
 	public boolean chosenTeam = false;
 
-	public Team(int id, String name, String shortName){
-		this(id,name);
+	public Team(int id, String name, String shortName, float averagePlayerRating){
+		this(id,name,averagePlayerRating);
 		this.shortName = shortName;
 	}
 
-	public Team(int id, String name){
+	public Team(int id, String name, float averagePlayerRating){
 		Gdx.app.log(name," Initliasing team");
 		rand = new Random();
 		this.id = id;
 		this.name = name;
 		this.shortName = name;
+		this.averagePlayerRating = averagePlayerRating;
 		generateSquad();
 		genOverallRating();
 		bestFormation();
@@ -112,8 +115,8 @@ public class Team implements Serializable {
 
 	public void generateSquad(){
 
-		float defAverageRating = (float) (95f+rand.nextGaussian()*4);
-		float attackAverageRating = (float) (95f+rand.nextGaussian()*4);
+		float defAverageRating = (float) (averagePlayerRating);
+		float attackAverageRating = (float) (averagePlayerRating);
 
 		if(defAverageRating>99) defAverageRating = 99;
 		if(attackAverageRating>99) attackAverageRating = 99;

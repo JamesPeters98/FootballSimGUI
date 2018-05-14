@@ -49,6 +49,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-desktop:1.2.5"
     }
 }
 
@@ -77,6 +78,8 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-android:1.2.5"
     }
 }
 
@@ -93,6 +96,7 @@ project(":ios") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-ios:1.2.5"
     }
 }
 
@@ -124,6 +128,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile group: 'com.esotericsoftware', name: 'kryo', version: '4.0.2'
         compile 'com.google.code.gson:gson:2.8.4'
+        compile "de.tomgrill.gdxdialogs:gdx-dialogs-core:1.2.5"
     }
 }
 

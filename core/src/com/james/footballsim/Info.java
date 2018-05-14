@@ -22,6 +22,8 @@ public class Info implements Serializable {
     public int division;
     public int round;
     public boolean seasonRunning = false;
+    public boolean firstRun = false;
+
 
     public LeagueStats getTeamLeagueStats(){
         //Gdx.app.log("Info", "teamid: "+teamId);

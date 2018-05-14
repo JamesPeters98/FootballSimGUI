@@ -96,7 +96,9 @@ public class UpdatesScreen extends CustomGameScreen {
     }
 
     public void addToTable(List<TeamUpdate> teamUpdates){
-
+        int roundShow;
+        if(info.round == 0) roundShow = 38;
+        else roundShow = info.round-1;
         if(teamUpdates.size()!=0){
             TextButton updateText = new TextButton("Team Updates", skin, "noClick_small");
             updateText.pad(0,15,0,15);
@@ -115,7 +117,7 @@ public class UpdatesScreen extends CustomGameScreen {
             table.add(updateText).fillX().colspan(4).spaceTop(20).spaceBottom(10);
             table.row();
         }
-        for(MatchResult result : FootballSim.info.leagues.get(info.division).getMatchResults().get(FootballSim.info.round-1)){
+        for(MatchResult result : FootballSim.info.leagues.get(info.division).getMatchResults().get(roundShow)){
             Team homeTeam = FootballSim.info.leagues.get(info.division).getTeam(result.getHomeTeam().id);
             Team awayTeam = FootballSim.info.leagues.get(info.division).getTeam(result.getAwayTeam().id);
 

@@ -44,11 +44,11 @@ public class League implements Serializable {
 		addTeam(Teams.WEST_BROM);
 		addTeam(Teams.WEST_HAM);
 		addTeam(Teams.BURNLEY);
-		addTeam(Teams.HULL);
-		addTeam(Teams.MIDDLESBROUGH);
+		addTeam(Teams.HUDDERSFIELD);
+		addTeam(Teams.NEWCASTLE);
 		addTeam(Teams.WATFORD);
 		addTeam(Teams.STOKE);
-		addTeam(Teams.SUNDERLAND);
+		addTeam(Teams.BRIGHTON);
 		return this;
 	}
 	

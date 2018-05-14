@@ -15,6 +15,8 @@ import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import com.james.footballsim.Utils;
 
+import static com.james.footballsim.FootballSim.fileSave;
+import static com.james.footballsim.FootballSim.info;
 import static com.james.footballsim.FootballSim.skin;
 
 /**
@@ -46,10 +48,23 @@ public class MainMenu extends CustomGameScreen {
 
     }
 
+    public void seasonChecks(){
+        if(info.seasonRunning) {
+            if (FootballSim.info.round >= FootballSim.info.leagues.get(info.division).rounds.size()) {
+                Gdx.app.log("MatchSim", "Resetting season");
+                FootballSim.info.round = 0;
+                FootballSim.info.seasonRunning = false;
+                FootballSim.info.leagues.get(info.division).newSeason();
+                fileSave.saveInfo();
+            }
+        }
+    }
+
     @Override
     public void show() {
         super.show();
         stage = new Stage(viewport);
+        seasonChecks();
 
         topBar = new TopBar(stage, "Football Sim").addToStage();
         bottomBar = new BottomBar(stage).addToStage();
