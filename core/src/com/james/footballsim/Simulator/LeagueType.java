@@ -13,4 +13,8 @@ public interface LeagueType  {
 
     public boolean hasPlayOffs();
 
+    public int divisionPosition();
+
+    public boolean lastDivision();
+
 }

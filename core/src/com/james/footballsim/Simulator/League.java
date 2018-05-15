@@ -15,6 +15,7 @@ public class League implements Serializable {
 	
 	private HashMap<Integer,Team> teams;
 	private HashMap<Integer,LeagueStats> leagueStats;
+	private HashMap<Integer,LeagueStats> previousSeasonStats;
 	public List<List<Fixture<Integer>>> leagueGames;
 	public LeagueType leagueType;
 
@@ -75,8 +76,8 @@ public class League implements Serializable {
 	}
 	
 	public void addStat(MatchResult result, int fixtureID){
-
 		if(leagueType.hasPlayOffs() && playOffRound != 0) {
+			Gdx.app.log(leagueType.getName(),"Adding stats");
 			playOffs(result,fixtureID);
 		} else {
 
@@ -109,6 +110,7 @@ public class League implements Serializable {
 
 	public void playOffs(MatchResult result, int fixtureID){
 		if(playOffRound == 1){
+			Gdx.app.log(leagueType.getName(),"Playoff round 1");
 			HashMap<Integer,MatchResult> firstLeg = playOffResults.get(1);
 			if(firstLeg == null) playOffResults.put(playOffRound, firstLeg = new HashMap<>());
 			firstLeg.put(fixtureID,result);
@@ -116,6 +118,7 @@ public class League implements Serializable {
 			matchResults.put(FootballSim.info.round,new ArrayList<>(firstLeg.values()));
 		}
 		else if(playOffRound == 2){
+			Gdx.app.log(leagueType.getName(),"Playoff round 2");
 			HashMap<Integer,MatchResult> secondLeg = playOffResults.get(2);
 			if(secondLeg == null) playOffResults.put(playOffRound, secondLeg = new HashMap<>());
 			secondLeg.put(fixtureID,result);
@@ -127,26 +130,9 @@ public class League implements Serializable {
 			if(fixture2.hasHomeTeamWon()) finalTeams.add(fixture2.getHomeTeam());
 			else finalTeams.add(fixture2.getAwayTeam());
 
-
-//			int team1Goals = firstLeg.get(fixtureID).getHomeGoals()+secondLeg.get(fixtureID).getAwayGoals();
-//			int team2Goals = firstLeg.get(fixtureID).getAwayGoals()+secondLeg.get(fixtureID).getHomeGoals();
-//
-//			if(finalTeams == null) finalTeams = new ArrayList<>();
-//			if(team1Goals>team2Goals) finalTeams.add(fixture1.getHomeTeam());
-//			if(team2Goals>team1Goals) finalTeams.add(fixture1.getAwayTeam());
-//			if(team1Goals == team2Goals){
-//				if(fixture1.getAwayGoals() > fixture2.getAwayGoals()){
-//					finalTeams.add(fixture1.getAwayTeam());
-//				} else if(fixture1.getAwayGoals() > fixture2.getAwayGoals()){
-//					finalTeams.add(fixture1.getHomeTeam());
-//				} else {
-//					//Placeholder just choose random team for now
-//					finalTeams.add(fixture1.getHomeTeam());
-//				}
-//			}
-
 		}
 		else if(playOffRound == 3){
+			Gdx.app.log(leagueType.getName(),"Playoff round 3");
 			HashMap<Integer,MatchResult> finalResult = playOffResults.get(3);
 			if(finalResult == null) playOffResults.put(playOffRound, finalResult = new HashMap<>());
 			finalResult.put(fixtureID,result);
@@ -163,11 +149,17 @@ public class League implements Serializable {
 		for (Fixture<Integer> fixture : getFixtures(round)) {
 			if ((fixture.getHomeTeam() == FootballSim.info.teamId) || (fixture.getAwayTeam() == FootballSim.info.teamId)) {
 				Gdx.app.log("League "+leagueType.getName(), "Found chosen team fixture.");
-				if(playOffRound == 2) matchSim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, playOffResults.get(2).get(fixture.id), fixture.id);
+				if(playOffRound == 1) matchSim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, fixture.id);
+				else if(playOffRound == 2) matchSim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, playOffResults.get(1).get(fixture.id), fixture.id);
 				else if(playOffRound == 3) matchSim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, true, fixture.id);
 				else matchSim = new MatchSim(getTeam(fixture.getHomeTeam()), getTeam(fixture.getAwayTeam()),this);
 			} else {
-				MatchResult result = new MatchSim(getTeam(fixture.getHomeTeam()), getTeam(fixture.getAwayTeam()),this).runMatchBackground();
+				MatchSim sim;
+				if(playOffRound == 1) sim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, fixture.id);
+				else if(playOffRound == 2) sim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, playOffResults.get(1).get(fixture.id), fixture.id);
+				else if(playOffRound == 3) sim = new MatchSim(getTeam(fixture.getHomeTeam()),getTeam(fixture.getAwayTeam()),this, true, fixture.id);
+				else sim = new MatchSim(getTeam(fixture.getHomeTeam()), getTeam(fixture.getAwayTeam()),this);
+				MatchResult result = sim.runMatchBackground();
 				addStat(result,fixture.id);
 			}
 		}
@@ -220,10 +212,11 @@ public class League implements Serializable {
 				playOffRound++;
 			}
 		}
+		previousSeasonStats = new HashMap<>(leagueStats);
 	}
 
 	public void endSeason() {
-		ArrayList<LeagueStats> leagueStatsArray = new ArrayList<LeagueStats>(leagueStats.values());
+		ArrayList<LeagueStats> leagueStatsArray = new ArrayList<>(leagueStats.values());
 		Utils.sortArray(leagueStatsArray);
 		Team winners = leagueStatsArray.get(0).team;
 		winners.trophiesWon++;
@@ -250,23 +243,77 @@ public class League implements Serializable {
 			//team.attack = (Team.attackRatio(stats.goals/60.0));
 			//team.defence = (team.defence+(Team.defenceRatio(1-(stats.goalsConceeded/100.0))))/2;
 			//System.out.println(team.name+"| Attack Difference: "+(team.attack-oldAttack)+"| Defence Difference: "+(team.defence-oldDefence));
-			stats.reset();
-
 		}
 
 		matchResults = new HashMap<>();
 
+		handlePromotions();
+
+		for (int i = 0; i < previousSeasonStats.size(); i++) {
+			LeagueStats leagueStats = leagueStatsArray.get(i);
+			leagueStats.reset();
+		}
+
+		playOffResults = new HashMap<>();
+		playOffRound = 0;
+		playOffs = new ArrayList<>();
+		playOffWinner = null;
+		FootballSim.info.playOffsRunning = false;
 	}
-////
-////		Utils.sortArrayByAvgPos(leagueStatsArray);
-////		System.out.format("%-2s%-25s%-10s\n", new String[]{"","Team","Avg Pos"});
-////		System.out.println("----------------------------------------------------------------------------------");
-////		for(int i = 0; i <leagueStatsArray.size();i++) {
-////			LeagueStats stats = leagueStatsArray.get(i);
-////		    System.out.format("%-2s%-25s%-10s\n", new String[]{""+(i+1),stats.team.name,""+stats.team.averagePosition});
-////		}
-////		System.out.println("");
-//	}
+
+	private void handlePromotions(){
+		ArrayList<LeagueStats> leagueStatsArray = new ArrayList<>(previousSeasonStats.values());
+		Utils.sortArray(leagueStatsArray);
+		List<Team> relegatedTeams = new ArrayList<>();
+		List<Team> promotedTeams = new ArrayList<>();
+		List<LeagueStats> relegatedStats  = new ArrayList<>();
+		List<LeagueStats> promotedStats  = new ArrayList<>();
+
+		League divisionAbove = getDivisionAbove();
+		if(divisionAbove!=null){
+			for(int i = 0; i < 2; i++){
+				Team promotedTeam = leagueStatsArray.get(i).team;
+				promotedTeams.add(promotedTeam);
+				promotedStats.add(leagueStatsArray.get(i));
+				teams.remove(promotedTeam.id);
+				leagueStats.remove(promotedTeam.id);
+			}
+			promotedTeams.add(playOffWinner);
+			teams.remove(playOffWinner.id);
+			divisionAbove.leagueStats.put(playOffWinner.id,leagueStats.get(playOffWinner.id));
+			leagueStats.remove(playOffWinner.id);
+
+			for(Team team : promotedTeams){
+				if(team.id==FootballSim.info.teamId) FootballSim.info.division = divisionAbove.leagueType.divisionPosition();
+				Gdx.app.log(leagueType.getName(),"Promoted Team"+team.name);
+				divisionAbove.teams.put(team.id,team);
+			}
+			for(LeagueStats leagueStats : promotedStats){
+				divisionAbove.leagueStats.put(leagueStats.team.id,leagueStats);
+			}
+		}
+
+		if(!leagueType.lastDivision()){
+			for(int i = leagueStatsArray.size()-3; i < leagueStatsArray.size(); i++){
+				Team relegatedTeam = leagueStatsArray.get(i).team;
+				Gdx.app.log(leagueType.getName(),"Relegated Team"+relegatedTeam.name);
+				relegatedTeams.add(relegatedTeam);
+				relegatedStats.add(leagueStatsArray.get(i));
+				teams.remove(relegatedTeam.id);
+				leagueStats.remove(relegatedTeam.id);
+			}
+			League leagueBelow = getDivisionBelow();
+			for(Team team : relegatedTeams){
+				if(team.id==FootballSim.info.teamId) FootballSim.info.division = leagueBelow.leagueType.divisionPosition();
+				leagueBelow.teams.put(team.id,team);
+			}
+			for(LeagueStats leagueStats : relegatedStats){
+				leagueBelow.leagueStats.put(leagueStats.team.id,leagueStats);
+			}
+		}
+
+
+	}
 
 
 	public static Comparator<Team> sortTeams = (p1, p2) -> {
@@ -274,6 +321,22 @@ public class League implements Serializable {
 		else if(p1.getRating()<p2.getRating()) return 1;
 		else return 0;
 	};
+
+	public League getDivisionAbove(){
+		if(leagueType.divisionPosition()!=1){
+			return FootballSim.info.leagues.get(leagueType.divisionPosition()-1);
+		} else {
+			return null;
+		}
+	}
+
+	public League getDivisionBelow(){
+		if(!leagueType.lastDivision()){
+			return FootballSim.info.leagues.get(leagueType.divisionPosition()+1);
+		} else {
+			return null;
+		}
+	}
 
 
 }

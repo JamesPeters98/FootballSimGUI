@@ -118,8 +118,8 @@ public class UpdatesScreen extends CustomGameScreen {
             table.row();
         }
         for(MatchResult result : FootballSim.info.leagues.get(info.division).getMatchResults().get(roundShow)){
-            Team homeTeam = FootballSim.info.leagues.get(info.division).getTeam(result.getHomeTeam().id);
-            Team awayTeam = FootballSim.info.leagues.get(info.division).getTeam(result.getAwayTeam().id);
+            Team homeTeam = result.getHomeTeam();
+            Team awayTeam = result.getAwayTeam();
 
 
             TextButton home = button(homeTeam.shortName);
@@ -132,6 +132,19 @@ public class UpdatesScreen extends CustomGameScreen {
             table.add(awayScore).center();
             table.add(away).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
             table.row().spaceTop(3);
+
+            if(result.isCupGame()&&(result.getHomePens()!=0 && result.getAwayPens()!=0)){
+                home = button("Penalties");
+                away = button("Penalties");
+                homeScore = button(String.valueOf(result.getHomePens()));
+                awayScore = button(String.valueOf(result.getAwayPens()));
+
+                table.add(home).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
+                table.add(homeScore).center();
+                table.add(awayScore).center();
+                table.add(away).minWidth(Utils.getMax(home.getWidth(),away.getWidth())).fillX();
+                table.row().spaceTop(3);
+            }
         }
 
 

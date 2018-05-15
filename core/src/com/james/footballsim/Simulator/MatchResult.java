@@ -11,7 +11,10 @@ public class MatchResult {
 
 	//Used for two legged ties mostly.
 	private boolean homeTeamWon;
-	
+	private boolean cupGame;
+	private int homePens;
+	private int awayPens;
+
 	private Team homeTeam;
 	private Team awayTeam;
 
@@ -20,10 +23,17 @@ public class MatchResult {
 	}
 
 	//Use only for two legged up cup tie games.
-	public MatchResult(int homeGoals, int awayGoals, boolean homeTeamWon){
+	public MatchResult(Team home, Team away, int homeGoals, int awayGoals, boolean homeTeamWon){
+		this(home,away,homeGoals,awayGoals);
 		this.homeTeamWon = homeTeamWon;
-		this.homeGoals = homeGoals;
-		this.awayGoals = awayGoals;
+		this.cupGame = true;
+	}
+
+	//Use only for two legged up cup tie games. With Penalty shootout.
+	public MatchResult(Team home, Team away, int homeGoals, int awayGoals, int homePens, int awayPens, boolean homeTeamWon){
+		this(home,away,homeGoals,awayGoals,homeTeamWon);
+		this.homePens = homePens;
+		this.awayPens = awayPens;
 	}
 	
 	public MatchResult(Team home, Team away, int homeGoals, int awayGoals){
@@ -104,5 +114,17 @@ public class MatchResult {
 
 	public boolean hasHomeTeamWon() {
 		return homeTeamWon;
+	}
+
+	public boolean isCupGame() {
+		return cupGame;
+	}
+
+	public int getHomePens() {
+		return homePens;
+	}
+
+	public int getAwayPens() {
+		return awayPens;
 	}
 }

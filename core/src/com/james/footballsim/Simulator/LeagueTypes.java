@@ -41,6 +41,16 @@ public class LeagueTypes {
         public boolean hasPlayOffs() {
             return false;
         }
+
+        @Override
+        public int divisionPosition() {
+            return 1;
+        }
+
+        @Override
+        public boolean lastDivision() {
+            return false;
+        }
     };
 
     public static LeagueType SECOND_DIVISION = new LeagueType() {
@@ -84,6 +94,16 @@ public class LeagueTypes {
 
         @Override
         public boolean hasPlayOffs() {
+            return true;
+        }
+
+        @Override
+        public int divisionPosition() {
+            return 2;
+        }
+
+        @Override
+        public boolean lastDivision() {
             return true;
         }
     };
