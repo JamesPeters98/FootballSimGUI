@@ -12,7 +12,7 @@
 //
 //	static FixtureGenerator fixtureGenerator;
 //	static League leagues;
-//	static List<List<Fixture<Integer>>> rounds;
+//	static List<List<Fixture<Integer>>> leagueGames;
 //	static Scanner reader;
 //
 //	public static int teamId;
@@ -50,12 +50,12 @@
 //	}
 //
 //	public static void runSeason(){
-//		rounds = fixtureGenerator.getFixtures(leagues.getTeams(), true, teamId);
+//		leagueGames = fixtureGenerator.getFixtures(leagues.getTeams(), true, teamId);
 //
 //		System.out.println("Fixture List for "+team.name);
 //		System.out.println("----------------------------");
-//		for(int i=0; i<rounds.size(); i++){
-//			List<Fixture<Integer>> round = rounds.get(i);
+//		for(int i=0; i<leagueGames.size(); i++){
+//			List<Fixture<Integer>> round = leagueGames.get(i);
 //			for(Fixture<Integer> fixture: round){
 //				if((fixture.getHomeTeam() == teamId)||(fixture.getAwayTeam()==teamId)){
 //					System.out.println("Week "+(i+1)+" "+leagues.getTeam(fixture.getHomeTeam()).name + " vs " + leagues.getTeam(fixture.getAwayTeam()).name);
@@ -65,10 +65,10 @@
 //		System.out.println("");
 //		Utils.promptEnterKey(reader);
 //
-//		for(int i=0; i<rounds.size(); i++){
-//		    System.out.println("Week " + (i+1)+" | Games remaining: "+(rounds.size()-i));
+//		for(int i=0; i<leagueGames.size(); i++){
+//		    System.out.println("Week " + (i+1)+" | Games remaining: "+(leagueGames.size()-i));
 //		    System.out.println("---------");
-//		    List<Fixture<Integer>> round = rounds.get(i);
+//		    List<Fixture<Integer>> round = leagueGames.get(i);
 //		    for(Fixture<Integer> fixture: round){
 //		    	System.out.println(leagues.getTeam(fixture.getHomeTeam()).name + " vs " + leagues.getTeam(fixture.getAwayTeam()).name);
 //		    }
@@ -101,7 +101,7 @@
 ////		    Utils.promptEnterKey(reader);
 //		}
 //		leagues.printTable();
-//		leagues.newSeason();
+//		leagues.endSeason();
 //		Records.MOST_POINTS.printRecordTable();
 //		Records.MOST_GOALS_IN_SEASON.printRecordTable();
 //		Utils.promptEnterKey2(reader);

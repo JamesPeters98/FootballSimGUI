@@ -40,7 +40,7 @@ public class TitleScreen extends CustomGameScreen {
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                aGame.setScreen(TitleScreen.this, FootballSim.SCREENS.TEAM_SELECTION,FootballSim.IN,1f);
+                aGame.setScreen(TitleScreen.this, FootballSim.SCREENS.TEAM_SELECTION,FootballSim.IN,transitionDuration);
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

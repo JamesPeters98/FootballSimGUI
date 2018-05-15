@@ -1,14 +1,12 @@
 package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.Components.BottomBar;
@@ -17,7 +15,6 @@ import com.james.footballsim.Utils;
 
 import static com.james.footballsim.FootballSim.fileSave;
 import static com.james.footballsim.FootballSim.info;
-import static com.james.footballsim.FootballSim.skin;
 
 /**
  * Created by James on 04/04/2018.
@@ -48,23 +45,11 @@ public class MainMenu extends CustomGameScreen {
 
     }
 
-    public void seasonChecks(){
-        if(info.seasonRunning) {
-            if (FootballSim.info.round >= FootballSim.info.leagues.get(info.division).rounds.size()) {
-                Gdx.app.log("MatchSim", "Resetting season");
-                FootballSim.info.round = 0;
-                FootballSim.info.seasonRunning = false;
-                FootballSim.info.leagues.get(info.division).newSeason();
-                fileSave.saveInfo();
-            }
-        }
-    }
-
     @Override
     public void show() {
         super.show();
         stage = new Stage(viewport);
-        seasonChecks();
+        FootballSim.seasonChecks();
 
         topBar = new TopBar(stage, "Football Sim").addToStage();
         bottomBar = new BottomBar(stage).addToStage();
@@ -84,9 +69,9 @@ public class MainMenu extends CustomGameScreen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if(!FootballSim.info.seasonRunning) {
                     aGame.startSeason();
-                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES, FootballSim.IN, 1f);
+                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.TOTAL_FIXTURES, FootballSim.IN, transitionDuration);
                 } else {
-                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.WEEKLY_FIXTURES, FootballSim.IN, 1f);
+                    aGame.setScreen(MainMenu.this, FootballSim.SCREENS.WEEKLY_FIXTURES, FootballSim.IN, transitionDuration);
                 }
             }
             @Override

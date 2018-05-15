@@ -15,8 +15,7 @@ import com.ixeption.libgdx.transitions.ScreenTransition;
 import com.ixeption.libgdx.transitions.impl.SlidingTransition;
 import com.james.footballsim.Screens.PlayersList;
 import com.james.footballsim.Screens.Screens;
-import com.james.footballsim.Simulator.League;
-import com.james.footballsim.Simulator.Team;
+import com.james.footballsim.Simulator.*;
 import de.tomgrill.gdxdialogs.core.GDXDialogs;
 import de.tomgrill.gdxdialogs.core.GDXDialogsSystem;
 import uk.co.codeecho.fixture.generator.FixtureGenerator;
@@ -133,17 +132,50 @@ public class FootballSim extends FadingGame {
 	}
 
 	public void startSeason(){
-		info.leagues.get(info.division).rounds = fixtureGenerator.getFixtures(info.leagues.get(info.division).getTeams(), true, info.teamId);
+	    for(int i = 1; i <= info.leagues.size(); i++) {
+            info.leagues.get(i).leagueGames = fixtureGenerator.getFixtures(info.leagues.get(i).getTeams(), true);
+        }
 		info.seasonRunning = true;
 		FootballSim.fileSave.saveInfo();
+	}
+
+	public static MatchSim runMatches(){
+		MatchSim matchSim = null;
+		for(League league: FootballSim.info.leagues.values()) {
+			MatchSim temp = league.runMatches(FootballSim.info.round);
+			if(temp != null) matchSim = temp;
+		}
+		return matchSim;
+	}
+
+	public static void seasonChecks(){
+		if(info.seasonRunning) {
+			if(FootballSim.info.round >= FootballSim.info.leagues.get(info.division).leagueGames.size() && !info.playOffsRunning){
+				for(League league : FootballSim.info.leagues.values()){
+					league.postEndSeason();
+					fileSave.saveInfo();
+				}
+			}
+
+			if (FootballSim.info.round >= FootballSim.info.leagues.get(info.division).leagueType.getFixtureLength()) {
+				Gdx.app.log("MatchSim", "Resetting season");
+				FootballSim.info.round = 0;
+				FootballSim.info.seasonRunning = false;
+				for(League league : FootballSim.info.leagues.values()){
+					league.endSeason();
+				}
+				fileSave.saveInfo();
+			}
+		}
 	}
 
 	private void initVars(){
 		info = new Info();
 		info.firstRun = true;
 		info.leagues = new HashMap<>();
-		info.leagues.put(1, new League().init("Premier Division"));
-		info.division = 1;
+		info.leagues.put(1, new League().init(LeagueTypes.PREMIER_DIVISION));
+		info.leagues.put(2, new League().init(LeagueTypes.SECOND_DIVISION));
+		info.division = 2;
 		info.teams = new ArrayList<>(info.leagues.get(info.division).getTeams().values());
 		Collections.sort(info.teams,League.sortTeams);
 

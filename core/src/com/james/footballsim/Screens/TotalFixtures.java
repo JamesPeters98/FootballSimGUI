@@ -50,8 +50,8 @@ public class TotalFixtures extends CustomGameScreen {
 
         table = new Table();
         table.padTop(25f);
-        for(int i = 0; i<FootballSim.info.leagues.get(info.division).rounds.size(); i++){
-            List<Fixture<Integer>> round = FootballSim.info.leagues.get(info.division).rounds.get(i);
+        for(int i = 0; i<FootballSim.info.leagues.get(info.division).leagueGames.size(); i++){
+            List<Fixture<Integer>> round = FootballSim.info.leagues.get(info.division).getFixtures(i);
             for(Fixture<Integer> fixture: round){
                 if((fixture.getHomeTeam() == FootballSim.info.teamId)||(fixture.getAwayTeam()==FootballSim.info.teamId)){
                     System.out.println("Week "+(i+1)+" "+FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam()).name);

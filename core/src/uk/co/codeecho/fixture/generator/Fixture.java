@@ -7,6 +7,10 @@ public class Fixture<T extends Object> implements Serializable {
     T homeTeam;
     T awayTeam;
 
+
+    //Used for playoffs and multiple legs
+    public int id;
+
     public Fixture(){
 
     }

@@ -52,7 +52,7 @@ public class WeeklyFixtures extends CustomGameScreen {
         table = new Table();
         table.padTop(25f);
 
-        List<Fixture<Integer>> round = FootballSim.info.leagues.get(info.division).rounds.get(FootballSim.info.round);
+        List<Fixture<Integer>> round = FootballSim.info.leagues.get(info.division).getFixtures(FootballSim.info.round);
         for(Fixture<Integer> fixture: round){
             System.out.println(FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam()).name);
             Team homeTeam = FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam());

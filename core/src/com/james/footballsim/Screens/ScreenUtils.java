@@ -35,7 +35,7 @@ public class ScreenUtils {
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                sim.setScreen(currentGameScreen, nextGameScreen,transition,1f);
+                sim.setScreen(currentGameScreen, nextGameScreen,transition,CustomGameScreen.transitionDuration);
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

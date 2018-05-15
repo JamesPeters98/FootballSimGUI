@@ -22,6 +22,7 @@ public class Info implements Serializable {
     public int division;
     public int round;
     public boolean seasonRunning = false;
+    public boolean playOffsRunning = false;
     public boolean firstRun = false;
 
 

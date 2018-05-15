@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
+import com.james.footballsim.Simulator.League;
 import com.james.footballsim.Simulator.LeagueStats;
 import com.james.footballsim.Simulator.Player;
 import com.james.footballsim.Utils;
@@ -52,7 +53,9 @@ public class LeagueTable extends CustomGameScreen {
         table = new Table();
         table.padTop(25f);
         table.padBottom(10f);
-        addToTable(FootballSim.getTeam().getBestSquad());
+        for(League league: FootballSim.info.leagues.values()) {
+            addToTable(league);
+        }
 
         scrollPane = new ScrollPane(table,skin);
         stage.addActor(scrollPane);
@@ -83,8 +86,17 @@ public class LeagueTable extends CustomGameScreen {
         scrollPane.setWidth(width);
         }
 
+//        public TextButton buttonLeague(String text, int teamID){
+//            TextButton button = button(text);
+//            if(teamID == FootballSim.info.teamId){
+//                button.set
+//            }
+//        }
 
-    public void addToTable(List<Player> players){
+
+    public void addToTable(League league){
+        table.add(button(league.leagueType.getName())).colspan(7).fillX();
+        table.row().spaceTop(10);
         table.add(button("Team")).colspan(2).fillX();
         table.add(button("W")).fillX();
         table.add(button("D")).fillX();
@@ -94,7 +106,7 @@ public class LeagueTable extends CustomGameScreen {
 
         table.row().spaceTop(10);
 
-        ArrayList<LeagueStats> leagueStatsArray = new ArrayList<>(FootballSim.info.leagues.get(info.division).getLeagueStats().values());
+        ArrayList<LeagueStats> leagueStatsArray = new ArrayList<>(league.getLeagueStats().values());
 		Utils.sortArray(leagueStatsArray);
 		for(int i = 0; i <leagueStatsArray.size();i++) {
 			LeagueStats stats = leagueStatsArray.get(i);
@@ -102,6 +114,8 @@ public class LeagueTable extends CustomGameScreen {
 
             TextButton points = new TextButton(String.valueOf(stats.points), skin, "noClick_small");
             points.pad(0,15,0,15);
+
+            if(i == leagueStatsArray.size()-1) table.row().spaceTop(3).padBottom(10);
             table.add(button(String.valueOf(i+1))).fillX();
             table.add(button(stats.team.shortName)).fillX();
             int played = stats.wins+stats.draws+stats.losses;
@@ -112,7 +126,6 @@ public class LeagueTable extends CustomGameScreen {
             table.add(button(String.valueOf(stats.points))).fillX();
             table.row().spaceTop(3);
 		}
-
     }
 
     @Override

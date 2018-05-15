@@ -17,29 +17,62 @@ public class MatchSim {
 	private int penGoals[] = new int[2];
 	private int freeKickGoals[] = new int[2];
 	private int goals[] = new int[2];
+	private int penaltyShootOut[] = new int[2];
 
 	private VerticalGroup table;
 	private MatchScreen screen;
 
 	private Team home;
 	private Team away;
+	private League league;
 
 	private Result resultHome;
 	private Result resultAway;
 	private MatchResult matchResult;
+	private MatchResult firstLegResult;
 
+	private int matchLength = 90;
 	private int minute = 0;
 	private float totalDelta = 0;
 	private float interval = 0.15f; //Interval between ingame minutes.
 	private float delay = 1.5f; //Delay after an event happens. e.g a Goal.
+    private int fixtureID = 0;
 
 	private boolean setup = false;
 	private boolean finished = false;
 	private boolean skip = false;
+	private boolean knockoutTwoLegs = false;
+	private boolean knockoutOneLeg = false;
+	private boolean inExtraTime = false;
+	private boolean penShootout = false;
 
-	public MatchSim(Team home, Team away){
+	public boolean isPlaceholder = false;
+
+	//Defines a knockout match for second leg, using matchResult of first leg.
+    public MatchSim(Team home, Team away, League league, MatchResult result, int fixtureID){
+        this(home,away,league);
+        this.knockoutTwoLegs = true;
+        this.firstLegResult = result;
+        this.fixtureID = fixtureID;
+    }
+
+    public MatchSim(Team home, Team away, League league, boolean knockoutOneLeg, int fixtureID){
+        this.home = home;
+        this.away = away;
+        this.league = league;
+        this.knockoutOneLeg = knockoutOneLeg;
+        this.fixtureID = fixtureID;
+    }
+
+	public MatchSim(Team home, Team away, League league){
 		this.home = home;
 		this.away = away;
+		this.league = league;
+	}
+
+	public MatchSim(){
+    	isPlaceholder = true;
+    	Gdx.app.log("MatchSim", "Empty match sim");
 	}
 
 	public void setupUI(MatchScreen screen, VerticalGroup table){
@@ -50,7 +83,8 @@ public class MatchSim {
 
 	public boolean render(float delta){
 		if(setup) {
-            if(minute < 90) {
+
+            if(minute < matchLength) {
                 totalDelta += delta;
                 if ((totalDelta >= interval)||(skip)) {
                     minute++;
@@ -58,7 +92,34 @@ public class MatchSim {
                     loop();
                     displayOutput();
                 }
-            } else {
+            }
+            else if(minute == 90){
+                if(knockoutTwoLegs){
+                    if(firstLegResult.getAwayGoals() == goals[1]){
+                        setExtraTime();
+                    }
+                }
+                if(knockoutOneLeg){
+                    if(goals[1]==goals[0]) setExtraTime();
+                }
+            }
+            else if(minute == 120){
+                if(knockoutTwoLegs) {
+                    if (firstLegResult.getAwayGoals() == goals[1]) {
+                        penShootout = true;
+                        penaltyShootOut();
+                        displayOutput();
+                    }
+                }
+                if(knockoutOneLeg){
+                    if (goals[0] == goals[1]) {
+                        penShootout = true;
+                        penaltyShootOut();
+                        displayOutput();
+                    }
+                }
+            }
+            if(minute >= matchLength) {
             	if(!finished){
             		postMatchUpdates();
             		seasonChecks();
@@ -86,13 +147,33 @@ public class MatchSim {
 	}
 
 	private void postMatchUpdates(){
-		FootballSim.info.leagues.get(info.division).getTeam(home.id).update();
-		FootballSim.info.leagues.get(info.division).getTeam(away.id).update();
-		matchResult = new MatchResult(home, away, goals[0], goals[1]);
+		home.update();
+		away.update();
+		if(knockoutTwoLegs){
+		    int team1Goals = goals[0]+firstLegResult.getAwayGoals();
+		    int team2Goals = goals[1]+firstLegResult.getHomeGoals();
+
+            if(team1Goals>team2Goals) matchResult = new MatchResult(team1Goals,team2Goals,true);
+			if(team2Goals>team1Goals) matchResult = new MatchResult(team1Goals,team2Goals,false);
+			if(team1Goals == team2Goals){
+				if(firstLegResult.getAwayGoals() > goals[1]){
+                    matchResult = new MatchResult(team1Goals,team2Goals,true);
+				} else if(goals[1] > firstLegResult.getAwayGoals()){
+                    matchResult = new MatchResult(team1Goals,team2Goals,false);
+				}
+			}
+        }
+        else if(knockoutOneLeg){
+		    if(goals[0]>goals[1]) matchResult = new MatchResult(goals[0],goals[1],true);
+		    if(goals[1]>goals[0]) matchResult = new MatchResult(goals[0],goals[1],false);
+        }
+        else {
+		    matchResult = new MatchResult(home, away, goals[0], goals[1]);
+        }
 	}
 
 	private void seasonChecks(){
-		FootballSim.info.leagues.get(info.division).addStat(matchResult);
+		league.addStat(matchResult,fixtureID);
 		FootballSim.info.round++;
 	}
 
@@ -173,13 +254,49 @@ public class MatchSim {
 			table.addActorAt(0, container);
 			totalDelta = -delay;
 		}
-		if(minute==90){
+		if(minute==90 && !inExtraTime){
 			TextButton button = new TextButton("GAME OVER!",skin,"noClick_small");
 			Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
 			table.addActorAt(0, container);
 		}
 
-		if(i == 90) System.out.println(home.name+" "+goals[0]+"-"+goals[1]+" "+away.name);
+        if(minute==90 && inExtraTime){
+            TextButton button = new TextButton("EXTRA TIME!",skin,"noClick_small");
+            Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+            table.addActorAt(0, container);
+            totalDelta = -delay;
+        }
+
+        if(minute==105 && inExtraTime){
+            TextButton button = new TextButton("HALF TIME!",skin,"noClick_small");
+            Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+            table.addActorAt(0, container);
+            totalDelta = -delay;
+        }
+
+        if(minute==120 && inExtraTime){
+            TextButton button = new TextButton("GAME OVER!",skin,"noClick_small");
+            Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+            table.addActorAt(0, container);
+            totalDelta = -delay;
+        }
+
+        if(penShootout){
+            TextButton button = new TextButton("PENALTIES!",skin,"noClick_small");
+            Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+            table.addActorAt(0, container);
+            button = new TextButton("PENALTIES!",skin,"noClick_small");
+            container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+            table.addActorAt(0, container);
+            totalDelta = -delay;
+        }
+
+		if(i == 90 && !inExtraTime){
+		    System.out.println(home.shortName+" "+goals[0]+"-"+goals[1]+" "+away.shortName);
+            TextButton button = new TextButton(home.shortName+" "+goals[0]+"-"+goals[1]+" "+away.shortName,skin,"noClick_small");
+            Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
+            table.addActorAt(0, container);
+        }
 
 	}
 	
@@ -211,11 +328,39 @@ public class MatchSim {
 		return new Result(ResultType.NOTHING);
 	}
 
+	public void penaltyShootOut(){
+        double rand = Math.random();
+        int homePens = 0;
+        int awayPens = 0;
+
+        for(int i = 0; i < 5; i++){
+            rand = Math.random();
+            if(rand <= home.penalites) homePens++;
+            rand = Math.random();
+            if(rand <= away.penalites) awayPens++;
+        }
+        while(homePens==awayPens){
+            rand = Math.random();
+            if(rand <= home.penalites) homePens++;
+            rand = Math.random();
+            if(rand <= away.penalites) awayPens++;
+        }
+        penaltyShootOut[0] = homePens;
+        penaltyShootOut[1] = awayPens;
+
+        if(homePens>awayPens) matchResult = new MatchResult(homePens,awayPens,true);
+        else matchResult = new MatchResult(homePens,awayPens,false);
+    }
+
 	public void skip(){
 		skip = true;
 		interval = 0;
 		delay = 0;
 	}
 
+    public void setExtraTime(){
+        matchLength += 30;
+        inExtraTime = true;
+    }
 
 }

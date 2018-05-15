@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.james.footballsim.FootballSim;
+import com.james.footballsim.Simulator.League;
 import com.james.footballsim.Simulator.MatchResult;
 import com.james.footballsim.Simulator.MatchSim;
 import com.james.footballsim.Screens.Components.BottomBar;
@@ -79,32 +80,28 @@ public class MatchScreen extends CustomGameScreen {
             }
         });
 
-        for(Fixture<Integer> fixture: FootballSim.info.leagues.get(info.division).rounds.get(FootballSim.info.round)){
-            if((fixture.getHomeTeam()==FootballSim.info.teamId)||(fixture.getAwayTeam()==FootballSim.info.teamId)){
-                matchSim = new MatchSim(FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()),FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam()));
-            }else {
-                MatchResult result = new MatchSim(FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()),FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam())).runMatchBackground();
-                FootballSim.info.leagues.get(info.division).addStat(result);
-            }
+        matchSim = FootballSim.runMatches();
+        if(matchSim == null) {
+            matchSim = new MatchSim();
+            FootballSim.info.round++;
+        } else {
+            stage.addActor(skip);
+            matchSim.setupUI(this, table);
+            minutes = new Label("0", skin);
+            minutes.setAlignment(Align.right);
 
+            mainTable.add(minutes).width(getvWidth()).padRight(50f).spaceTop(140f);
+            mainTable.row();
+            stage.addActor(mainTable);
+
+            Gdx.input.setInputProcessor(stage);
         }
-        stage.addActor(skip);
-
-        matchSim.setupUI(this,table);
-
-        minutes = new Label("0",skin);
-        minutes.setAlignment(Align.right);
-
-        mainTable.add(minutes).width(getvWidth()).padRight(50f).spaceTop(140f);
-        mainTable.row();
-        stage.addActor(mainTable);
-
-        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
+        if(matchSim.isPlaceholder) aGame.setScreen(FootballSim.SCREENS.UPDATES_SCREEN);
         matchSim.render(delta);
         scrollPane.layout();
         //scrollPane.scrollTo(0,0,0,0);

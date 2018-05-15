@@ -1,16 +1,13 @@
 package uk.co.codeecho.fixture.generator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.james.footballsim.Utils;
 import com.james.footballsim.Simulator.Team;
 
 public class FixtureGenerator {
 
-    public List<List<Fixture<Integer>>> getFixtures(HashMap<Integer,Team> teamMap, boolean includeReverseFixtures, int teamId) {
+    public List<List<Fixture<Integer>>> getFixtures(HashMap<Integer,Team> teamMap, boolean includeReverseFixtures) {
 
         List<Integer> teams = new ArrayList<>(teamMap.keySet());
         int numberOfTeams = teams.size();
@@ -39,7 +36,7 @@ public class FixtureGenerator {
                 }
                 fixtures.add(new Fixture<Integer>(teams.get(home), teams.get(away)));
             }
-            Utils.putChosenTeamAtTopOfArray(fixtures, teamId);
+            //Utils.putChosenTeamAtTopOfArray(fixtures, teamId);
             rounds.add(fixtures);
         }
         
@@ -61,7 +58,7 @@ public class FixtureGenerator {
         rounds = interleaved;
 
         // Last team can't be away for every game so flip them
-        // to home on odd rounds.
+        // to home on odd leagueGames.
         for (int roundNumber = 0; roundNumber < rounds.size(); roundNumber++) {
             if (roundNumber % 2 == 1) {
                 Fixture fixture = rounds.get(roundNumber).get(0);
@@ -78,6 +75,7 @@ public class FixtureGenerator {
                 }
                 reverseFixtures.add(reverseRound);
             }
+            Collections.shuffle(reverseFixtures);
             rounds.addAll(reverseFixtures);
         }
 

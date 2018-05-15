@@ -38,7 +38,7 @@ public class TeamSelection extends CustomGameScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Clicked! "+team.name);
                     aGame.setTeam(team.id);
-                    aGame.setScreen(TeamSelection.this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN,0.5f);
+                    aGame.setScreen(TeamSelection.this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN,transitionDuration);
                 };
             });
             TextButton rating = new TextButton(String.valueOf(team.getRating()), skin, "noClick");

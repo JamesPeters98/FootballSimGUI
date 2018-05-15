@@ -117,9 +117,11 @@ public class Team implements Serializable {
 
 		float defAverageRating = (float) (averagePlayerRating);
 		float attackAverageRating = (float) (averagePlayerRating);
+		this.penalites = attackAverageRating/120;
+		this.freekicks = attackAverageRating/120;
 
-		if(defAverageRating>99) defAverageRating = 99;
-		if(attackAverageRating>99) attackAverageRating = 99;
+//		if(defAverageRating>99) defAverageRating = 99;
+//		if(attackAverageRating>99) attackAverageRating = 99;
 
 //		if(id == 1){
 //			defAverageRating = 90;

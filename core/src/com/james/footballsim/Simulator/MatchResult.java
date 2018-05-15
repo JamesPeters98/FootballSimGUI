@@ -4,16 +4,26 @@ import com.badlogic.gdx.Gdx;
 
 public class MatchResult {
 	
-	private int homeGoals;
-	private int awayGoals;
-	private int homePoints;
-	private int awayPoints;
+	private int homeGoals = 0;
+	private int awayGoals = 0;
+	private int homePoints = 0;
+	private int awayPoints = 0;
+
+	//Used for two legged ties mostly.
+	private boolean homeTeamWon;
 	
 	private Team homeTeam;
 	private Team awayTeam;
 
 	public MatchResult(){
 
+	}
+
+	//Use only for two legged up cup tie games.
+	public MatchResult(int homeGoals, int awayGoals, boolean homeTeamWon){
+		this.homeTeamWon = homeTeamWon;
+		this.homeGoals = homeGoals;
+		this.awayGoals = awayGoals;
 	}
 	
 	public MatchResult(Team home, Team away, int homeGoals, int awayGoals){
@@ -42,29 +52,29 @@ public class MatchResult {
 			home.loseStreak = 0;
 			away.loseStreak = 0;
 		}
-		Team[] teams = {home,away};
-		for(Team team : teams){
-			if((team.winStreak >= 1) && (homePoints!=1) ){
-//				double oldAttack = team.attack;
-//				double oldDefence = team.defence;
-//				team.attack = 0.025*(Team.attackRatio(1)-team.attack)+team.attack;
-//				team.defence = 0.0125*(Team.defenceRatio(1)-team.defence)+team.defence;
-				//System.out.println(team.name+" on a "+team.winStreak+" match unbeaten streak increased attack from "+oldAttack+" to "+team.attack+". Difference = "+(team.attack-oldAttack)+" increased defence from "+oldDefence+" to "+team.defence+". Difference = "+(team.defence-oldDefence));
-			}
-			if(team.loseStreak >= 2){
-//				double oldAttack = team.attack;
-//				double oldDefence = team.defence;
-//				if(team.attack > 0.1) team.attack = team.attack-0.025*(team.attack);
-//				if(team.defence > 0.85) team.defence = team.defence-0.004*(team.defence);
-				//System.out.println(team.name+" on a "+team.loseStreak+" loss streak decreased attack from "+oldAttack+" to "+team.attack+". Difference = "+(team.attack-oldAttack)+" decreased defence from "+oldDefence+" to "+team.defence+". Difference = "+(team.defence-oldDefence));
-			} else if(team.loseStreak >= 1) {
-//				double oldAttack = team.attack;
-//				double oldDefence = team.defence;
-//				if(team.attack > 0.16) team.attack = team.attack-0.025*(team.attack);
-				//System.out.println(team.name+" on a "+team.loseStreak+" loss streak decreased attack from "+oldAttack+" to "+team.attack+". Difference = "+(team.attack-oldAttack)+" decreased defence from "+oldDefence+" to "+team.defence+". Difference = "+(team.defence-oldDefence));
-
-			}
-		}
+//		Team[] teams = {home,away};
+//		for(Team team : teams){
+//			if((team.winStreak >= 1) && (homePoints!=1) ){
+////				double oldAttack = team.attack;
+////				double oldDefence = team.defence;
+////				team.attack = 0.025*(Team.attackRatio(1)-team.attack)+team.attack;
+////				team.defence = 0.0125*(Team.defenceRatio(1)-team.defence)+team.defence;
+//				//System.out.println(team.name+" on a "+team.winStreak+" match unbeaten streak increased attack from "+oldAttack+" to "+team.attack+". Difference = "+(team.attack-oldAttack)+" increased defence from "+oldDefence+" to "+team.defence+". Difference = "+(team.defence-oldDefence));
+//			}
+//			if(team.loseStreak >= 2){
+////				double oldAttack = team.attack;
+////				double oldDefence = team.defence;
+////				if(team.attack > 0.1) team.attack = team.attack-0.025*(team.attack);
+////				if(team.defence > 0.85) team.defence = team.defence-0.004*(team.defence);
+//				//System.out.println(team.name+" on a "+team.loseStreak+" loss streak decreased attack from "+oldAttack+" to "+team.attack+". Difference = "+(team.attack-oldAttack)+" decreased defence from "+oldDefence+" to "+team.defence+". Difference = "+(team.defence-oldDefence));
+//			} else if(team.loseStreak >= 1) {
+////				double oldAttack = team.attack;
+////				double oldDefence = team.defence;
+////				if(team.attack > 0.16) team.attack = team.attack-0.025*(team.attack);
+//				//System.out.println(team.name+" on a "+team.loseStreak+" loss streak decreased attack from "+oldAttack+" to "+team.attack+". Difference = "+(team.attack-oldAttack)+" decreased defence from "+oldDefence+" to "+team.defence+". Difference = "+(team.defence-oldDefence));
+//
+//			}
+//		}
 		
 	}
 	
@@ -92,4 +102,7 @@ public class MatchResult {
 		return awayTeam;
 	}
 
+	public boolean hasHomeTeamWon() {
+		return homeTeamWon;
+	}
 }
