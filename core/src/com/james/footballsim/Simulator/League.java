@@ -168,12 +168,19 @@ public class League implements Serializable {
 
 	public void postEndSeason(){
 		Gdx.app.log("League", "Post Season");
-		if(FootballSim.info.round < leagueGames.size()){
-			for(int r = FootballSim.info.round; r < leagueGames.size(); r++){
-				runMatches(r);
-				Gdx.app.log("League: "+leagueType.getName(), "Running matches for week: "+r);
+		if(FootballSim.info.round < leagueType.getFixtureLength()){
+			while(FootballSim.info.round < leagueType.getFixtureLength()){
+				checkPlayOffs();
+				runMatches(FootballSim.info.round);
+				Gdx.app.log("League: "+leagueType.getName(), "Running matches for week: "+FootballSim.info.round);
+				FootballSim.info.round++;
 			}
 		}
+		checkPlayOffs();
+		previousSeasonStats = new HashMap<>(leagueStats);
+	}
+
+	private void checkPlayOffs(){
 		if(leagueType.hasPlayOffs()){
 			ArrayList<LeagueStats> leagueStatsArray = new ArrayList<LeagueStats>(leagueStats.values());
 			if(FootballSim.info.round == leagueGames.size() && playOffRound == 0){
@@ -212,7 +219,6 @@ public class League implements Serializable {
 				playOffRound++;
 			}
 		}
-		previousSeasonStats = new HashMap<>(leagueStats);
 	}
 
 	public void endSeason() {

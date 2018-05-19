@@ -13,6 +13,10 @@ public class Team implements Serializable {
 	public double attack;
 	public double defence;
 
+	public float A;
+	public float D;
+
+
 	public double penalites = 0.7;
 	public double freekicks = 0.7;
 

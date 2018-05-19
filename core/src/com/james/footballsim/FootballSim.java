@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.ixeption.libgdx.transitions.FadingGame;
 import com.ixeption.libgdx.transitions.ScreenTransition;
+import com.ixeption.libgdx.transitions.impl.AlphaFadingTransition;
 import com.ixeption.libgdx.transitions.impl.SlidingTransition;
 import com.james.footballsim.Screens.PlayersList;
 import com.james.footballsim.Screens.Screens;
@@ -34,8 +35,10 @@ public class FootballSim extends FadingGame {
 
 	public static Screens SCREENS;
 	public static FileSave fileSave;
-	public static ScreenTransition IN =  new SlidingTransition(SlidingTransition.Direction.LEFT,Interpolation.exp10Out,false);
-	public static ScreenTransition OUT =  new SlidingTransition(SlidingTransition.Direction.RIGHT,Interpolation.exp10Out,true);
+	public static ScreenTransition IN =  new SlidingTransition(SlidingTransition.Direction.LEFT,Interpolation.exp5Out,false);
+	public static ScreenTransition OUT =  new SlidingTransition(SlidingTransition.Direction.RIGHT,Interpolation.exp5Out,true);
+//	public static ScreenTransition IN =  new AlphaFadingTransition();
+//	public static ScreenTransition OUT =  new AlphaFadingTransition();
 
 	@Override
 	public void create () {
@@ -175,7 +178,7 @@ public class FootballSim extends FadingGame {
 		info.leagues = new HashMap<>();
 		info.leagues.put(1, new League().init(LeagueTypes.PREMIER_DIVISION));
 		info.leagues.put(2, new League().init(LeagueTypes.SECOND_DIVISION));
-		info.division = 2;
+		info.division = 1;
 		info.teams = new ArrayList<>(info.leagues.get(info.division).getTeams().values());
 		Collections.sort(info.teams,League.sortTeams);
 

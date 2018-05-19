@@ -1,6 +1,7 @@
 package com.james.footballsim.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -44,8 +45,8 @@ public class WeeklyFixtures extends CustomGameScreen {
     public void show() {
         super.show();
         Gdx.input.setInputProcessor(stage);
-
         stage.clear();
+
         topBar = new TopBar(stage, "Week "+(FootballSim.info.round+1)).addToStage();
         bottomBar = new BottomBar(stage).addToStage();
 

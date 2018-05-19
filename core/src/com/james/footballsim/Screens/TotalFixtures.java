@@ -37,9 +37,6 @@ public class TotalFixtures extends CustomGameScreen {
         super(aGame);
         this.aGame = aGame;
 
-        topBar = new TopBar(stage, "Fixture List").addToStage();
-        bottomBar = new BottomBar(stage).addToStage();
-
         showBackButton(true);
     }
 
@@ -47,6 +44,10 @@ public class TotalFixtures extends CustomGameScreen {
     public void show() {
         super.show();
         Gdx.input.setInputProcessor(stage);
+        stage.clear();
+
+        topBar = new TopBar(stage, "Fixture List").addToStage();
+        bottomBar = new BottomBar(stage).addToStage();
 
         table = new Table();
         table.padTop(25f);
