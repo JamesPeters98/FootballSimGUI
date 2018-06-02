@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.MatchScreen;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static com.james.footballsim.FootballSim.info;
@@ -98,9 +99,6 @@ public class MatchSim {
 
 	public boolean render(float delta){
 		if(setup&&!finished) {
-
-
-
 			if(minute >= matchLength) {
 				if(!finished){
 					displayOutput();
@@ -127,12 +125,28 @@ public class MatchSim {
 	}
 
 	public MatchResult runMatchBackground() {
+    	runMatch();
 			for(int i = 1; i<= matchLength; i++){
 				minute++;
 				loop();
 			}
 			postMatchUpdates();
 		return matchResult;
+	}
+
+	private void runMatch(){
+		Random random = new Random();
+		double homeGoalsAverage = Math.exp(home.attack+away.defence+0.33);
+		double awayGoalsAverage = Math.exp(away.attack+home.defence);
+		System.out.println(home.name+ "avg Goals: "+homeGoalsAverage);
+		System.out.println(away.name+ "avg Goals: "+awayGoalsAverage);
+
+		long homeGoals = Math.round(random.nextGaussian()*homeGoalsAverage);
+		long awayGoals = Math.round(random.nextGaussian()*awayGoalsAverage);
+		long hGoals = (homeGoals < 0) ? 0 : homeGoals;
+		long aGoals = (awayGoals < 0) ? 0 : awayGoals;
+		System.out.println(home.name+ "Goals: "+hGoals);
+		System.out.println(away.name+ "Goals: "+aGoals);
 	}
 
 	private void loop(){
