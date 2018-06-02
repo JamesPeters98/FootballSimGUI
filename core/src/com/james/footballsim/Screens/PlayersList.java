@@ -109,7 +109,7 @@ public class PlayersList extends CustomGameScreen {
 
         TextButton titleButton = new TextButton(title, skin);
         titleButton.pad(0,15,0,15);
-        table.add(titleButton).colspan(3).fillX();
+        table.add(titleButton).colspan(4).fillX();
         table.row().spaceTop(20);
 
         for(Player player : players){
@@ -127,11 +127,14 @@ public class PlayersList extends CustomGameScreen {
                     System.out.println("Clicked! "+FootballSim.getTeam().name);
                 };
             });
-            TextButton rating = new TextButton(String.valueOf(player.getRating()), skin, "noClick");
-            rating.pad(0,15,0,15);
+            TextButton ratingAttack = new TextButton(String.valueOf(player.getAttack()), skin, "noClick");
+            ratingAttack.pad(0,15,0,15);
+            TextButton ratingDefence = new TextButton(String.valueOf(player.getDefense()), skin, "noClick");
+            ratingDefence.pad(0,15,0,15);
             table.add(position).fillX();
             table.add(name).fillX();
-            table.add(rating);
+            table.add(ratingAttack);
+            table.add(ratingDefence);
             table.row().spaceTop(20);
         }
     }

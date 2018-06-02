@@ -13,10 +13,6 @@ public class Team implements Serializable {
 	public double attack;
 	public double defence;
 
-	public float A;
-	public float D;
-
-
 	public double penalites = 0.7;
 	public double freekicks = 0.7;
 
@@ -53,6 +49,18 @@ public class Team implements Serializable {
 	int nDefenders;
 	int nMidfielders;
 	int nForwards;
+
+	final static float FORWARD_ATTACK = 0.16f;
+	final static float MID_ATTACK = 0.11f;
+	//final static float FB_ATTACK = 0.05f;
+	final static float CB_ATTACK = 0.07f;
+	final static float GK_ATTACK = 0.01f;
+
+	final static float FORWARD_DEF = 0.06f;
+	final static float MID_DEF = 0.075f;
+	//final static float FB_DEF = 0.1f;
+	final static float CB_DEF = 0.12f;
+	final static float GK_DEF = 0.2f;
 
 	Random rand;
 
@@ -136,19 +144,19 @@ public class Team implements Serializable {
 		injured = new Players();
 		//Keepers
 		for(int i = 1; i <= 3; i++){
-			players.add(new Player(Player.GOALKEEPER,defAverageRating-(i-1)*5));
+			players.add(new Player(Player.GOALKEEPER, (attackAverageRating-(i-1)*5),defAverageRating-(i-1)*5));
 		}
 		//Defenders
 		for(int i = 1; i <= 8; i++){
-			players.add(new Player(Player.DEFENDER, (float) (defAverageRating-((i-1)*2))));
+			players.add(new Player(Player.DEFENDER, (attackAverageRating-(i-1)*5) , (defAverageRating-((i-1)*2))));
 		}
 		//Midfielders
 		for(int i = 1; i <= 8; i++){
-			players.add(new Player(Player.MIDFIELDER, (float) ((defAverageRating+attackAverageRating)/2-((i-1)*1.5))));
+			players.add(new Player(Player.MIDFIELDER, (attackAverageRating-(i-1)*1.5f), (defAverageRating-(i-1)*1.5f)));
 		}
 		//Forwards
 		for(int i = 1; i <= 6; i++){
-			players.add(new Player(Player.FORWARD, (float) (attackAverageRating-(i-1)*2.5)));
+			players.add(new Player(Player.FORWARD, (attackAverageRating-(i-1)*2.5f), (defAverageRating-(i-1)*2.5f)));
 		}
 
 	}
@@ -173,16 +181,7 @@ public class Team implements Serializable {
 	}
 
 	private void genPlayer(int type) {
-		Player player = null;
-		if((type == Player.GOALKEEPER) || (type == Player.DEFENDER)) {
-			player = new Player(type, defenceRating*0.8f);
-		}
-		if((type == Player.MIDFIELDER)) {
-			player = new Player(type, 0.8f*(defenceRating+attackRating)/2);
-		}
-		if((type == Player.FORWARD)) {
-			player = new Player(type, 0.8f*(attackRating));
-		}
+		Player player = new Player(type, 0.8f*attackRating, 0.8f*defenceRating);
 		players.add(player);
 		updates.add(new TeamUpdate().youthPromotion(player));
 	}
@@ -256,26 +255,31 @@ public class Team implements Serializable {
 		Collections.sort(forwards, sortPlayers);
 
 		//433
-			float r = 0;
+			float rAttack = 0;
+			float rDefence = 0;
 		if((goalkeepers.size()>=1)&&(defenders.size()>=4)&&(midfielders.size()>=3)&&(forwards.size()>=3)) {
-			r += goalkeepers.get(0).rating;
+			rAttack += goalkeepers.get(0).attack*GK_ATTACK;
+			rDefence += goalkeepers.get(0).defense*GK_DEF;
 
 			//4 Defenders
 			for (int i = 0; i <= 3; i++) {
-				r += defenders.get(i).rating;
+				rAttack += defenders.get(0).attack*CB_ATTACK;
+				rDefence += defenders.get(0).defense*CB_DEF;
 			}
 
 			//3 Mids
 			for (int i = 0; i <= 2; i++) {
-				r += midfielders.get(i).rating;
+				rAttack += midfielders.get(0).attack*MID_ATTACK;
+				rDefence += midfielders.get(0).defense*MID_DEF;
 			}
 
 			//3 Forwards
 			for (int i = 0; i <= 2; i++) {
-				r += forwards.get(i).rating;
+				rAttack += forwards.get(0).attack*FORWARD_ATTACK;
+				rDefence += forwards.get(0).defense*FORWARD_DEF;
 			}
 
-			float r433 = (r / 11);
+			float r433 = (rAttack+rDefence)/2;
 			if (r433 > bestRating) {
 				bestRating = r433;
 				formation = FOURTHREETHREE;
@@ -285,26 +289,31 @@ public class Team implements Serializable {
 
 
 		//442
-		r = 0;
+		rAttack = 0;
+		rDefence = 0;
 		if((goalkeepers.size()>=1)&&(defenders.size()>=4)&&(midfielders.size()>=4)&&(forwards.size()>=2)) {
-			r += goalkeepers.get(0).rating;
+			rAttack += goalkeepers.get(0).attack*GK_ATTACK;
+			rDefence += goalkeepers.get(0).defense*GK_DEF;
 
 			//4 Defenders
 			for (int i = 0; i <= 3; i++) {
-				r += defenders.get(i).rating;
+				rAttack += defenders.get(0).attack*CB_ATTACK;
+				rDefence += defenders.get(0).defense*CB_DEF;
 			}
 
 			//4 Mids
 			for (int i = 0; i <= 3; i++) {
-				r += midfielders.get(i).rating;
+				rAttack += midfielders.get(0).attack*MID_ATTACK;
+				rDefence += midfielders.get(0).defense*MID_DEF;
 			}
 
 			//2 Forwards
 			for (int i = 0; i <= 1; i++) {
-				r += forwards.get(i).rating;
+				rAttack += forwards.get(0).attack*FORWARD_ATTACK;
+				rDefence += forwards.get(0).defense*FORWARD_DEF;
 			}
 
-			float r442 = (r / 11);
+			float r442 = (rAttack+rDefence)/2;
 			if (r442 > bestRating) {
 				bestRating = r442;
 				formation = FOURFOURTWO;
@@ -313,33 +322,39 @@ public class Team implements Serializable {
 		}
 
 		//343
-		r = 0;
+		rAttack = 0;
+		rDefence = 0;
 		if((goalkeepers.size()>=1)&&(defenders.size()>=3)&&(midfielders.size()>=4)&&(forwards.size()>=3)) {
-			r += goalkeepers.get(0).rating;
+			rAttack += goalkeepers.get(0).attack*GK_ATTACK;
+			rDefence += goalkeepers.get(0).defense*GK_DEF;
 
 			//3 Defenders
 			for (int i = 0; i <= 2; i++) {
-				r += defenders.get(i).rating;
+				rAttack += defenders.get(0).attack*CB_ATTACK;
+				rDefence += defenders.get(0).defense*CB_DEF;
 			}
 
 			//4 Mids
 			for (int i = 0; i <= 3; i++) {
-				r += midfielders.get(i).rating;
+				rAttack += midfielders.get(0).attack*MID_ATTACK;
+				rDefence += midfielders.get(0).defense*MID_DEF;
 			}
 
 			//3 Forwards
 			for (int i = 0; i <= 2; i++) {
-				r += forwards.get(i).rating;
+				rAttack += forwards.get(0).attack*FORWARD_ATTACK;
+				rDefence += forwards.get(0).defense*FORWARD_DEF;
 			}
 
-			float r343 = (r / 11);
-
+			float r343 = (rAttack+rDefence)/2;
 			if (r343 > bestRating) {
 				bestRating = r343;
 				formation = THREEFOURTHREE;
 				//System.out.println("New Formation! "+formation);
 			}
 		}
+
+		System.out.println(name+": Formation: "+formation);
 
 		switch(formation) {
 			case FOURTHREETHREE:
@@ -364,25 +379,32 @@ public class Team implements Serializable {
 	public void calculateStats(){
 		//Defence
 		float defence = 0;
-		defence += goalkeepers.get(0).rating;
+		defence += goalkeepers.get(0).defense*GK_DEF;
 		for (int i = 0; i < nDefenders; i++){
-			if(i<defenders.size()) defence += defenders.get(i).rating;
+			if(i<defenders.size()) defence += defenders.get(i).defense*CB_DEF;
 		}
 		for (int i = 0; i < nMidfielders; i++) {
-			if(i<midfielders.size()) defence += midfielders.get(i).rating;
+			if(i<midfielders.size()) defence += midfielders.get(i).defense*MID_DEF;
 		}
-		defenceRating = defence/(1+nDefenders+nMidfielders);
+		for (int i = 0; i < nForwards; i++) {
+			if(i<forwards.size()) defence += forwards.get(i).defense*FORWARD_DEF;
+		}
+		defenceRating = defence;
 		this.defence = defenceRatio(0.01*defenceRating);
 
 		//Attack
 		float attack = 0;
-		for (int i = 0; i < nMidfielders; i++){
-			if(i<midfielders.size()) attack += midfielders.get(i).rating;
+		attack += goalkeepers.get(0).attack*GK_ATTACK;
+		for (int i = 0; i < nDefenders; i++){
+			if(i<defenders.size()) attack += defenders.get(i).attack*CB_ATTACK;
 		}
-		for (int i = 0; i < nForwards; i++){
-			if(i<forwards.size()) attack += forwards.get(i).rating;
+		for (int i = 0; i < nMidfielders; i++) {
+			if(i<midfielders.size()) attack += midfielders.get(i).attack*MID_ATTACK;
 		}
-		attackRating = attack/(nForwards+nMidfielders);
+		for (int i = 0; i < nForwards; i++) {
+			if(i<forwards.size()) attack += forwards.get(i).attack*FORWARD_ATTACK;
+		}
+		attackRating = attack;
 		this.attack = attackRatio(0.01*attackRating);
 	}
 
@@ -419,8 +441,8 @@ public class Team implements Serializable {
 	}
 
 	public static Comparator<Player> sortPlayers = (p1, p2) -> {
-        if(p1.rating>p2.rating) return -1;
-        else if(p1.rating<p2.rating) return 1;
+        if(p1.getWeightedRating()>p2.getWeightedRating()) return -1;
+        else if(p1.getWeightedRating()<p2.getWeightedRating()) return 1;
         else if(p1.growth>p2.growth) return -1;
         else return 0;
     };

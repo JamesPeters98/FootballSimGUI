@@ -18,9 +18,7 @@ public class Player implements Serializable {
     public static final int MIDFIELDER = 2;
     public static final int FORWARD = 3;
 
-    protected int goalkeeping;
     protected int defense;
-    protected int midfield;
     protected int attack;
 
     int type;
@@ -37,7 +35,7 @@ public class Player implements Serializable {
 
     }
 
-    public Player(int type, float averageTeamRating) {
+    public Player(int type, float averageAttackRating, float averageDefenceRating) {
         this.type = type;
         this.id = totalPlayers;
         totalPlayers++;
@@ -48,27 +46,31 @@ public class Player implements Serializable {
 
         switch (type) {
             case GOALKEEPER:
-                goalkeeping = generateRating(rand,averageTeamRating);
-                rating = goalkeeping;
+                defense = generateRating(rand,averageDefenceRating,1);
+                attack = generateRating(rand,averageAttackRating/5,5f);
+                rating = defense;
                 break;
             case DEFENDER:
-                defense = generateRating(rand,averageTeamRating);
+                defense = generateRating(rand,averageDefenceRating,1);
+                attack = generateRating(rand,averageAttackRating*0.75f,5f);
                 rating = defense;
                 break;
             case MIDFIELDER:
-                midfield = generateRating(rand,averageTeamRating);
-                rating = midfield;
+                attack = generateRating(rand,averageAttackRating*0.9f,5f);
+                defense = generateRating(rand,averageDefenceRating*0.9f,5f);
+                rating = (attack+defense)/2;
                 break;
             case FORWARD:
-                attack = generateRating(rand,averageTeamRating);
+                attack = generateRating(rand,averageAttackRating,1);
+                defense = generateRating(rand,averageDefenceRating/2,10f);
                 rating = attack;
                 break;
         }
 
     }
 
-    private int generateRating(Random rand, float averageTeamRating){
-        int r = (int) Math.round(averageTeamRating + (rand.nextGaussian())*1);
+    private int generateRating(Random rand, float averageTeamRating, float spread){
+        int r = (int) Math.round(averageTeamRating + (rand.nextGaussian())*spread);
         growth = (int) (((95-r)/2)+(rand.nextGaussian()*((99-r)/6)));
         return r;
     }
@@ -116,6 +118,14 @@ public class Player implements Serializable {
         return rating;
     }
 
+    public int getDefense() {
+        return defense;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
     public int getGrowth(){
         return growth;
     }
@@ -142,6 +152,21 @@ public class Player implements Serializable {
 
     public int hashCode() {
         return id;
+    }
+
+    public float getWeightedRating(){
+        switch (type) {
+            case GOALKEEPER:
+                return attack*Team.GK_ATTACK+defense*Team.GK_DEF;
+            case DEFENDER:
+                return attack*Team.CB_ATTACK+defense*Team.CB_DEF;
+            case MIDFIELDER:
+                return attack*Team.MID_ATTACK+defense*Team.MID_DEF;
+            case FORWARD:
+                return attack*Team.FORWARD_ATTACK+defense*Team.FORWARD_DEF;
+            default:
+                return 0;
+        }
     }
 
 //    @Override
