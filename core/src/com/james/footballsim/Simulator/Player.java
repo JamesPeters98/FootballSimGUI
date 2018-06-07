@@ -46,33 +46,60 @@ public class Player implements Serializable {
 
         switch (type) {
             case GOALKEEPER:
-                defense = generateRating(rand,averageDefenceRating,1);
-                attack = generateRating(rand,averageAttackRating/5,5f);
+                defense = generateRating(rand,averageDefenceRating,3f);
+                attack = generateRating(rand,averageAttackRating/5,2f);
                 rating = defense;
                 break;
             case DEFENDER:
-                defense = generateRating(rand,averageDefenceRating,1);
-                attack = generateRating(rand,averageAttackRating*0.75f,5f);
+                defense = generateRating(rand,averageDefenceRating,2.5f);
+                attack = generateRating(rand,averageAttackRating*0.4f,2f);
                 rating = defense;
                 break;
             case MIDFIELDER:
-                attack = generateRating(rand,averageAttackRating*0.9f,5f);
-                defense = generateRating(rand,averageDefenceRating*0.9f,5f);
+                attack = generateRating(rand,averageAttackRating,2f);
+                defense = generateRating(rand,averageDefenceRating,2f);
                 rating = (attack+defense)/2;
                 break;
             case FORWARD:
-                attack = generateRating(rand,averageAttackRating,1);
-                defense = generateRating(rand,averageDefenceRating/2,10f);
+                attack = generateRating(rand,averageAttackRating,2.5f);
+                defense = generateRating(rand,averageDefenceRating/5,5f);
                 rating = attack;
                 break;
         }
+
+        generatePotential(rand,rating);
 
     }
 
     private int generateRating(Random rand, float averageTeamRating, float spread){
         int r = (int) Math.round(averageTeamRating + (rand.nextGaussian())*spread);
-        growth = (int) (((95-r)/2)+(rand.nextGaussian()*((99-r)/6)));
         return r;
+    }
+
+    private void generatePotential(Random rand, float r){
+        growth = (int) (((90-r)/2)+(rand.nextGaussian()*((99-r)/6)));
+    }
+
+    public void grow(){
+        switch(type) {
+            case GOALKEEPER:
+                defense++;
+                growth--;
+                break;
+            case DEFENDER:
+                defense++;
+                growth--;
+                break;
+            case MIDFIELDER:
+                attack++;
+                defense++;
+                growth--;
+                break;
+            case FORWARD:
+                attack++;
+                growth--;
+                break;
+        }
     }
 
     public String getPosition(){
@@ -154,32 +181,19 @@ public class Player implements Serializable {
         return id;
     }
 
-    public float getWeightedRating(){
+    public int getWeightedRating(){
         switch (type) {
             case GOALKEEPER:
-                return attack*Team.GK_ATTACK+defense*Team.GK_DEF;
+                return defense;
             case DEFENDER:
-                return attack*Team.CB_ATTACK+defense*Team.CB_DEF;
+                return defense;
             case MIDFIELDER:
-                return attack*Team.MID_ATTACK+defense*Team.MID_DEF;
+                return (attack+defense)/2;
             case FORWARD:
-                return attack*Team.FORWARD_ATTACK+defense*Team.FORWARD_DEF;
+                return attack;
             default:
                 return 0;
         }
     }
 
-//    @Override
-//    public void write(Kryo kryo, Output output) {
-//        output.writeInt(totalPlayers);
-//        output.writeString(firstName);
-//        output.writeString(lastName);
-//    }
-//
-//    @Override
-//    public void read(Kryo kryo, Input input) {
-//        totalPlayers = input.readInt();
-//        firstName = input.readString();
-//        lastName = input.readString();
-//    }
 }

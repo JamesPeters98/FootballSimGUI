@@ -11,6 +11,14 @@ public class LeagueStats implements Serializable {
 	public int draws;
 	public int losses;
 	public Team team;
+
+	public LeagueStats(Team team){
+		this.team = team;
+	}
+
+	public LeagueStats(){
+
+	}
 	
 	public void reset(){
 		points = 0;

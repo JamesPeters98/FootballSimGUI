@@ -3,18 +3,18 @@ package com.james.footballsim.Simulator;
 public interface LeagueType  {
 
     //Leagues Name
-    public String getName();
+    String getName();
 
     //Add teams to league using league.addTeam()
-    public void addTeams(League league);
+    void addTeams(League league);
 
     //Get number of fixtures per season including playoffs;
-    public int getFixtureLength();
+    int getFixtureLength();
 
-    public boolean hasPlayOffs();
+    boolean hasPlayOffs();
 
-    public int divisionPosition();
+    int divisionPosition();
 
-    public boolean lastDivision();
+    boolean lastDivision();
 
 }

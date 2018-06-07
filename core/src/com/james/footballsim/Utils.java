@@ -1,11 +1,6 @@
 package com.james.footballsim;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import com.james.footballsim.Simulator.LeagueStats;
 import com.james.footballsim.Simulator.RecordDetails;
@@ -139,11 +134,11 @@ public class Utils {
 //		Collections.sort(collection, comparator);
 //	}
 	
-	public static void putChosenTeamAtTopOfArray(LinkedList<Fixture<Integer>> fixtures, final int teamId){
+	public static void putChosenTeamAtTopOfArray(LinkedList<Fixture<Integer>> fixtures){
 		Comparator<Fixture<Integer>> comparator = new Comparator<Fixture<Integer>>() {
 		    @Override
 		    public int compare(Fixture<Integer> left, Fixture<Integer> right) {
-		        if((left.getHomeTeam()==teamId)||(left.getAwayTeam()==teamId)) return -1;
+		        if((left.getHomeTeam()==FootballSim.info.teamId)||(left.getAwayTeam()==FootballSim.info.teamId)) return -1;
 		        else return 1;
 		    }
 		};
@@ -157,6 +152,16 @@ public class Utils {
 
 	public static float getMax(float a, float b) {
 		return (a>b?a:b);
+	}
+
+
+	public static int poisson(double a) {
+		Random random = new Random();
+		double limit = Math.exp(-a), prod = random.nextDouble();
+		int n;
+		for (n = 0; prod >= limit; n++)
+			prod *= random.nextDouble();
+		return n;
 	}
 
 }

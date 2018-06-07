@@ -46,7 +46,7 @@ public class League implements Serializable {
 	
 	void addTeam(Team team){
 		teams.put(team.id,team);
-		leagueStats.put(team.id, new LeagueStats());
+		leagueStats.put(team.id, new LeagueStats(team));
 	}
 	
 	public HashMap<Integer,Team> getTeams(){

@@ -66,6 +66,7 @@ public class UpdatesScreen extends CustomGameScreen {
         menu = ScreenUtils.addScreenSwitchTextButton("Next", aGame,this,FootballSim.SCREENS.LEAGUE_TABLE,FootballSim.IN);
         stage.addActor(menu);
 
+        showFPSCounter();
         //updateUI(vWidth,vHeight);
         Gdx.input.setInputProcessor(stage);
         //System.out.println("Shown");
@@ -146,7 +147,6 @@ public class UpdatesScreen extends CustomGameScreen {
                 table.row().spaceTop(3);
             }
         }
-
 
     }
 

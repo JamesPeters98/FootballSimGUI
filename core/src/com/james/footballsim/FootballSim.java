@@ -27,7 +27,6 @@ import java.util.HashMap;
 
 public class FootballSim extends FadingGame {
 	public static Skin skin;
-
 	public static Info info;
     public static GDXDialogs dialogs;
     private static FixtureGenerator fixtureGenerator;
@@ -106,6 +105,15 @@ public class FootballSim extends FadingGame {
 		//Info jsonInfo = JsonConverter.toJson(info, Info.class);
 
 		Gdx.app.log("Sim", "Round: "+info.round);
+
+		float A = 0, D = 0;
+		for(Team team : info.teams){
+		    System.out.println(team.name+": A: "+team.attackRating+" D: "+team.defenceRating);
+		    A += team.attackRating;
+		    D += team.defenceRating;
+        }
+        System.out.println("Total Average Attack: "+(A/info.teams.size()));
+        System.out.println("Total Average Defence: "+(D/info.teams.size()));
 
 		SCREENS = new Screens(this);
 		if(info.teamId!=-1) this.setScreen(null,SCREENS.MAIN_MENU,IN,0);

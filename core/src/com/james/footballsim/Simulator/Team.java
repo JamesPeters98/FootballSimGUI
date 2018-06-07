@@ -1,6 +1,7 @@
 package com.james.footballsim.Simulator;
 
 import com.badlogic.gdx.Gdx;
+import com.james.footballsim.FootballSim;
 
 import java.io.Serializable;
 import java.util.*;
@@ -36,8 +37,11 @@ public class Team implements Serializable {
 	public int rating;
 	public float attackRating;
 	public float defenceRating;
+	public float form;
+	private LinkedList<Double> formList;
 
-	public float averagePlayerRating;
+	public float averageAttackRating;
+	public float averageDefenceRating;
 
 	final int FOURTHREETHREE = 433;
 	final int FOURFOURTWO = 442;
@@ -50,34 +54,42 @@ public class Team implements Serializable {
 	int nMidfielders;
 	int nForwards;
 
-	final static float FORWARD_ATTACK = 0.061f;
-	final static float MID_ATTACK = 0.069f;
-	//final static float FB_ATTACK = 0.05f;
-	final static float CB_ATTACK = 0.066f;
-	final static float GK_ATTACK = 0.01f;
-
-	final static float FORWARD_DEF = 0.05f;
-	final static float MID_DEF = 0.069f;
-	//final static float FB_DEF = 0.1f;
-	final static float CB_DEF = 0.0467f;
-	final static float GK_DEF = 0.06f;
+//	final static float FORWARD_ATTACK = 0.15f;
+//	final static float MID_ATTACK = 0.14f;
+//	final static float CB_ATTACK = 0.02f;
+//	final static float GK_ATTACK = 0.022f;
+//
+//	final static float FORWARD_DEF = 0.04f;
+//	final static float MID_DEF = 0.11f;
+//	final static float CB_DEF = 0.14f;
+//	final static float GK_DEF = 0.15f;
 
 	Random rand;
 
 	public boolean chosenTeam = false;
 
-	public Team(int id, String name, String shortName, float averagePlayerRating){
-		this(id,name,averagePlayerRating);
+	public Team(int id, String name, String shortName, float averageRating){
+		this(id,name,shortName,averageRating,averageRating);
+	}
+
+	public Team(int id, String name, float averageRating){
+		this(id,name,averageRating,averageRating);
+	}
+
+	public Team(int id, String name, String shortName, float averageAttackRating, float averageDefenceRating){
+		this(id,name,averageAttackRating,averageDefenceRating);
 		this.shortName = shortName;
 	}
 
-	public Team(int id, String name, float averagePlayerRating){
+	public Team(int id, String name, float averageAttackRating, float averageDefenceRating){
 		Gdx.app.log(name," Initliasing team");
 		rand = new Random();
 		this.id = id;
 		this.name = name;
 		this.shortName = name;
-		this.averagePlayerRating = averagePlayerRating;
+		this.averageAttackRating = (float) (averageAttackRating+rand.nextGaussian()*2);
+		this.averageDefenceRating = (float) (averageDefenceRating+rand.nextGaussian()*2);
+		this.formList = new LinkedList<>();
 		generateSquad();
 		genOverallRating();
 		bestFormation();
@@ -127,10 +139,8 @@ public class Team implements Serializable {
 
 	private void generateSquad(){
 
-		float defAverageRating = (float) (averagePlayerRating);
-		float attackAverageRating = (float) (averagePlayerRating);
-		this.penalites = attackAverageRating/120;
-		this.freekicks = attackAverageRating/120;
+		this.penalites = averageAttackRating/120;
+		this.freekicks = averageAttackRating/120;
 
 //		if(defAverageRating>99) defAverageRating = 99;
 //		if(attackAverageRating>99) attackAverageRating = 99;
@@ -144,19 +154,19 @@ public class Team implements Serializable {
 		injured = new Players();
 		//Keepers
 		for(int i = 1; i <= 3; i++){
-			players.add(new Player(Player.GOALKEEPER, (attackAverageRating-(i-1)*5),defAverageRating-(i-1)*5));
+			players.add(new Player(Player.GOALKEEPER, (averageAttackRating-(i-2)*5),averageDefenceRating-(i-2)*5));
 		}
 		//Defenders
 		for(int i = 1; i <= 8; i++){
-			players.add(new Player(Player.DEFENDER, (attackAverageRating-(i-1)*5) , (defAverageRating-((i-1)*2))));
+			players.add(new Player(Player.DEFENDER, (averageAttackRating-(i-2)*1.5f) , (averageDefenceRating-((i-2)*1.5f))));
 		}
 		//Midfielders
 		for(int i = 1; i <= 8; i++){
-			players.add(new Player(Player.MIDFIELDER, (attackAverageRating-(i-1)*1.5f), (defAverageRating-(i-1)*1.5f)));
+			players.add(new Player(Player.MIDFIELDER, (averageAttackRating-(i-2)*1.5f), (averageDefenceRating-(i-2)*1.5f)));
 		}
 		//Forwards
 		for(int i = 1; i <= 6; i++){
-			players.add(new Player(Player.FORWARD, (attackAverageRating-(i-1)*2.5f), (defAverageRating-(i-1)*2.5f)));
+			players.add(new Player(Player.FORWARD, (averageAttackRating-(i-2)*1.5f), (averageDefenceRating-(i-2)*1.5f)));
 		}
 
 	}
@@ -173,6 +183,11 @@ public class Team implements Serializable {
 		if(midfielders.size() <= 4) for(int i = 0; i <= (4-midfielders.size()); i++) genPlayer(Player.MIDFIELDER);
 		if(forwards.size() <= 3) for(int i = 0; i <= (3-forwards.size()); i++) genPlayer(Player.FORWARD);
 
+		goalkeepers = players.getPlayers(Player.GOALKEEPER);
+		defenders = players.getPlayers(Player.DEFENDER);
+		midfielders = players.getPlayers(Player.MIDFIELDER);
+		forwards = players.getPlayers(Player.FORWARD);
+
 		int i = 0;
 		for(Player player : players.getList()){
 			i += player.rating;
@@ -181,7 +196,7 @@ public class Team implements Serializable {
 	}
 
 	private void genPlayer(int type) {
-		Player player = new Player(type, 0.8f*attackRating, 0.8f*defenceRating);
+		Player player = new Player(type, 0.7f*attackRating, 0.7f*defenceRating);
 		players.add(player);
 		updates.add(new TeamUpdate().youthPromotion(player));
 	}
@@ -190,8 +205,7 @@ public class Team implements Serializable {
 		for(Player player : players.getList()){
 			if(rand.nextDouble() <= ((double) player.growth/300)){
 				if(player.growth>0) {
-					player.rating++;
-					player.growth--;
+					player.grow();
 					updates.add(new TeamUpdate().playerGrowth(player));
 				}
 			} else {
@@ -258,29 +272,25 @@ public class Team implements Serializable {
 			float rAttack = 0;
 			float rDefence = 0;
 		if((goalkeepers.size()>=1)&&(defenders.size()>=4)&&(midfielders.size()>=3)&&(forwards.size()>=3)) {
-			rAttack += goalkeepers.get(0).attack*GK_ATTACK;
-			rDefence += goalkeepers.get(0).defense*GK_DEF;
-
+			rDefence += goalkeepers.get(0).defense;
 			//4 Defenders
 			for (int i = 0; i <= 3; i++) {
-				rAttack += defenders.get(i).attack*CB_ATTACK;
-				rDefence += defenders.get(i).defense*CB_DEF;
+				rDefence += defenders.get(i).defense;
 			}
 
 			//3 Mids
 			for (int i = 0; i <= 2; i++) {
-				rAttack += midfielders.get(i).attack*MID_ATTACK;
-				rDefence += midfielders.get(i).defense*MID_DEF;
+				rAttack += midfielders.get(i).attack;
+				rDefence += midfielders.get(i).defense;
 			}
 
 			//3 Forwards
 			for (int i = 0; i <= 2; i++) {
-				rAttack += forwards.get(i).attack*FORWARD_ATTACK;
-				rDefence += forwards.get(i).defense*FORWARD_DEF;
+				rAttack += forwards.get(i).attack;
 			}
 
-			rAttack = rAttack*(3/2);
-			rDefence = rDefence*(16/10);
+			rAttack /= (3+3);
+			rDefence /= (4+3+1);
 
 			float r433 = (rAttack+rDefence)/2;
 			if (r433 > bestRating) {
@@ -295,30 +305,25 @@ public class Team implements Serializable {
 		rAttack = 0;
 		rDefence = 0;
 		if((goalkeepers.size()>=1)&&(defenders.size()>=4)&&(midfielders.size()>=4)&&(forwards.size()>=2)) {
-			rAttack += goalkeepers.get(0).attack*GK_ATTACK;
-			rDefence += goalkeepers.get(0).defense*GK_DEF;
-
+			rDefence += goalkeepers.get(0).defense;
 			//4 Defenders
 			for (int i = 0; i <= 3; i++) {
-				rAttack += defenders.get(i).attack*CB_ATTACK;
-				rDefence += defenders.get(i).defense*CB_DEF;
+				rDefence += defenders.get(i).defense;
 			}
 
 			//4 Mids
 			for (int i = 0; i <= 3; i++) {
-				rAttack += midfielders.get(i).attack*MID_ATTACK;
-				rDefence += midfielders.get(i).defense*MID_DEF;
+				rAttack += midfielders.get(i).attack;
+				rDefence += midfielders.get(i).defense;
 			}
 
 			//2 Forwards
 			for (int i = 0; i <= 1; i++) {
-				rAttack += forwards.get(i).attack*FORWARD_ATTACK;
-				rDefence += forwards.get(i).defense*FORWARD_DEF;
+				rAttack += forwards.get(i).attack;
 			}
 
-			rAttack = rAttack*(3/2);
-			rDefence = rDefence*(16/10);
-
+			rAttack /= (2+4);
+			rDefence /= (4+4+1);
 			float r442 = (rAttack+rDefence)/2;
 			if (r442 > bestRating) {
 				bestRating = r442;
@@ -331,29 +336,25 @@ public class Team implements Serializable {
 		rAttack = 0;
 		rDefence = 0;
 		if((goalkeepers.size()>=1)&&(defenders.size()>=3)&&(midfielders.size()>=4)&&(forwards.size()>=3)) {
-			rAttack += goalkeepers.get(0).attack*GK_ATTACK;
-			rDefence += goalkeepers.get(0).defense*GK_DEF;
-
+			rDefence += goalkeepers.get(0).defense;
 			//3 Defenders
 			for (int i = 0; i <= 2; i++) {
-				rAttack += defenders.get(i).attack*CB_ATTACK;
-				rDefence += defenders.get(i).defense*CB_DEF;
+				rDefence += defenders.get(i).defense;
 			}
 
 			//4 Mids
 			for (int i = 0; i <= 3; i++) {
-				rAttack += midfielders.get(i).attack*MID_ATTACK;
-				rDefence += midfielders.get(i).defense*MID_DEF;
+				rAttack += midfielders.get(i).attack;
+				rDefence += midfielders.get(i).defense;
 			}
 
 			//3 Forwards
 			for (int i = 0; i <= 2; i++) {
-				rAttack += forwards.get(i).attack*FORWARD_ATTACK;
-				rDefence += forwards.get(i).defense*FORWARD_DEF;
+				rAttack += forwards.get(i).attack;
 			}
 
-			rAttack = rAttack*(3/2);
-			rDefence = rDefence*(16/10);
+			rAttack /= (3+4);
+			rDefence /= (4+3+1);
 
 			float r343 = (rAttack+rDefence)/2;
 			if (r343 > bestRating) {
@@ -363,7 +364,7 @@ public class Team implements Serializable {
 			}
 		}
 
-		System.out.println(name+": Formation: "+formation);
+		//System.out.println(name+": Formation: "+formation);
 
 		switch(formation) {
 			case FOURTHREETHREE:
@@ -388,33 +389,26 @@ public class Team implements Serializable {
 	public void calculateStats(){
 		//Defence
 		float defence = 0;
-		defence += goalkeepers.get(0).defense*GK_DEF;
+		defence += goalkeepers.get(0).defense;
 		for (int i = 0; i < nDefenders; i++){
-			if(i<defenders.size()) defence += defenders.get(i).defense*CB_DEF;
+			if(i<defenders.size()) defence += defenders.get(i).defense;
 		}
 		for (int i = 0; i < nMidfielders; i++) {
-			if(i<midfielders.size()) defence += midfielders.get(i).defense*MID_DEF;
+			if(i<midfielders.size()) defence += midfielders.get(i).defense;
 		}
-		for (int i = 0; i < nForwards; i++) {
-			if(i<forwards.size()) defence += forwards.get(i).defense*FORWARD_DEF;
-		}
-		defenceRating = defence*(16/10);
-		this.defence = defenceRatio(defenceRating);
+		defenceRating = defence/(nDefenders+nMidfielders+1);
+		this.defence = defenceRatio(defenceRating+form);
 
 		//Attack
 		float attack = 0;
-		attack += goalkeepers.get(0).attack*GK_ATTACK;
-		for (int i = 0; i < nDefenders; i++){
-			if(i<defenders.size()) attack += defenders.get(i).attack*CB_ATTACK;
-		}
 		for (int i = 0; i < nMidfielders; i++) {
-			if(i<midfielders.size()) attack += midfielders.get(i).attack*MID_ATTACK;
+			if(i<midfielders.size()) attack += midfielders.get(i).attack;
 		}
 		for (int i = 0; i < nForwards; i++) {
-			if(i<forwards.size()) attack += forwards.get(i).attack*FORWARD_ATTACK;
+			if(i<forwards.size()) attack += forwards.get(i).attack;
 		}
-		attackRating = attack*(3/2);
-		this.attack = attackRatio(attackRating);
+		attackRating = attack/(nMidfielders+nForwards);
+		this.attack = attackRatio(attackRating+form);
 
 		bestRating = (attackRating+defenceRating)/2;
 	}
@@ -473,6 +467,38 @@ public class Team implements Serializable {
 			int p = rand.nextInt(nDefenders-1);
 			return defenders.get(p);
 		}
+	}
+
+	//-1 lose, 0 draw, 1 win
+	public void teamForm(int result, float ratingDifference){
+		switch (result){
+			case 1:
+				formList.add(0,0.5*Math.exp(ratingDifference*0.15));
+				break;
+			case 0:
+				formList.add(0,0.0);
+				break;
+			case -1:
+				formList.add(0,-0.5*Math.exp(-ratingDifference*0.15));
+				break;
+		}
+		if(formList.size()>10) formList.remove(10);
+		form = 0;
+		for(int i = 0; i<formList.size(); i++){
+			double d = formList.get(i);
+			form += Math.exp(-i/2.5)*d;
+		}
+		if(id==FootballSim.info.teamId) {
+			System.out.println(name+" Form: "+form);
+		}
+	}
+
+	public float getFormRating(){
+		return rating+form;
+	}
+
+	public double getForm(){
+		return Math.round(form*10.0)/10.0;
 	}
 
 }

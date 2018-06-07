@@ -27,6 +27,7 @@ public class MatchScreen extends CustomGameScreen {
     private BottomBar bottomBar;
 
     public Label minutes;
+    public Label gameScore;
 
     //Table
     private VerticalGroup table;
@@ -59,6 +60,7 @@ public class MatchScreen extends CustomGameScreen {
         table.padBottom(40f);
 
         mainTable = new Table();
+//        mainTable.debug();
 
         scrollPane = new ScrollPane(table,skin);
         scrollPane.setDebug(true);
@@ -89,11 +91,18 @@ public class MatchScreen extends CustomGameScreen {
             matchSim.setupUI(this, table);
             minutes = new Label("0", skin);
             minutes.setAlignment(Align.right);
+            gameScore = new Label("",skin,"content");
+            gameScore.setAlignment(Align.center);
 
-            mainTable.add(minutes).width(getvWidth()).padRight(50f).spaceTop(140f);
+            mainTable.add(minutes).width(getvWidth()).padRight(50f).padTop(140f);
             mainTable.row();
+            mainTable.add(gameScore).width(getvWidth());
+            mainTable.row();
+
+
             stage.addActor(mainTable);
 
+            showFPSCounter();
             Gdx.input.setInputProcessor(stage);
         }
     }

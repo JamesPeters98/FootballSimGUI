@@ -96,7 +96,7 @@ public class MainMenu extends CustomGameScreen {
 
         statsTable.add(buttonBig(String.valueOf(FootballSim.getTeam().getDefenceRating())));
         statsTable.add(buttonBig(String.valueOf(FootballSim.getTeam().getAttackRating())));
-        statsTable.add(buttonBig(String.valueOf(FootballSim.getTeam().getRating())));
+        statsTable.add(buttonBig(FootballSim.getTeam().getRating()+"+"+FootballSim.getTeam().getForm()));
 
         statsTable.row();
 
@@ -133,7 +133,7 @@ public class MainMenu extends CustomGameScreen {
 //        scrollPane.setDebug(true);
         stage.addActor(buttons);
 
-
+        showFPSCounter();
         Gdx.input.setInputProcessor(stage);
     }
 

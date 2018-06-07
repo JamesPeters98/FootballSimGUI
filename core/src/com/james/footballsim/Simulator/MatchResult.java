@@ -48,6 +48,8 @@ public class MatchResult {
 			away.winStreak = 0;
 			home.loseStreak = 0;
 			away.loseStreak++;
+			home.teamForm(1,away.getFormRating()-home.getFormRating());
+			away.teamForm(-1,home.getFormRating()-away.getFormRating());
 		}
 		else if(homeGoals < awayGoals){
 			awayPoints = 3;
@@ -55,12 +57,17 @@ public class MatchResult {
 			home.winStreak = 0;
 			away.loseStreak = 0;
 			home.loseStreak++;
+			home.teamForm(-1,away.getFormRating()-home.getFormRating());
+			away.teamForm(1,home.getFormRating()-away.getFormRating());
 		}
 		else {
 			homePoints = 1; 
 			awayPoints = 1;
 			home.loseStreak = 0;
 			away.loseStreak = 0;
+			away.teamForm(0,home.getFormRating()-away.getFormRating());
+			home.teamForm(0,away.getFormRating()-home.getFormRating());
+
 		}
 //		Team[] teams = {home,away};
 //		for(Team team : teams){

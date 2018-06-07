@@ -12,6 +12,7 @@ import com.james.footballsim.Simulator.Team;
 import com.james.footballsim.Utils;
 import uk.co.codeecho.fixture.generator.Fixture;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.james.footballsim.FootballSim.info;
@@ -53,7 +54,8 @@ public class WeeklyFixtures extends CustomGameScreen {
         table = new Table();
         table.padTop(25f);
 
-        List<Fixture<Integer>> round = FootballSim.info.leagues.get(info.division).getFixtures(FootballSim.info.round);
+        LinkedList<Fixture<Integer>> round = (LinkedList<Fixture<Integer>>) FootballSim.info.leagues.get(info.division).getFixtures(FootballSim.info.round);
+        Utils.putChosenTeamAtTopOfArray(round);
         for(Fixture<Integer> fixture: round){
             System.out.println(FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam()).name + " vs " + FootballSim.info.leagues.get(info.division).getTeam(fixture.getAwayTeam()).name);
             Team homeTeam = FootballSim.info.leagues.get(info.division).getTeam(fixture.getHomeTeam());

@@ -9,10 +9,13 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.james.footballsim.FootballSim;
 import com.james.footballsim.Screens.MatchScreen;
+import com.james.footballsim.Utils;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import static com.james.footballsim.FootballSim.fileSave;
 import static com.james.footballsim.FootballSim.info;
 import static com.james.footballsim.FootballSim.skin;
 
@@ -22,9 +25,13 @@ public class MatchSim {
 	private int penGoals[] = new int[2];
 	private int freeKickGoals[] = new int[2];
 	private int goals[] = {0,0};
+	private int goalsUI[] = {0,0}; //Used to for UI score
 	private int goalsSecondLeg[] = new int[2];
 	private int goalsFirstLeg[] = new int[2];
 	private int penaltyShootOut[] = new int[2];
+
+	private HashMap<Integer,Result> resultsHome;
+	private HashMap<Integer,Result> resultsAway;
 
 	private VerticalGroup table;
 	private MatchScreen screen;
@@ -52,6 +59,7 @@ public class MatchSim {
 	private boolean knockoutOneLeg = false;
 	private boolean inExtraTime = false;
 	private boolean penShootout = false;
+	private boolean matchStarted = false;
 
 	public boolean isPlaceholder = false;
 
@@ -63,8 +71,8 @@ public class MatchSim {
         this.fixtureID = fixtureID;
         goalsFirstLeg[0] = result.getHomeGoals();
         goalsFirstLeg[1] = result.getAwayGoals();
-        goals[0] += result.getAwayGoals();
-        goals[1] += result.getHomeGoals();
+        goalsUI[0] = goals[0] += result.getAwayGoals();
+        goalsUI[1] = goals[1] += result.getHomeGoals();
     }
 
     //Use for first leg of match
@@ -84,6 +92,8 @@ public class MatchSim {
 		this.away = away;
 		if(home==null || away==null) Gdx.app.error("MatchSim", "Can't have null team");
 		this.league = league;
+		resultsHome = new HashMap<>();
+		resultsAway = new HashMap<>();
 	}
 
 	public MatchSim(){
@@ -98,14 +108,18 @@ public class MatchSim {
 	}
 
 	public boolean render(float delta){
+    	if(!matchStarted){
+    		runMatch();
+    		postMatchUpdates();
+    		seasonChecks();
+    		fileSave.saveInfo();
+    		matchStarted = true;
+		}
 		if(setup&&!finished) {
 			if(minute >= matchLength) {
 				if(!finished){
 					displayOutput();
-
 					Gdx.app.log("MatchSim", "Game finished!");
-					postMatchUpdates();
-					seasonChecks();
 					finished = true;
 					screen.menu.setDisabled(false);
 					return true;
@@ -113,84 +127,121 @@ public class MatchSim {
 			}
 			if(minute < matchLength) {
 				totalDelta += delta;
-				if ((totalDelta >= interval)||(skip)) {
+				//Gdx.app.log("MatchSim","deltaT: "+totalDelta);
+				if(skip){
+					for(int m = minute; m < matchLength; m++){
+						displayOutput();
+						minute++;
+					}
+				}
+				else if ((totalDelta >= interval)) {
+					totalDelta = 0;
 					displayOutput();
 					minute++;
-					totalDelta = 0;
-					loop();
 				}
 			}
 		}
 		return false;
 	}
 
+	private void loop(float delta){
+
+	}
+
 	public MatchResult runMatchBackground() {
     	runMatch();
-			for(int i = 1; i<= matchLength; i++){
-				minute++;
-				loop();
-			}
-			postMatchUpdates();
+    	postMatchUpdates();
 		return matchResult;
 	}
 
-	private void runMatch(){
-		Random random = new Random();
-		double homeGoalsAverage = Math.exp(home.attack+away.defence+0.33);
-		double awayGoalsAverage = Math.exp(away.attack+home.defence);
-		System.out.println(home.name+ "avg Goals: "+homeGoalsAverage);
-		System.out.println(away.name+ "avg Goals: "+awayGoalsAverage);
+	private int goals(double averageGoals){
+		return Utils.poisson(averageGoals);
+    }
 
-		long homeGoals = Math.round(random.nextGaussian()*homeGoalsAverage);
-		long awayGoals = Math.round(random.nextGaussian()*awayGoalsAverage);
-		long hGoals = (homeGoals < 0) ? 0 : homeGoals;
-		long aGoals = (awayGoals < 0) ? 0 : awayGoals;
-		System.out.println(home.name+ "Goals: "+hGoals);
-		System.out.println(away.name+ "Goals: "+aGoals);
+	private void generateGoalTimes(int homegoals, int awaygoals, int startTime, int finishTime){
+    	Random random = new Random();
+    	for(int g = 0; g <= homegoals; g++){
+    		if(g>0){
+    			Result home = new Result(ResultType.GOAL_OPEN_PLAY);
+				int i = random.nextInt((finishTime - startTime) + 1) + startTime;
+				while(resultsHome.get(i)!=null){
+					i = random.nextInt((finishTime - startTime) + 1) + startTime;
+				}
+				resultsHome.put(i, home);
+			}
+		}
+		for(int g = 0; g <= awaygoals; g++){
+			if(g>0){
+				Result away = new Result(ResultType.GOAL_OPEN_PLAY);
+				int i = random.nextInt((finishTime - startTime) + 1) + startTime;
+				while(resultsAway.get(i)!=null){
+					i = random.nextInt((finishTime - startTime) + 1) + startTime;
+				}
+				resultsAway.put(i, away);
+			}
+		}
 	}
 
-	private void loop(){
-		if(minute == 90){
-			Gdx.app.log("MatchSim", "End of 90 minutes.");
-			if(knockoutTwoLegs){
-				if(goals[1]==goals[0]) {
-					if (firstLegResult.getAwayGoals() == goalsSecondLeg[1]) {
-						setExtraTime();
-						Gdx.app.log("MatchSim", "EXTRA TIME!");
-					}
-				}
-			}
-			if(knockoutOneLeg){
-				Gdx.app.log("MatchSim", "Knockout Game");
-				if(goals[1]==goals[0]) {
+	private void runMatch(){
+		double homeGoalsAverage = Math.exp(home.attack+away.defence+0.33);
+		double awayGoalsAverage = Math.exp(away.attack+home.defence);
+
+		goals[0] = goalsSecondLeg[0] = goals(homeGoalsAverage);
+		goals[1] = goalsSecondLeg[1] = goals(awayGoalsAverage);
+
+		generateGoalTimes(goals[0],goals[1],1,90);
+
+		Gdx.app.log("MatchSim", "FULL TIME! "+home.shortName+" "+goals[0]+"-"+goals[1]+" "+away.shortName);
+
+		//Extra time
+		if(knockoutTwoLegs){
+			if(goals[1]==goals[0]) {
+				if (firstLegResult.getAwayGoals() == goalsSecondLeg[1]) {
 					setExtraTime();
+					int ExtraTimeGoals[] = {goals(homeGoalsAverage/3),goals(awayGoalsAverage/3)};
+					for(int i = 0; i <=1; i++){
+						goals[i] += ExtraTimeGoals[i];
+						goalsSecondLeg[i] = ExtraTimeGoals[i];
+					}
+					generateGoalTimes(ExtraTimeGoals[0],ExtraTimeGoals[1],91,120);
 					Gdx.app.log("MatchSim", "EXTRA TIME!");
-				} else {
-					Gdx.app.log("MatchSim", "No extra time");
 				}
 			}
 		}
-		else if(minute == 120){
-			Gdx.app.log("MatchSim", "End of 120 minutes.");
-			if(knockoutTwoLegs) {
-				if(goals[1]==goals[0]) {
-					if (firstLegResult.getAwayGoals() == goalsSecondLeg[1]) {
-						penShootout = true;
-						penaltyShootOut();
-					}
+		if(knockoutOneLeg){
+			Gdx.app.log("MatchSim", "Knockout Game");
+			if(goals[1]==goals[0]) {
+				setExtraTime();
+				int ExtraTimeGoals[] = {goals(homeGoalsAverage/3),goals(awayGoalsAverage/3)};
+				for(int i = 0; i <=1; i++){
+					goals[i] += ExtraTimeGoals[i];
+					goalsSecondLeg[i] = ExtraTimeGoals[i];
 				}
+				generateGoalTimes(ExtraTimeGoals[0],ExtraTimeGoals[1],91,120);
+				Gdx.app.log("MatchSim", "EXTRA TIME!");
+			} else {
+				Gdx.app.log("MatchSim", "No extra time");
 			}
-			if(knockoutOneLeg){
-				if (goals[0] == goals[1]) {
+		}
+
+		//End of extra time.
+		if(knockoutTwoLegs) {
+            Gdx.app.log("MatchSim", "End of 120 minutes.");
+            if(goals[1]==goals[0]) {
+				if (firstLegResult.getAwayGoals() == goalsSecondLeg[1]) {
 					penShootout = true;
 					penaltyShootOut();
 				}
 			}
 		}
+		if(knockoutOneLeg){
+            Gdx.app.log("MatchSim", "End of 120 minutes.");
+            if (goals[0] == goals[1]) {
+				penShootout = true;
+				penaltyShootOut();
+			}
+		}
 
-		resultHome = teamLoop(away,home);
-		resultAway = teamLoop(home,away);
-		update();
 	}
 
 	private void postMatchUpdates(){
@@ -201,14 +252,14 @@ public class MatchSim {
 		    int team1Goals = goalsSecondLeg[0]+firstLegResult.getAwayGoals();
 		    int team2Goals = goalsSecondLeg[1]+firstLegResult.getHomeGoals();
 
-            if(team1Goals>team2Goals){ matchResult = new MatchResult(home,away,team1Goals,team2Goals,true); Gdx.app.log("MatchSim", home.name+" won!"); }
-			if(team2Goals>team1Goals){ matchResult = new MatchResult(home,away,team1Goals,team2Goals,false); Gdx.app.log("MatchSim", away.name+" won!"); }
+            if(team1Goals>team2Goals){ matchResult = new MatchResult(home,away,team1Goals,team2Goals,true); Gdx.app.log("MatchSim", home.shortName+" won!"); }
+			if(team2Goals>team1Goals){ matchResult = new MatchResult(home,away,team1Goals,team2Goals,false); Gdx.app.log("MatchSim", away.shortName+" won!"); }
 			if(team1Goals == team2Goals){
 				if(firstLegResult.getAwayGoals() > goalsSecondLeg[1]){
-					Gdx.app.log("MatchSim", home.name+" won on away Goals!");
+					Gdx.app.log("MatchSim", home.shortName+" won on away Goals!");
                     matchResult = new MatchResult(home,away,team1Goals,team2Goals,true);
 				} else if(goalsSecondLeg[1] > firstLegResult.getAwayGoals()){
-					Gdx.app.log("MatchSim", away.name+" won on away Goals!");
+					Gdx.app.log("MatchSim", away.shortName+" won on away Goals!");
                     matchResult = new MatchResult(home,away,team1Goals,team2Goals,false);
 				}
 			}
@@ -227,18 +278,17 @@ public class MatchSim {
 		FootballSim.info.round++;
 	}
 
-	private void update(){
-		if(resultHome.goalScored()){ goals[0]++; goalsSecondLeg[0]++; }
-		if(resultHome.freekickScored()) freeKickGoals[0]++;
-		if(resultHome.penaltyScored()) penGoals[0]++;
-		if(resultAway.goalScored()) { goals[1]++; goalsSecondLeg[1]++; }
-		if(resultAway.freekickScored()) freeKickGoals[1]++;
-		if(resultAway.penaltyScored()) penGoals[1]++;
-	}
-
 	public void displayOutput() {
 		int i = minute;
 		Gdx.app.log("MatchSim", i+"");
+
+		resultHome = resultsHome.get(i);
+		resultAway = resultsAway.get(i);
+		if(resultHome == null) resultHome = new Result(ResultType.NOTHING);
+		if(resultAway == null) resultAway = new Result(ResultType.NOTHING);
+
+		if(resultHome.goalScored()) goalsUI[0]++;
+		if(resultAway.goalScored()) goalsUI[1]++;
 
 		Player homeScorer = null;
 		Player awayScorer = null;
@@ -256,53 +306,54 @@ public class MatchSim {
 			}
 
 			if (resultHome.openPlayGoal())
-				homeButton = new TextButton(i + "' GOAL! " + homeScorer.getMatchName() + " | " + home.name + " " + goals[0] + "-" + goals[1], skin, "noClick_small");
+				homeButton = new TextButton(i + "' GOAL! " + homeScorer.getMatchName() + " | " + home.shortName + " " + goalsUI[0] + "-" + goalsUI[1], skin, "noClick_small");
 			if (resultHome.penaltyScored())
-				homeButton = new TextButton(i + "' GOAL! Penalty! " + home.name + " " + goals[0] + "-" + goals[1], skin, "noClick_small");
+				homeButton = new TextButton(i + "' GOAL! Penalty! " + home.shortName + " " + goalsUI[0] + "-" + goalsUI[1], skin, "noClick_small");
 			if (resultHome.freekickScored())
-				homeButton = new TextButton(i + "' GOAL! Freekick! " + home.name + " " + goals[0] + "-" + goals[1], skin, "noClick_small");
+				homeButton = new TextButton(i + "' GOAL! Freekick! " + home.shortName + " " + goalsUI[0] + "-" + goalsUI[1], skin, "noClick_small");
 			if (resultHome.resultType == ResultType.MISS_PENALTY)
-				homeButton = new TextButton(i + "' MISSED PENALTY! " + home.name, skin, "noClick_small");
+				homeButton = new TextButton(i + "' MISSED PENALTY! " + home.shortName, skin, "noClick_small");
 
 			if (resultAway.openPlayGoal())
-				awayButton = new TextButton(i + "' GOAL! " + awayScorer.getMatchName() + " | " + away.name + " " + goals[0] + "-" + goals[1], skin, "noClick_small");
+				awayButton = new TextButton(i + "' GOAL! " + awayScorer.getMatchName() + " | " + away.shortName + " " + goalsUI[0] + "-" + goalsUI[1], skin, "noClick_small");
 			if (resultAway.penaltyScored())
-				awayButton = new TextButton(i + "' GOAL! Penalty! " + away.name + " " + goals[0] + "-" + goals[1], skin, "noClick_small");
+				awayButton = new TextButton(i + "' GOAL! Penalty! " + away.shortName + " " + goalsUI[0] + "-" + goalsUI[1], skin, "noClick_small");
 			if (resultAway.freekickScored())
-				awayButton = new TextButton(i + "' GOAL! Freekick! " + away.name + " " + goals[0] + "-" + goals[1], skin, "noClick_small");
+				awayButton = new TextButton(i + "' GOAL! Freekick! " + away.shortName + " " + goalsUI[0] + "-" + goalsUI[1], skin, "noClick_small");
 			if (resultAway.resultType == ResultType.MISS_PENALTY)
-				awayButton = new TextButton(i + "' MISSED PENALTY! " + away.name, skin, "noClick_small");
+				awayButton = new TextButton(i + "' MISSED PENALTY! " + away.shortName, skin, "noClick_small");
 
 			if (resultHome.openPlayGoal())
-				System.out.println(i + "' GOAL! " + homeScorer.getMatchName() + " | " + home.name + " " + goals[0] + "-" + goals[1]);
+				System.out.println(i + "' GOAL! " + homeScorer.getMatchName() + " | " + home.shortName + " " + goalsUI[0] + "-" + goalsUI[1]);
 			if (resultHome.penaltyScored())
-				System.out.println(i + "' GOAL! Penalty! " + home.name + " " + goals[0] + "-" + goals[1]);
+				System.out.println(i + "' GOAL! Penalty! " + home.shortName + " " + goalsUI[0] + "-" + goalsUI[1]);
 			if (resultHome.freekickScored())
-				System.out.println(i + "' GOAL! Freekick! " + home.name + " " + goals[0] + "-" + goals[1]);
+				System.out.println(i + "' GOAL! Freekick! " + home.shortName + " " + goalsUI[0] + "-" + goalsUI[1]);
 			if (resultHome.resultType == ResultType.MISS_PENALTY)
-				System.out.println(i + "' MISSED PENALTY! " + home.name);
+				System.out.println(i + "' MISSED PENALTY! " + home.shortName);
 
 			if (resultAway.openPlayGoal())
-				System.out.println(i + "' GOAL! " + awayScorer.getMatchName() + " | " + away.name + " " + goals[0] + "-" + goals[1]);
+				System.out.println(i + "' GOAL! " + awayScorer.getMatchName() + " | " + away.shortName + " " + goalsUI[0] + "-" + goalsUI[1]);
 			if (resultAway.penaltyScored())
-				System.out.println(i + "' GOAL! Penalty! " + away.name + " " + goals[0] + "-" + goals[1]);
+				System.out.println(i + "' GOAL! Penalty! " + away.shortName + " " + goalsUI[0] + "-" + goalsUI[1]);
 			if (resultAway.freekickScored())
-				System.out.println(i + "' GOAL! Freekick! " + away.name + " " + goals[0] + "-" + goals[1]);
+				System.out.println(i + "' GOAL! Freekick! " + away.shortName + " " + goalsUI[0] + "-" + goalsUI[1]);
 			if (resultAway.resultType == ResultType.MISS_PENALTY)
-				System.out.println(i + "' MISSED PENALTY! " + away.name);
+				System.out.println(i + "' MISSED PENALTY! " + away.shortName);
 
 
-			if(resultHome.goalScored()||resultAway.goalScored()) totalDelta = -delay;
+			if(resultHome.goalScored()||resultAway.goalScored()){ totalDelta = -delay; Gdx.app.log("MatchSim", "Goal delay");}
 		}
 
 		screen.minutes.setText(""+minute);
+		screen.gameScore.setText(home.shortName.toUpperCase()+" "+goalsUI[0]+"-"+goalsUI[1]+" "+away.shortName.toUpperCase());
 
 		if(minute==0){
 			TextButton kickOff = new TextButton("KICK OFF!",skin,"noClick_small");
 			Container container = new Container(kickOff).fillX().width(screen.getvWidth()*0.8f);
 			table.addActorAt(0, container);
 			if(knockoutTwoLegs){
-				TextButton aggregate = new TextButton("Aggregate: "+home.shortName+" "+goals[0]+"-"+goals[1]+" "+away.shortName,skin,"noClick_small");
+				TextButton aggregate = new TextButton("Aggregate: "+home.shortName+" "+goalsUI[0]+"-"+goalsUI[1]+" "+away.shortName,skin,"noClick_small");
 				Container container2 = new Container(kickOff).fillX().width(screen.getvWidth()*0.8f);
 				table.addActorAt(0, container2);
 			}
@@ -368,39 +419,11 @@ public class MatchSim {
 
 		if(i == 90 && !inExtraTime){
 		    System.out.println(home.shortName+" "+goals[0]+"-"+goals[1]+" "+away.shortName);
-            TextButton button = new TextButton(home.shortName+" "+goals[0]+"-"+goals[1]+" "+away.shortName,skin,"noClick_small");
+            TextButton button = new TextButton(home.shortName+" "+goalsUI[0]+"-"+goalsUI[1]+" "+away.shortName,skin,"noClick_small");
             Container container = new Container(button).fillX().width(screen.getvWidth()*0.8f);
             table.addActorAt(0, container);
         }
 
-	}
-	
-	public Result teamLoop(Team teamA, Team teamB){
-		double rand = Math.random();
-		//Probability of defensive error
-		if(rand <= 1-teamA.defence){
-			rand = Math.random();
-			if(rand <= 0.02){
-				rand = Math.random();
-				if(rand <= teamB.penalites){
-					return new Result(ResultType.GOAL_PENALTY);
-				} else {
-					return new Result(ResultType.MISS_PENALTY);
-				}
-			}
-			else if(rand <= 0.08){
-				rand = Math.random();
-				if(rand <= teamB.freekicks){
-					return new Result(ResultType.GOAL_FREE_KICK);
-				}
-			}
-			//prob of attack
-			else if(rand <= teamB.attack){
-				return new Result(ResultType.GOAL_OPEN_PLAY);
-			}
-
-		}
-		return new Result(ResultType.NOTHING);
 	}
 
 	public void penaltyShootOut(){

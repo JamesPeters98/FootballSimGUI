@@ -53,8 +53,9 @@ public class LeagueTable extends CustomGameScreen {
         table = new Table();
         table.padTop(25f);
         table.padBottom(10f);
+        addToTable(FootballSim.info.leagues.get(FootballSim.info.division));
         for(League league: FootballSim.info.leagues.values()) {
-            addToTable(league);
+            if(league.leagueType.divisionPosition()!=FootballSim.info.division) addToTable(league);
         }
 
         scrollPane = new ScrollPane(table,skin);
@@ -110,7 +111,7 @@ public class LeagueTable extends CustomGameScreen {
 		Utils.sortArray(leagueStatsArray);
 		for(int i = 0; i <leagueStatsArray.size();i++) {
 			LeagueStats stats = leagueStatsArray.get(i);
-			System.out.format("%-3s%-25s%-10s%-15s%-18s%-8s%-8s%-8s%-8s\n", new String[]{""+(i+1),stats.team.name,""+stats.points,""+stats.goals,""+stats.goalsConceeded,""+stats.wins,""+stats.draws,""+stats.losses,""+stats.team.getRating()});
+			//System.out.format("%-3s%-25s%-10s%-15s%-18s%-8s%-8s%-8s%-8s\n", new String[]{""+(i+1),stats.team.name,""+stats.points,""+stats.goals,""+stats.goalsConceeded,""+stats.wins,""+stats.draws,""+stats.losses,""+stats.team.getRating()});
 
             TextButton points = new TextButton(String.valueOf(stats.points), skin, "noClick_small");
             points.pad(0,15,0,15);

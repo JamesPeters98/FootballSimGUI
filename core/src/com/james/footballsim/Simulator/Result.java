@@ -3,7 +3,7 @@ package com.james.footballsim.Simulator;
 public class Result {
 	
 	int resultType = 0;
-	
+
 	public Result(int resultType){
 		this.resultType = resultType;
 		//System.out.println("New Result: "+resultType);

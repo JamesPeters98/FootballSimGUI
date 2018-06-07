@@ -1,17 +1,14 @@
 package com.james.footballsim.Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.james.footballsim.FootballSim;
-import sun.awt.CGraphicsDevice;
-
-import java.awt.*;
 
 import static com.james.footballsim.FootballSim.skin;
 
@@ -30,6 +27,7 @@ public class CustomGameScreen implements Screen {
     public final static float transitionDuration = 0.5f;
 
     Button backButton;
+    Label FPSCounter;
     boolean hasBackButton;
 
     private CustomGameScreen prevScreen;
@@ -71,6 +69,7 @@ public class CustomGameScreen implements Screen {
         stage = new Stage(viewport);
 
         backButton = ScreenUtils.backButton(game,this, null);
+        FPSCounter = new Label("FPS: "+Gdx.graphics.getFramesPerSecond(),skin);
     }
 
 
@@ -83,6 +82,8 @@ public class CustomGameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0.4f, 0.6f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        FPSCounter.setText("FPS: "+Gdx.graphics.getFramesPerSecond());
     }
 
     @Override
@@ -98,6 +99,7 @@ public class CustomGameScreen implements Screen {
         stage.getCamera().viewportHeight = vHeight;
 
         updateUI(vWidth,vHeight);
+        FPSCounter.setPosition(3,3);
     }
 
     public void updateUI(float width, float height){
@@ -131,6 +133,10 @@ public class CustomGameScreen implements Screen {
         if(!hasBackButton){
             backButton.remove();
         }
+    }
+
+    public void showFPSCounter(){
+        stage.addActor(FPSCounter);
     }
 
     public void setPrevScreen(CustomGameScreen screen){
