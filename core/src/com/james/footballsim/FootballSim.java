@@ -43,6 +43,10 @@ public class FootballSim extends FadingGame {
 	public void create () {
 		super.create();
 
+		Gdx.app.log("FootballSim: Used Mem", (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1000000+"MB");
+		Gdx.app.log("FootballSim: Free Mem", (Runtime.getRuntime().freeMemory())/1000000+"MB");
+		Gdx.app.log("FootballSim: Total Mem", Runtime.getRuntime().totalMemory()/1000000+"MB");
+
 		dialogs = GDXDialogsSystem.install();
 		fileSave = new FileSave();
         fileSave.kryo().register(Info.class, new CompatibleFieldSerializer(fileSave.kryo(),Info.class));
