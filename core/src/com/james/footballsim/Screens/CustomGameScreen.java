@@ -24,10 +24,11 @@ public class CustomGameScreen implements Screen {
     float vWidth;
     float vHeight;
 
-    public final static float transitionDuration = 0.5f;
+    public final static float transitionDuration = 0.0001f;
 
     Button backButton;
     Label FPSCounter;
+    Label Ram;
     boolean hasBackButton;
 
     private CustomGameScreen prevScreen;
@@ -69,7 +70,8 @@ public class CustomGameScreen implements Screen {
         stage = new Stage(viewport);
 
         backButton = ScreenUtils.backButton(game,this, null);
-        FPSCounter = new Label("FPS: "+Gdx.graphics.getFramesPerSecond(),skin);
+        FPSCounter = new Label("",skin,"content");
+        Ram = new Label("",skin,"content");
     }
 
 
@@ -84,6 +86,9 @@ public class CustomGameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         FPSCounter.setText("FPS: "+Gdx.graphics.getFramesPerSecond());
+        int javaHeap = (int) (Gdx.app.getJavaHeap()/1000000);
+        int nativeHeap = (int) (Gdx.app.getNativeHeap()/1000000);
+        Ram.setText("Java Heap: "+javaHeap+"MB Native Heap: "+nativeHeap+"MB");
     }
 
     @Override
@@ -99,7 +104,8 @@ public class CustomGameScreen implements Screen {
         stage.getCamera().viewportHeight = vHeight;
 
         updateUI(vWidth,vHeight);
-        FPSCounter.setPosition(3,3);
+        FPSCounter.setPosition(3,80);
+        Ram.setPosition(3,25);
     }
 
     public void updateUI(float width, float height){
@@ -137,6 +143,7 @@ public class CustomGameScreen implements Screen {
 
     public void showFPSCounter(){
         stage.addActor(FPSCounter);
+        stage.addActor(Ram);
     }
 
     public void setPrevScreen(CustomGameScreen screen){

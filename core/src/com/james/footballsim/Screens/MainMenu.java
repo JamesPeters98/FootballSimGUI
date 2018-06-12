@@ -134,6 +134,7 @@ public class MainMenu extends CustomGameScreen {
         stage.addActor(buttons);
 
         showFPSCounter();
+        FootballSim.showMemoryUsage();
         Gdx.input.setInputProcessor(stage);
     }
 

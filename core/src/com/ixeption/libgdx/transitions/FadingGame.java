@@ -161,6 +161,7 @@ public class FadingGame extends Game {
      * @param screen may be {@code null} */
     @Override
     public void setScreen(Screen screen) {
+        long time  = System.currentTimeMillis();
         screen.show();
         if (transitionRunning)
             Gdx.app.log(FadingGame.class.getSimpleName(), "Changed Screen while transition in progress");
@@ -184,6 +185,7 @@ public class FadingGame extends Game {
         }
 
         this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Gdx.app.log(screen.getClass().getCanonicalName(),"Transition Time "+(System.currentTimeMillis()-time)+"ms");
     }
 
     public void setScreen(CustomGameScreen currentScreen, CustomGameScreen nextScreen, ScreenTransition transition, float transitionDuration){

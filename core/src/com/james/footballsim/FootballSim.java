@@ -42,11 +42,7 @@ public class FootballSim extends FadingGame {
 	@Override
 	public void create () {
 		super.create();
-
-		Gdx.app.log("FootballSim: Used Mem", (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1000000+"MB");
-		Gdx.app.log("FootballSim: Free Mem", (Runtime.getRuntime().freeMemory())/1000000+"MB");
-		Gdx.app.log("FootballSim: Total Mem", Runtime.getRuntime().totalMemory()/1000000+"MB");
-
+		showMemoryUsage();
 		dialogs = GDXDialogsSystem.install();
 		fileSave = new FileSave();
         fileSave.kryo().register(Info.class, new CompatibleFieldSerializer(fileSave.kryo(),Info.class));
@@ -199,6 +195,15 @@ public class FootballSim extends FadingGame {
 
 	private void readVars(){
 		info = fileSave.readClass(Info.class, "data");
+	}
+
+
+	public static void showMemoryUsage(){
+		Gdx.app.log("FootballSim: Used Mem", (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1000000+"MB");
+		Gdx.app.log("FootballSim: Free Mem", (Runtime.getRuntime().freeMemory())/1000000+"MB");
+		Gdx.app.log("FootballSim: Total Mem", Runtime.getRuntime().totalMemory()/1000000+"MB");
+		Gdx.app.log("FootballSim: Java Heap", Gdx.app.getJavaHeap()/1000000+"MB");
+		Gdx.app.log("FootballSim: Native Heap", Gdx.app.getNativeHeap()/1000000+"MB");
 	}
 }
 

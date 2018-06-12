@@ -280,7 +280,7 @@ public class MatchSim {
 
 	public void displayOutput() {
 		int i = minute;
-		Gdx.app.log("MatchSim", i+"");
+		//Gdx.app.log("MatchSim", i+"");
 
 		resultHome = resultsHome.get(i);
 		resultAway = resultsAway.get(i);
