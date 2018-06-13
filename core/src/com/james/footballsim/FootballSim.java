@@ -1,11 +1,13 @@
 package com.james.footballsim;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -24,6 +26,7 @@ import de.tomgrill.gdxdialogs.core.GDXDialogs;
 import de.tomgrill.gdxdialogs.core.GDXDialogsSystem;
 import uk.co.codeecho.fixture.generator.FixtureGenerator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +54,7 @@ public class FootballSim extends FadingGame {
 	public void create () {
 		super.create();
 		showMemoryUsage();
+		Gdx.app.log("Insets", getIOSSafeAreaInsets().toString());
 		dialogs = GDXDialogsSystem.install();
 		fileSave = new FileSave();
         fileSave.kryo().register(Info.class, new CompatibleFieldSerializer(fileSave.kryo(),Info.class));
@@ -212,6 +216,18 @@ public class FootballSim extends FadingGame {
 		Gdx.app.log("FootballSim: Total Mem", Runtime.getRuntime().totalMemory()/1000000+"MB");
 		Gdx.app.log("FootballSim: Java Heap", Gdx.app.getJavaHeap()/1000000+"MB");
 		Gdx.app.log("FootballSim: Native Heap", Gdx.app.getNativeHeap()/1000000+"MB");
+	}
+
+	private Vector2 getIOSSafeAreaInsets() {
+		if (Gdx.app.getType() == Application.ApplicationType.iOS) {
+			try {
+				Class<?> IOSLauncher = Class.forName(getClass().getPackage().getName()+".IOSLauncher");
+				return (Vector2) IOSLauncher.getDeclaredMethod("getSafeAreaInsets").invoke(null);
+			} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+				e.printStackTrace();
+			}
+		}
+		return new Vector2();
 	}
 }
 
