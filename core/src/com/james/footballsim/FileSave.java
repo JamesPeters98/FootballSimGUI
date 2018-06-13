@@ -1,6 +1,8 @@
 package com.james.footballsim;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
@@ -12,7 +14,10 @@ import java.nio.file.Paths;
 
 public class FileSave {
 
+    AsyncExecutor asyncExecutor = new AsyncExecutor(10);
+
     private static Kryo kryo;
+    private Timer timer;
     public static Output output;
     public static Input input;
     boolean corruptFile = false;
@@ -21,6 +26,8 @@ public class FileSave {
 
     FileSave(){
         kryo = new Kryo();
+        timer = new Timer();
+
     }
 
     public boolean isEmptyDirectory(String fileName){
@@ -39,16 +46,20 @@ public class FileSave {
     }
 
 
-    public <T> T saveClass(T o, String fileName){
-        try {
-            output = new Output(new FileOutputStream(filePath+fileName+".sav"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        kryo.writeClassAndObject(output,o);
-        output.close();
+    public <T> void saveClass(T o, String fileName){
+        Thread t = new Thread(() -> {
+            Kryo kryo = new Kryo();
+            Output output = null;
+            try {
+                output = new Output(new FileOutputStream(filePath+fileName+".sav"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            kryo.writeClassAndObject(output,o);
+            output.close();
+        });
 
-        return o;
+        t.start();
     }
 
     public <T> T readClass(Class<T> type, String fileName){

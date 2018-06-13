@@ -24,7 +24,7 @@ public class CustomGameScreen implements Screen {
     float vWidth;
     float vHeight;
 
-    public final static float transitionDuration = 0.0001f;
+    public final static float transitionDuration = 0.3f;
 
     Button backButton;
     Label FPSCounter;
