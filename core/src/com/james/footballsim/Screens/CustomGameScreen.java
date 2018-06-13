@@ -55,12 +55,8 @@ public class CustomGameScreen implements Screen {
 //            //System.out.println(realDPI);
 //        }
 
-        //System.out.println(Gdx.graphics.getDensity());
-        if(Gdx.graphics.getDensity() >= 1.25){
-            zoom = 1f;
-        } else {
-            zoom = 2f;
-        }
+//        System.out.println(Gdx.graphics.getDensity());
+        zoom = (float) (2/FootballSim.SCALE);
 
         vHeight = Gdx.graphics.getHeight()*zoom;
         vWidth = Gdx.graphics.getWidth()*zoom;

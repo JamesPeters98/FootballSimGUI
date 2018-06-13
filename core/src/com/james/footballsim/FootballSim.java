@@ -33,6 +33,7 @@ public class FootballSim extends FadingGame {
 	public static Info info;
     public static GDXDialogs dialogs;
     private static FixtureGenerator fixtureGenerator;
+    public static double SCALE = 1f; //SCALE FOR RETINA DEVICES
 
 
 	public static Screens SCREENS;
@@ -41,6 +42,10 @@ public class FootballSim extends FadingGame {
 	public static ScreenTransition OUT =  new SlidingTransition(SlidingTransition.Direction.RIGHT,Interpolation.exp5Out,true);
 //	public static ScreenTransition IN =  new AlphaFadingTransition();
 //	public static ScreenTransition OUT =  new AlphaFadingTransition();
+
+	public FootballSim(double scale){
+		SCALE = scale;
+	}
 
 	@Override
 	public void create () {
