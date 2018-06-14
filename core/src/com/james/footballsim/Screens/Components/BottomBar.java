@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 
+import static com.james.footballsim.FootballSim.Bottom_Padding;
 import static com.james.footballsim.FootballSim.skin;
 
 public class BottomBar {
@@ -28,6 +29,6 @@ public class BottomBar {
 
     public void update(float width, float height){
         bottom_bar.setWidth(width);
-        bottom_bar.setHeight(108);
+        bottom_bar.setHeight(108+Bottom_Padding);
     }
 }

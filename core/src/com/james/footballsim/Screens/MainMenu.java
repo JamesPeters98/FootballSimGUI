@@ -13,8 +13,7 @@ import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import com.james.footballsim.Utils;
 
-import static com.james.footballsim.FootballSim.fileSave;
-import static com.james.footballsim.FootballSim.info;
+import static com.james.footballsim.FootballSim.*;
 
 /**
  * Created by James on 04/04/2018.
@@ -23,16 +22,11 @@ public class MainMenu extends CustomGameScreen {
 
     //Buttons
     private TextButton nextGame;
-    private TextButton playersList;
-    private TextButton leagueTable;
-
-    private ScrollPane scrollPane;
-
-    Table buttons;
+    private Table buttons;
 
     //TopBar
-    TopBar topBar;
-    BottomBar bottomBar;
+    private TopBar topBar;
+    private BottomBar bottomBar;
 
     FootballSim aGame;
 
@@ -41,8 +35,6 @@ public class MainMenu extends CustomGameScreen {
         this.aGame = aGame;
 
         nextGame = new TextButton("Next Game",FootballSim.skin);
-        playersList = new TextButton("Players", FootballSim.skin);
-
     }
 
     @Override
@@ -57,8 +49,8 @@ public class MainMenu extends CustomGameScreen {
         buttons = new Table();
         //buttons.setDebug(true);
 
-        playersList = ScreenUtils.addScreenSwitchTextButton("Players",aGame,this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN);
-        leagueTable = ScreenUtils.addScreenSwitchTextButton("Table",aGame,this, FootballSim.SCREENS.LEAGUE_TABLE, FootballSim.IN);
+        TextButton playersList = ScreenUtils.addScreenSwitchTextButton("Players",aGame,this, FootballSim.SCREENS.PLAYER_SELECTION, FootballSim.IN);
+        TextButton leagueTable = ScreenUtils.addScreenSwitchTextButton("Table", aGame, this, FootballSim.SCREENS.LEAGUE_TABLE, FootballSim.IN);
 
         String nextString = "";
         if(!FootballSim.info.seasonRunning) nextString = "Start Season";
@@ -125,7 +117,7 @@ public class MainMenu extends CustomGameScreen {
         buttons.row().spaceTop(15f);
         buttons.add(nextGame).colspan(2).fillX();
         buttons.row();
-        buttons.padBottom(130f);
+        buttons.padBottom(130f+Bottom_Padding);
 
         //buttons.setFillParent(true);
 
@@ -153,7 +145,7 @@ public class MainMenu extends CustomGameScreen {
 //        scrollPane.setHeight(height-(pad_bottom+pad_top));
 //        scrollPane.setY(pad_bottom);
 //        scrollPane.setWidth(width);
-        buttons.setHeight(height);
+        buttons.setHeight(height-Top_Padding);
         buttons.setX(width/2-buttons.getWidth()/2);
         topBar.update(width,height);
         bottomBar.update(width,height);

@@ -9,6 +9,8 @@ import com.james.footballsim.Screens.Components.TopBar;
 import com.james.footballsim.Simulator.Team;
 import com.james.footballsim.FootballSim;
 
+import static com.james.footballsim.FootballSim.Bottom_Padding;
+import static com.james.footballsim.FootballSim.Top_Padding;
 import static com.james.footballsim.FootballSim.skin;
 
 /**
@@ -76,8 +78,8 @@ public class TeamSelection extends CustomGameScreen {
 
     @Override
     public void updateUI(float width, float height) {
-        int pad_top = 95;
-        int pad_bottom = 85;
+        int pad_top = (int) (95+Top_Padding);
+        int pad_bottom = (int) (85+Bottom_Padding);
         scrollPane.setHeight(height-(pad_bottom+pad_top));
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);

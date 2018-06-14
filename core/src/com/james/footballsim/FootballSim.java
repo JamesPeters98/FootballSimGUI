@@ -37,14 +37,14 @@ public class FootballSim extends FadingGame {
     public static GDXDialogs dialogs;
     private static FixtureGenerator fixtureGenerator;
     public static double SCALE = 1f; //SCALE FOR RETINA DEVICES
+    public static float Top_Padding;
+    public static float Bottom_Padding;
 
 
 	public static Screens SCREENS;
 	public static FileSave fileSave;
 	public static ScreenTransition IN =  new SlidingTransition(SlidingTransition.Direction.LEFT,Interpolation.exp5Out,false);
 	public static ScreenTransition OUT =  new SlidingTransition(SlidingTransition.Direction.RIGHT,Interpolation.exp5Out,true);
-//	public static ScreenTransition IN =  new AlphaFadingTransition();
-//	public static ScreenTransition OUT =  new AlphaFadingTransition();
 
 	public FootballSim(double scale){
 		SCALE = scale;
@@ -54,8 +54,14 @@ public class FootballSim extends FadingGame {
 	public void create () {
 		super.create();
 		showMemoryUsage();
-		Gdx.app.log("Insets", getIOSSafeAreaInsets().toString());
+
+		Top_Padding = (float) (getIOSSafeAreaInsets().x/2);
+		Bottom_Padding = (float) (getIOSSafeAreaInsets().y/2);
+//		Top_Padding = 132;
+//		Bottom_Padding = 102;
+
 		dialogs = GDXDialogsSystem.install();
+
 		fileSave = new FileSave();
         fileSave.kryo().register(Info.class, new CompatibleFieldSerializer(fileSave.kryo(),Info.class));
         fileSave.kryo().setReferences(false);
@@ -107,12 +113,12 @@ public class FootballSim extends FadingGame {
 		};
 		fixtureGenerator = new FixtureGenerator();
 
-		readVars();
+		//readVars();
 
-		if(fileSave.isCorruptFile()){
+		//if(fileSave.isCorruptFile()){
 			Gdx.app.log(getClass().getCanonicalName(),"File was corrupt!");
 			initVars();
-		}
+		//}
 
 		//Info jsonInfo = JsonConverter.toJson(info, Info.class);
 
@@ -218,10 +224,10 @@ public class FootballSim extends FadingGame {
 		Gdx.app.log("FootballSim: Native Heap", Gdx.app.getNativeHeap()/1000000+"MB");
 	}
 
-	private Vector2 getIOSSafeAreaInsets() {
+	public static Vector2 getIOSSafeAreaInsets() {
 		if (Gdx.app.getType() == Application.ApplicationType.iOS) {
 			try {
-				Class<?> IOSLauncher = Class.forName(getClass().getPackage().getName()+".IOSLauncher");
+				Class<?> IOSLauncher = Class.forName(FootballSim.class.getPackage().getName()+".IOSLauncher");
 				return (Vector2) IOSLauncher.getDeclaredMethod("getSafeAreaInsets").invoke(null);
 			} catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 				e.printStackTrace();

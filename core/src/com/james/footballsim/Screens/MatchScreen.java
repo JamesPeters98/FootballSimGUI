@@ -14,8 +14,7 @@ import com.james.footballsim.Screens.Components.BottomBar;
 import com.james.footballsim.Screens.Components.TopBar;
 import uk.co.codeecho.fixture.generator.Fixture;
 
-import static com.james.footballsim.FootballSim.info;
-import static com.james.footballsim.FootballSim.skin;
+import static com.james.footballsim.FootballSim.*;
 
 /**
  * Created by James on 04/04/2018.
@@ -60,7 +59,7 @@ public class MatchScreen extends CustomGameScreen {
         table.padBottom(40f);
 
         mainTable = new Table();
-//        mainTable.debug();
+        mainTable.debug();
 
         scrollPane = new ScrollPane(table,skin);
         scrollPane.setDebug(true);
@@ -121,8 +120,8 @@ public class MatchScreen extends CustomGameScreen {
 
     @Override
     public void updateUI(float width, float height) {
-        int pad_top = 95;
-        int pad_bottom = 85;
+        int pad_top = (int) (95+Top_Padding);
+        int pad_bottom = (int) (85+Bottom_Padding);
         scrollPane.setHeight(height-(pad_bottom+pad_top)-200);
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
@@ -137,8 +136,8 @@ public class MatchScreen extends CustomGameScreen {
 //        minutes.layout();
 //        System.out.println(minutes.getWidth());
 
-        menu.setPosition(width-menu.getWidth()-10, 0);
-        skip.setPosition(menu.getX()-skip.getWidth()-10,0);
+        menu.setPosition(width-menu.getWidth()-10, Bottom_Padding);
+        skip.setPosition(menu.getX()-skip.getWidth()-10,Bottom_Padding);
     }
 
     @Override

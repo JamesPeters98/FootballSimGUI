@@ -13,6 +13,7 @@ import com.james.footballsim.FootballSim;
 import de.tomgrill.gdxdialogs.core.dialogs.GDXButtonDialog;
 import de.tomgrill.gdxdialogs.core.listener.ButtonClickListener;
 
+import static com.james.footballsim.FootballSim.Bottom_Padding;
 import static com.james.footballsim.FootballSim.skin;
 
 public class ScreenUtils {
@@ -20,7 +21,7 @@ public class ScreenUtils {
     public static Button backButton(FootballSim aGame, CustomGameScreen currentGameScreen, CustomGameScreen previousGameScreen){
         //if(previousGameScreen == null) System.out.println("Prev screen null");
         Button backButton = new Button(skin,"back_button");
-        backButton.setPosition(5,5);
+        backButton.setPosition(5,5+Bottom_Padding);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

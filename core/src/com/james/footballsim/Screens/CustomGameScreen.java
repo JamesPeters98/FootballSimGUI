@@ -3,13 +3,19 @@ package com.james.footballsim.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.james.footballsim.FootballSim;
+import com.james.footballsim.Screens.Components.PaddedScreenViewport;
 
+import static com.james.footballsim.FootballSim.Bottom_Padding;
+import static com.james.footballsim.FootballSim.Top_Padding;
 import static com.james.footballsim.FootballSim.skin;
 
 public class CustomGameScreen implements Screen {
@@ -36,29 +42,9 @@ public class CustomGameScreen implements Screen {
     public CustomGameScreen(FootballSim game) {
         this.game = game;
 
-        int scaleFactor = 1;
-
-//        // find the display device of interest
-//        final GraphicsDevice defaultScreenDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-//
-//        // on OS X, it would be CGraphicsDevice
-//        if (defaultScreenDevice instanceof CGraphicsDevice) {
-//            final CGraphicsDevice device = (CGraphicsDevice) defaultScreenDevice;
-//
-//            // this is the missing correction factor, it's equal to 2 on HiDPI a.k.a. Retina displays
-//            scaleFactor = device.getScaleFactor();
-//
-//            // now we can compute the real DPI of the screen
-//            //final double realDPI = scaleFactor * (device.getXResolution() + device.getYResolution()) / 2;
-//
-//            //System.out.println(scaleFactor);
-//            //System.out.println(realDPI);
-//        }
-
-//        System.out.println(Gdx.graphics.getDensity());
         zoom = (float) (2/FootballSim.SCALE);
 
-        vHeight = Gdx.graphics.getHeight()*zoom;
+        vHeight = (Gdx.graphics.getHeight())*zoom;
         vWidth = Gdx.graphics.getWidth()*zoom;
 
         viewport = new ScreenViewport();
@@ -78,7 +64,7 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.4f, 0.6f, 0.2f, 1);
+        Gdx.gl.glClearColor((53f/255f), (104f/255f), (28f/255f), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         FPSCounter.setText("FPS: "+Gdx.graphics.getFramesPerSecond());
@@ -100,8 +86,8 @@ public class CustomGameScreen implements Screen {
         stage.getCamera().viewportHeight = vHeight;
 
         updateUI(vWidth,vHeight);
-        FPSCounter.setPosition(3,80);
-        Ram.setPosition(3,25);
+        FPSCounter.setPosition(3,80+Bottom_Padding);
+        Ram.setPosition(3,25+Bottom_Padding);
     }
 
     public void updateUI(float width, float height){
