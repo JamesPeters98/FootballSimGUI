@@ -84,7 +84,7 @@ public class UpdatesScreen extends CustomGameScreen {
         topBar.update(width,height);
         bottomBar.update(width,height);
 
-        menu.setPosition(width-menu.getWidth()-10, 0+Bottom_Padding);
+        menu.setPosition(width-menu.getWidth()-20, 0+Bottom_Padding);
 
 
         int pad_top = (int) (95+Top_Padding);

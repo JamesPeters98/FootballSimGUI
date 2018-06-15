@@ -59,7 +59,7 @@ public class MatchScreen extends CustomGameScreen {
         table.padBottom(40f);
 
         mainTable = new Table();
-        mainTable.debug();
+        //mainTable.debug();
 
         scrollPane = new ScrollPane(table,skin);
         scrollPane.setDebug(true);
@@ -136,8 +136,8 @@ public class MatchScreen extends CustomGameScreen {
 //        minutes.layout();
 //        System.out.println(minutes.getWidth());
 
-        menu.setPosition(width-menu.getWidth()-10, Bottom_Padding);
-        skip.setPosition(menu.getX()-skip.getWidth()-10,Bottom_Padding);
+        menu.setPosition(width-menu.getWidth()-20, Bottom_Padding);
+        skip.setPosition(menu.getX()-skip.getWidth()-20,Bottom_Padding);
     }
 
     @Override

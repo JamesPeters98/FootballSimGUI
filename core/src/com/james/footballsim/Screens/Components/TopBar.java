@@ -40,7 +40,7 @@ public class TopBar {
         titleLabel.setWidth(width);
 
         top_bar.setWidth(width);
-        top_bar.setHeight(118);
-        top_bar.setY(height-top_bar.getHeight()-Top_Padding);
+        top_bar.setHeight(118+Top_Padding);
+        top_bar.setY(height-top_bar.getHeight());
     }
 }

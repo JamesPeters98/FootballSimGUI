@@ -53,7 +53,7 @@ public class FootballSim extends FadingGame {
 	@Override
 	public void create () {
 		super.create();
-		showMemoryUsage();
+		//showMemoryUsage();
 
 		Top_Padding = (float) (getIOSSafeAreaInsets().x/2);
 		Bottom_Padding = (float) (getIOSSafeAreaInsets().y/2);
@@ -113,25 +113,25 @@ public class FootballSim extends FadingGame {
 		};
 		fixtureGenerator = new FixtureGenerator();
 
-		//readVars();
+		readVars();
 
-		//if(fileSave.isCorruptFile()){
+		if(fileSave.isCorruptFile()){
 			Gdx.app.log(getClass().getCanonicalName(),"File was corrupt!");
 			initVars();
-		//}
+		}
 
 		//Info jsonInfo = JsonConverter.toJson(info, Info.class);
 
 		Gdx.app.log("Sim", "Round: "+info.round);
 
-		float A = 0, D = 0;
-		for(Team team : info.teams){
-		    System.out.println(team.name+": A: "+team.attackRating+" D: "+team.defenceRating);
-		    A += team.attackRating;
-		    D += team.defenceRating;
-        }
-        System.out.println("Total Average Attack: "+(A/info.teams.size()));
-        System.out.println("Total Average Defence: "+(D/info.teams.size()));
+//		float A = 0, D = 0;
+//		for(Team team : info.teams){
+//		    System.out.println(team.name+": A: "+team.attackRating+" D: "+team.defenceRating);
+//		    A += team.attackRating;
+//		    D += team.defenceRating;
+//        }
+//        System.out.println("Total Average Attack: "+(A/info.teams.size()));
+//        System.out.println("Total Average Defence: "+(D/info.teams.size()));
 
 		SCREENS = new Screens(this);
 		if(info.teamId!=-1) this.setScreen(null,SCREENS.MAIN_MENU,IN,0);
@@ -151,7 +151,7 @@ public class FootballSim extends FadingGame {
 	public void setTeam(int id){
 		info.teamId = id;
 		info.leagues.get(info.division).getTeam(info.teamId).chosenTeam = true;
-		fileSave.saveInfo();
+		fileSave.saveInfo(this);
 		SCREENS.PLAYER_SELECTION = new PlayersList(this);
 	}
 
@@ -165,7 +165,7 @@ public class FootballSim extends FadingGame {
             info.leagues.get(i).leagueGames = fixtureGenerator.getFixtures(info.leagues.get(i).getTeams(), true);
         }
 		info.seasonRunning = true;
-		FootballSim.fileSave.saveInfo();
+		FootballSim.fileSave.saveInfo(this);
 	}
 
 	public static MatchSim runMatches(){
@@ -182,7 +182,7 @@ public class FootballSim extends FadingGame {
 			if(FootballSim.info.round >= FootballSim.info.leagues.get(info.division).leagueGames.size() && !info.playOffsRunning){
 				for(League league : FootballSim.info.leagues.values()){
 					league.postEndSeason();
-					fileSave.saveInfo();
+					//fileSave.saveInfo();
 				}
 			}
 
@@ -193,9 +193,10 @@ public class FootballSim extends FadingGame {
 				for(League league : FootballSim.info.leagues.values()){
 					league.endSeason();
 				}
-				fileSave.saveInfo();
+				//fileSave.saveInfo();
 			}
 		}
+		fileSave.saveInfo("FootballSim");
 	}
 
 	private void initVars(){
@@ -204,7 +205,7 @@ public class FootballSim extends FadingGame {
 		info.leagues = new HashMap<>();
 		info.leagues.put(1, new League().init(LeagueTypes.PREMIER_DIVISION));
 		info.leagues.put(2, new League().init(LeagueTypes.SECOND_DIVISION));
-		info.division = 1;
+		info.division = 2;
 		info.teams = new ArrayList<>(info.leagues.get(info.division).getTeams().values());
 		Collections.sort(info.teams,League.sortTeams);
 

@@ -102,7 +102,7 @@ public class PlayersList extends CustomGameScreen {
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
 
-        menu.setPosition(width-menu.getWidth()-10, 0+Bottom_Padding);
+        menu.setPosition(width-menu.getWidth()-20, 0+Bottom_Padding);
     }
 
     public void addToTable(String title, List<Player> players){

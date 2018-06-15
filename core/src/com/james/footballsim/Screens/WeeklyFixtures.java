@@ -99,7 +99,7 @@ public class WeeklyFixtures extends CustomGameScreen {
         topBar.update(width,height);
         bottomBar.update(width,height);
 
-        menu.setPosition(width-menu.getWidth()-10, Bottom_Padding);
+        menu.setPosition(width-menu.getWidth()-20, Bottom_Padding);
     }
 
     @Override

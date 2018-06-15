@@ -112,7 +112,7 @@ public class MatchSim {
     		runMatch();
     		postMatchUpdates();
     		seasonChecks();
-    		fileSave.saveInfo();
+    		fileSave.saveInfo(this);
     		matchStarted = true;
 		}
 		if(setup&&!finished) {

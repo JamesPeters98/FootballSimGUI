@@ -21,7 +21,7 @@ public class ScreenUtils {
     public static Button backButton(FootballSim aGame, CustomGameScreen currentGameScreen, CustomGameScreen previousGameScreen){
         //if(previousGameScreen == null) System.out.println("Prev screen null");
         Button backButton = new Button(skin,"back_button");
-        backButton.setPosition(5,5+Bottom_Padding);
+        backButton.setPosition(15,5+Bottom_Padding);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

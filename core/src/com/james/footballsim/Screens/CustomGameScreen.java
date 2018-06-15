@@ -59,12 +59,13 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void show() {
-        FootballSim.fileSave.saveInfo();
+        //FootballSim.fileSave.saveInfo(this);
+        //Gdx.app.log(getClass().getCanonicalName(),"Showing screen");
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor((53f/255f), (104f/255f), (28f/255f), 1);
+        Gdx.gl.glClearColor(0.4f, 0.6f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         FPSCounter.setText("FPS: "+Gdx.graphics.getFramesPerSecond());
@@ -96,7 +97,7 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void pause() {
-        FootballSim.fileSave.saveInfo();
+        FootballSim.fileSave.saveInfo(this);
     }
 
     @Override
@@ -106,12 +107,12 @@ public class CustomGameScreen implements Screen {
 
     @Override
     public void hide() {
-        FootballSim.fileSave.saveInfo();
+        FootballSim.fileSave.saveInfo(this);
     }
 
     @Override
     public void dispose() {
-        FootballSim.fileSave.saveInfo();
+        FootballSim.fileSave.saveInfo(this);
     }
 
     public void showBackButton(boolean bool){
@@ -124,8 +125,8 @@ public class CustomGameScreen implements Screen {
     }
 
     public void showFPSCounter(){
-        stage.addActor(FPSCounter);
-        stage.addActor(Ram);
+//        stage.addActor(FPSCounter);
+//        stage.addActor(Ram);
     }
 
     public void setPrevScreen(CustomGameScreen screen){

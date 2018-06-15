@@ -14,8 +14,7 @@ import com.james.footballsim.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.james.footballsim.FootballSim.info;
-import static com.james.footballsim.FootballSim.skin;
+import static com.james.footballsim.FootballSim.*;
 
 /**
  * Created by James on 04/04/2018.
@@ -78,14 +77,14 @@ public class LeagueTable extends CustomGameScreen {
     public void updateUI(float width, float height) {
         topBar.update(width,height);
         bottomBar.update(width,height);
-        menu.setPosition(width-menu.getWidth()-10, 0);
+        menu.setPosition(width-menu.getWidth()-20, Bottom_Padding);
 
-        int pad_top = 95;
-        int pad_bottom = 85;
+        int pad_top = (int) (95+Top_Padding);
+        int pad_bottom = (int) (85+Bottom_Padding);
         scrollPane.setHeight(height-(pad_bottom+pad_top));
         scrollPane.setY(pad_bottom);
         scrollPane.setWidth(width);
-        }
+    }
 
 //        public TextButton buttonLeague(String text, int teamID){
 //            TextButton button = button(text);
@@ -118,7 +117,7 @@ public class LeagueTable extends CustomGameScreen {
 
             if(i == leagueStatsArray.size()-1) table.row().spaceTop(3).padBottom(10);
             table.add(button(String.valueOf(i+1))).fillX();
-            table.add(button(stats.team.shortName)).fillX();
+            table.add(button(stats.team.shortName+" "+stats.team.getRating()+"("+stats.team.getForm()+")")).fillX();
             int played = stats.wins+stats.draws+stats.losses;
             table.add(button(String.valueOf(stats.wins))).fillX();
             table.add(button(String.valueOf(stats.draws))).fillX();
